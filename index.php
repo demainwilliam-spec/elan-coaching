@@ -23,7 +23,16 @@
                     </ul>
                 </nav>
             </header>
-            
+
+            <section class="hero">
+                <h1>Reprenez votre élan.</h1>
+                <p>
+                    Un accompagnement sportif construit autour de vous : bilan honnête,
+                    programme réaliste, suivi qui tient dans la durée.
+                </p>
+                <a href="contact.php" class="btn">Réserver un bilan gratuit</a>
+            </section>
+
         </body>
 
     </html>
