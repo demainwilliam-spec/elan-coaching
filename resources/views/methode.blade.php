@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Élan — Méthode</title>
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    
-    <body>
+@extends('layouts.app')
 
-        @include('partials.header')
+@section('title', 'Méthode')
 
-        <h2>Page Méthode — à compléter</h2>
-        
-        @include('partials.footer')
-    </body>
-</html>
+@section('content')
+    <h2>Page Méthode — à compléter</h2>
+@endsection
