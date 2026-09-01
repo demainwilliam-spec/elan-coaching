@@ -9,19 +9,7 @@
     
     <body>
 
-        <header>
-            <div class="logo">Élan</div>
-            <nav>
-                <ul>
-                    <li><a href="{{ url('/') }}">Accueil</a></li>
-                    <li><a href="{{ url('/methode') }}">Méthode</a></li>
-                    <li><a href="{{ url('/services') }}">Services</a></li>
-                    <li><a href="{{ url('/coach') }}">Le coach</a></li>
-                    <li><a href="{{ url('/avis') }}">Avis</a></li>
-                    <li><a href="{{ url('/contact') }}">Contact</a></li>
-                </ul>
-            </nav>
-        </header>
+        @include('partials.header')
 
         <section class="hero">
             <h1>Reprenez votre élan.</h1>
@@ -32,5 +20,6 @@
             <a href="{{ url('/contact') }}" class="btn">Réserver un bilan gratuit</a>
         </section>
 
+        @include('partials.footer')
     </body>
 </html>
