@@ -13,20 +13,8 @@
         <a href="#contact" class="btn">Réserver un bilan gratuit</a>
     </section>
 
-    <section id="methode">
-        <h2>Page Méthode — à compléter</h2>
-    </section>
-
     <section id="services">
         <h2>Page Services — à compléter</h2>
-    </section>
-
-    <section id="coach">
-        <h2>Page Le coach — à compléter</h2>
-    </section>
-
-    <section id="avis">
-        <h2>Page Avis — à compléter</h2>
     </section>
 
     <section id="contact">
