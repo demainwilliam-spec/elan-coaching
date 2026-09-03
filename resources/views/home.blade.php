@@ -14,7 +14,26 @@
     </section>
 
     <section id="services">
-        <h2>Page Services — à compléter</h2>
+        <h2>Mes services</h2>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <h3>Coaching individuel</h3>
+                <p>Séances en tête-à-tête, programme entièrement personnalisé, ajusté à chaque rendez-vous.</p>
+            </div>
+
+            <div class="service-card">
+                <h3>Petit groupe</h3>
+                <p>De 2 à 4 personnes, même exigence qu'en individuel, tarif dégressif selon le nombre de participants.</p>
+            </div>
+
+            <div class="service-card">
+                <h3>À distance</h3>
+                <p>Un programme structuré à réaliser en autonomie, avec un suivi régulier pour ajuster la progression.</p>
+            </div>
+        </div>
+
+        <a href="#contact" class="btn">Contactez-moi</a>
     </section>
 
     <section id="contact">
