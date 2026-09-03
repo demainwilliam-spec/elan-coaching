@@ -37,7 +37,15 @@
     </section>
 
     <section id="contact">
-        <h2>Page Contact — à compléter</h2>
+        <h2>Un bilan gratuit, sans engagement</h2>
+        <p>30 minutes pour faire le point sur vos objectifs et voir si Élan est le bon accompagnement pour vous.</p>
+
+        <div class="contact-actions">
+            <a href="mailto:contact@elan-coaching.fr" class="btn">contact@elan-coaching.fr</a>
+            <a href="tel:+32476000000" class="btn btn-secondary">+32 476 00 00 00</a>
+        </div>
+
+        <p class="contact-note">Prise de rendez-vous en ligne : bientôt disponible</p>
     </section>
 
 @endsection

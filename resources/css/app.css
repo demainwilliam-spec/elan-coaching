@@ -152,3 +152,43 @@ footer p {
     background-color: var(--color-accent);
     color: var(--color-bg);
 }
+
+#contact {
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+#contact h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+#contact > p {
+    color: var(--color-text-muted);
+    max-width: 500px;
+    margin: 0 auto 3rem;
+}
+
+.contact-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.btn-secondary {
+    border-color: var(--color-text-muted);
+    color: var(--color-text-muted);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-text-muted);
+    border-color: var(--color-text-muted);
+    color: var(--color-bg);
+}
+
+.contact-note {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
