@@ -1,5 +1,5 @@
 <header>
-    <div class="logo"><a href="/">Élan</a></div>
+    <div class="logo"><a href="/">JF Coaching</a></div>
     <nav>
         <ul>
             <li><a href="#services">Services</a></li>
