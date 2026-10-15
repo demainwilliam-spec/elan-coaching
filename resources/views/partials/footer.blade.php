@@ -1,5 +1,5 @@
 <footer>
-    <div class="logo">Élan</div>
+    <div class="logo">JF Coaching</div>
     <p>Coaching sportif — Belgique</p>
-    <p>&copy; 2026 Élan. Tous droits réservés.</p>
+    <p>&copy; 2026 JF Coaching. Tous droits réservés.</p>
 </footer>

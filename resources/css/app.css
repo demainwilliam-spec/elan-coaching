@@ -1,9 +1,7 @@
-@import 'tailwindcss';
-
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* On n'importe que le reset de Tailwind (Preflight), pas ses classes utilitaires.
+   layer(base) le range dans une couche CSS de faible priorité :
+   tout le CSS écrit ci-dessous (hors couche) passe toujours avant lui. */
+@import 'tailwindcss/preflight.css' layer(base);
 
 :root {
     /* Couleurs */
@@ -19,11 +17,8 @@
     --font-signature: 'Pinyon Script', cursive;
 }
 
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -36,14 +31,27 @@ body {
 h1, h2, h3 {
     font-family: var(--font-heading);
     font-weight: 600;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+    h1, h2, h3 {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
 }
 
 header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 3rem 0rem;
+    padding: 1.5rem 3rem 0;
     border-bottom: 1px solid var(--color-accent);
+    background-color: var(--color-bg);
 }
 
 .logo {
@@ -70,6 +78,27 @@ header nav a:hover {
     color: var(--color-accent);
 }
 
+@media (max-width: 768px) {
+    header {
+        padding: 1rem 1.5rem 0;
+    }
+
+    .logo {
+        font-size: 1.6rem;
+    }
+
+    header nav ul {
+        gap: 1.25rem;
+    }
+}
+.hero {
+    padding: 6rem 3rem;
+    text-align: center;
+}
+.hero a {
+    margin-top: 3rem;
+}
+
 footer {
     display: flex;
     flex-direction: column;
@@ -84,4 +113,119 @@ footer {
 footer p {
     color: var(--color-text-muted);
     font-size: 0.9rem;
+}
+
+
+#services {
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+/* Media query : ces règles ne s'appliquent que si l'écran fait 768px de large ou moins.
+   Elles écrasent celles du dessus, car elles viennent après dans le fichier. */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr; /* une seule colonne : les cartes s'empilent */
+    }
+}
+
+.service-card {
+    border: 1px solid var(--color-accent);
+    padding: 2.5rem 1.5rem;
+    background-color: var(--color-bg);
+}
+
+.service-card h3 {
+    margin-bottom: 1rem;
+}
+
+.service-card p {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.9rem 2rem;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn:hover {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+}
+
+#contact {
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+/* Placée après les trois sections pour passer après leurs règles de base */
+@media (max-width: 768px) {
+    .hero, #services, #contact {
+        padding: 4rem 1.5rem;
+    }
+}
+
+#contact h2 {
+    margin-bottom: 1rem;
+}
+
+#contact > p {
+    color: var(--color-text-muted);
+    max-width: 500px;
+    margin: 0 auto 3rem;
+}
+
+.contact-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .contact-actions {
+        flex-direction: column; /* l'axe principal devient vertical : les boutons s'empilent */
+        align-items: center;    /* sur un axe vertical, align-items centre horizontalement */
+        gap: 1rem;
+    }
+}
+
+.btn-secondary {
+    border-color: var(--color-text-muted);
+    color: var(--color-text-muted);
+}
+
+.btn-secondary:hover {
+    background-color: var(--color-text-muted);
+    border-color: var(--color-text-muted);
+    color: var(--color-bg);
+}
+
+.contact-note {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+.service-icon {
+    width: 40px;
+    height: 40px;
+    color: var(--color-accent);
+    margin: 0 auto 0.5rem;
 }
