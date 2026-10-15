@@ -77,6 +77,20 @@ header nav a {
 header nav a:hover {
     color: var(--color-accent);
 }
+
+@media (max-width: 768px) {
+    header {
+        padding: 1rem 1.5rem 0;
+    }
+
+    .logo {
+        font-size: 1.6rem;
+    }
+
+    header nav ul {
+        gap: 1.25rem;
+    }
+}
 .hero {
     padding: 6rem 3rem;
     text-align: center;
@@ -182,6 +196,14 @@ footer p {
     justify-content: center;
     gap: 1.5rem;
     margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .contact-actions {
+        flex-direction: column; /* l'axe principal devient vertical : les boutons s'empilent */
+        align-items: center;    /* sur un axe vertical, align-items centre horizontalement */
+        gap: 1rem;
+    }
 }
 
 .btn-secondary {
