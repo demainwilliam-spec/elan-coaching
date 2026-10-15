@@ -19,6 +19,8 @@
 - Un commit par étape validée, message clair
 - Variables CSS centralisées dans `resources/css/app.css` (`:root { --color-... }`)
 - Polices : Oswald (titres), Inter (texte courant), Pinyon Script (uniquement le logo "JF Coaching")
+- Responsive : breakpoint unique à 768px en `max-width` (CSS écrit desktop first), media query placée juste après la règle qu'elle modifie
+- Toute nouvelle section doit être vérifiée en mode téléphone avant d'être validée
 
 ## Façon de travailler
 - Approche mentor/pédagogique : expliquer le concept avant d'écrire du code, pas de gros bloc de code non expliqué
