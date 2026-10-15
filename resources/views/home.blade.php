@@ -52,7 +52,7 @@
 
     <section id="contact">
         <h2>Un bilan gratuit, sans engagement</h2>
-        <p>30 minutes pour faire le point sur vos objectifs et voir si Élan est le bon accompagnement pour vous.</p>
+        <p>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>
 
         <div class="contact-actions">
             <a href="mailto:contact@elan-coaching.fr" class="btn">contact@elan-coaching.fr</a>
