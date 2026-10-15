@@ -1,9 +1,7 @@
-@import 'tailwindcss';
-
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
+/* On n'importe que le reset de Tailwind (Preflight), pas ses classes utilitaires.
+   layer(base) le range dans une couche CSS de faible priorité :
+   tout le CSS écrit ci-dessous (hors couche) passe toujours avant lui. */
+@import 'tailwindcss/preflight.css' layer(base);
 
 :root {
     /* Couleurs */
@@ -21,12 +19,6 @@
 
 html {
     scroll-behavior: smooth;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
 }
 
 body {
