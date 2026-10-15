@@ -100,11 +100,6 @@ footer p {
     text-align: center;
 }
 
-#services h2 {
-    font-size: 2.5rem;
-    margin-bottom: 3rem;
-}
-
 .services-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
