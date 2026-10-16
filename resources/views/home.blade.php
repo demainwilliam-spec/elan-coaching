@@ -54,8 +54,30 @@
         <h2>Un bilan gratuit, sans engagement</h2>
         <p>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>
 
+        {{-- Pas encore d'action : le formulaire est envoyé vers la page actuelle (/) --}}
+        <form class="contact-form" method="POST">
+            <div class="form-field">
+                {{-- for="name" relie le label au champ qui a id="name" --}}
+                <label for="name">Nom</label>
+                {{-- name="name" : la clé sous laquelle la valeur arrive côté serveur --}}
+                <input type="text" id="name" name="name" autocomplete="name">
+            </div>
+
+            <div class="form-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email">
+            </div>
+
+            <div class="form-field">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="6"></textarea>
+            </div>
+
+            <button type="submit" class="btn">Envoyer</button>
+        </form>
+
         <div class="contact-actions">
-            <a href="mailto:contact@elan-coaching.fr" class="btn">contact@elan-coaching.fr</a>
+            <p>Vous préférez appeler ?</p>
             <a href="tel:+32476000000" class="btn btn-secondary">+32 476 00 00 00</a>
         </div>
 
