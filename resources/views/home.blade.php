@@ -54,8 +54,16 @@
         <h2>Un bilan gratuit, sans engagement</h2>
         <p>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>
 
-        {{-- Pas encore d'action : le formulaire est envoyé vers la page actuelle (/) --}}
-        <form class="contact-form" method="POST">
+        {{-- session('success') n'existe que juste après la redirection du contrôleur --}}
+        @if (session('success'))
+            <div class="form-success">{{ session('success') }}</div>
+        @endif
+
+        {{-- route('contact.send') génère l'URL de la route nommée (ici /contact) --}}
+        <form class="contact-form" method="POST" action="{{ route('contact.send') }}">
+            {{-- @csrf ajoute un champ caché contenant le jeton anti-CSRF --}}
+            @csrf
+
             <div class="form-field">
                 {{-- for="name" relie le label au champ qui a id="name" --}}
                 <label for="name">Nom</label>
