@@ -23,6 +23,9 @@
 - Toute nouvelle section doit être vérifiée en mode téléphone avant d'être validée
 
 ## Façon de travailler
+- Pour toute nouvelle fonctionnalité : proposer un plan d'abord, attendre mon accord, puis avancer étape par étape en m'expliquant le pourquoi de chaque choix
+- Ne jamais pousser sur GitHub sans mon accord, ne jamais toucher à `main`
+- Ne jamais écrire d'identifiants (SMTP, clés) ailleurs que dans `.env`
 - Approche mentor/pédagogique : expliquer le concept avant d'écrire du code, pas de gros bloc de code non expliqué
 - Avancer étape par étape, valider chaque résultat avant de continuer
 - Les changements de direction en cours de route sont normaux et acceptés
