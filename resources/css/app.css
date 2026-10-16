@@ -10,6 +10,7 @@
     --color-accent: #E8B33D;
     --color-text: #F4F2ED;
     --color-text-muted: #8B897F;
+    --color-error: #E5735A;
 
     /* Typographie */
     --font-heading: 'Oswald', sans-serif;
@@ -237,6 +238,17 @@ footer p {
 .form-field textarea:focus {
     outline: 1px solid var(--color-accent);
     border-color: var(--color-accent);
+}
+
+.form-error {
+    font-size: 0.85rem;
+    color: var(--color-error);
+}
+
+/* Bordure rouge sur le champ en erreur (has-error est ajoutée par @error dans la vue) */
+.has-error input,
+.has-error textarea {
+    border-color: var(--color-error);
 }
 
 .contact-form .btn {
