@@ -56,7 +56,12 @@
 
         {{-- session('success') n'existe que juste après la redirection du contrôleur --}}
         @if (session('success'))
-            <div class="form-success">{{ session('success') }}</div>
+            <div class="form-alert">{{ session('success') }}</div>
+        @endif
+
+        {{-- session('error') : défini par le contrôleur quand l'envoi du mail a échoué --}}
+        @if (session('error'))
+            <div class="form-alert form-alert-error">{{ session('error') }}</div>
         @endif
 
         {{-- route('contact.send') génère l'URL de la route nommée (ici /contact) --}}
