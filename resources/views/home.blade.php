@@ -54,8 +54,57 @@
         <h2>Un bilan gratuit, sans engagement</h2>
         <p>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>
 
+        {{-- session('success') n'existe que juste après la redirection du contrôleur --}}
+        @if (session('success'))
+            <div class="form-alert">{{ session('success') }}</div>
+        @endif
+
+        {{-- session('error') : défini par le contrôleur quand l'envoi du mail a échoué --}}
+        @if (session('error'))
+            <div class="form-alert form-alert-error">{{ session('error') }}</div>
+        @endif
+
+        {{-- route('contact.send') génère l'URL de la route nommée (ici /contact) --}}
+        <form class="contact-form" method="POST" action="{{ route('contact.send') }}">
+            {{-- @csrf ajoute un champ caché contenant le jeton anti-CSRF --}}
+            @csrf
+
+            {{-- @error('name') ... @enderror : affiché seulement si le champ "name" a une erreur --}}
+            <div class="form-field @error('name') has-error @enderror">
+                {{-- for="name" relie le label au champ qui a id="name" --}}
+                <label for="name">Nom</label>
+                {{-- name="name" : la clé sous laquelle la valeur arrive côté serveur --}}
+                {{-- old('name') : la valeur saisie avant l'échec de la validation (vide sinon) --}}
+                {{-- required / maxlength : contrôle côté navigateur, pour le confort ; la vraie protection reste ContactRequest --}}
+                <input type="text" id="name" name="name" autocomplete="name" value="{{ old('name') }}" required maxlength="100">
+                @error('name')
+                    {{-- $message : le texte de l'erreur défini dans ContactRequest --}}
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="form-field @error('email') has-error @enderror">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email" value="{{ old('email') }}" required maxlength="255">
+                @error('email')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="form-field @error('message') has-error @enderror">
+                <label for="message">Message</label>
+                {{-- Un textarea n'a pas d'attribut value : son contenu se place entre les balises --}}
+                <textarea id="message" name="message" rows="6" required minlength="10" maxlength="5000">{{ old('message') }}</textarea>
+                @error('message')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <button type="submit" class="btn">Envoyer</button>
+        </form>
+
         <div class="contact-actions">
-            <a href="mailto:contact@elan-coaching.fr" class="btn">contact@elan-coaching.fr</a>
+            <p>Vous préférez appeler ?</p>
             <a href="tel:+32476000000" class="btn btn-secondary">+32 476 00 00 00</a>
         </div>
 
