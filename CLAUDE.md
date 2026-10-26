@@ -9,6 +9,16 @@
 - Base de données : MariaDB 10.4 (le « MySQL » de XAMPP), base `jf_coaching` (utf8mb4_unicode_ci), connexion Laravel `mariadb`
 - Architecture : single-page avec sections ancrées (#services, #contact...)
 
+## Installation sur une nouvelle machine
+1. `composer install` puis `npm install`
+2. Copier `.env.example` en `.env`, puis `php artisan key:generate`, et renseigner les identifiants SMTP
+3. Démarrer MySQL dans XAMPP, créer la base : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root -e "CREATE DATABASE jf_coaching CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"`
+4. `php artisan migrate --seed` (le bloc `DB_*` de `.env.example` est déjà configuré pour XAMPP)
+
+## Règles métier (réservation de cours)
+- Réservation possible jusqu'au début du cours ; s'il reste de la place → confirmée, sinon → liste d'attente (illimitée)
+- Annulation possible jusqu'à 24 h avant le début du cours ; une place confirmée libérée → la 1re personne en attente est promue
+
 ## Commandes
 - Lancer le serveur Laravel : `php artisan serve`
 - Lancer Vite (CSS/JS en hot-reload) : `npm run dev`
