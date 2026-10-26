@@ -14,6 +14,15 @@
 - Lancer Vite (CSS/JS en hot-reload) : `npm run dev`
 - Les deux doivent tourner en parallèle pendant le développement
 
+## Fonctionnalités en place
+- Formulaire de contact (#contact) : ContactRequest (validation) → ContactController → Mailable ContactMessage
+- Envoi via SMTP Gmail (mot de passe d'application dans .env), destinataire : MAIL_CONTACT_ADDRESS
+- Anti-spam : throttle:5,10 sur la route ; débloquer en local avec `php artisan cache:clear`
+
+## Bon à savoir
+- `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
+- Sous PowerShell, git écrit ses messages normaux sur stderr : un « exit code » d'erreur ne veut pas forcément dire que la commande a échoué
+
 ## Conventions
 - Branches : `main` / `dev` / `feat/xxx`, jamais de travail direct sur `main`
 - Un commit par étape validée, message clair
