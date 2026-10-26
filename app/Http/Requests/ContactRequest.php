@@ -31,13 +31,13 @@ class ContactRequest extends FormRequest
         // Chaque règle est séparée par | et toutes doivent passer.
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email:rfc,filter|max:255', // filter : exige un domaine avec un point (refuse "a@b")
             'message' => 'required|string|min:10|max:5000',
         ];
     }
 
     /**
-     * Messages d'erreur en français (le site est en APP_LOCALE=en, sans traductions installées).
+     * Messages d'erreur en français (aucun fichier de traduction lang/fr installé).
      * Clé = "champ.règle" ; :min et :max sont remplacés par les valeurs des règles.
      */
     public function messages(): array

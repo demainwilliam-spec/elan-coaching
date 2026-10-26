@@ -9,11 +9,22 @@
 - Base de données : MariaDB 10.4 (le « MySQL » de XAMPP), base `jf_coaching` (utf8mb4_unicode_ci), connexion Laravel `mariadb`
 - Architecture : single-page avec sections ancrées (#services, #contact...)
 
+## Installation sur une nouvelle machine
+1. `composer install` puis `npm install`
+2. Copier `.env.example` en `.env`, puis `php artisan key:generate`, et renseigner les identifiants SMTP
+3. Démarrer MySQL dans XAMPP, créer la base : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root -e "CREATE DATABASE jf_coaching CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"`
+4. `php artisan migrate --seed` (le bloc `DB_*` de `.env.example` est déjà configuré pour XAMPP)
+
+## Règles métier (réservation de cours)
+- Réservation possible jusqu'au début du cours ; s'il reste de la place → confirmée, sinon → liste d'attente (illimitée)
+- Annulation possible jusqu'à 24 h avant le début du cours ; une place confirmée libérée → la 1re personne en attente est promue
+
 ## Commandes
 - Lancer le serveur Laravel : `php artisan serve`
 - Lancer Vite (CSS/JS en hot-reload) : `npm run dev`
 - Démarrer MySQL dans le panneau XAMPP (`C:\xampp\xampp-control.exe`)
 - Les trois doivent tourner en parallèle pendant le développement
+- Lancer les tests (SQLite en mémoire, ne touche pas à la base) : `php artisan test`
 - Repartir d'une base propre (supprime tout, recrée, remplit) : `php artisan migrate:fresh --seed`
 - Client MySQL en ligne de commande : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root jf_coaching`
 
@@ -23,7 +34,9 @@
 - Anti-spam : throttle:5,10 sur la route ; débloquer en local avec `php artisan cache:clear`
 - Agenda des cours collectifs (#cours) : HomeController → Course::upcoming()->withBookingCounts() → carrousel de pages de 4 (scroll-snap + resources/js/carousel.js)
 - Modèles : Course hasMany Booking ; Booking.status = enum BookingStatus (confirmed / waiting) ; cancel_token généré à la création
-- Réservation (lot 2), annulation + mails (lot 3) et interface coach (lot 4) : à venir
+- Réservation : modale <dialog> (resources/js/booking-dialog.js) → POST /cours/{course}/reservations → BookingRequest → BookingController → action App\Actions\BookCourse (transaction + lockForUpdate)
+- Champs du formulaire de réservation préfixés `booking[...]` et flash `booking_success` / `booking_error` : ne pas mélanger avec le formulaire de contact
+- Annulation + mails (lot 3) et interface coach (lot 4) : à venir
 
 ## Bon à savoir
 - `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
