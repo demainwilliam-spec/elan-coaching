@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Brussels', // heure belge (= Paris) : now() et les horaires des cours
 
     /*
     |--------------------------------------------------------------------------

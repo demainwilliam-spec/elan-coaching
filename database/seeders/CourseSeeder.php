@@ -57,6 +57,29 @@ class CourseSeeder extends Seeder
             'capacity' => 15,
         ]);
 
+        // Cours plus lointains, pour avoir plusieurs pages (4 cours par page)
+        // Chaque entrée : [titre, jours à partir d'aujourd'hui, heure, minute, durée, places, réservations confirmées]
+        $laterCourses = [
+            ['Cross-training', 11, 18, 30, 60, 12, 2],
+            ['Renforcement musculaire', 13, 12, 15, 45, 8, 3],
+            ['Circuit training en plein air', 15, 10, 0, 75, 10, 5],
+            ['Mobilité & stretching', 18, 19, 0, 45, 15, 1],
+            ['Cross-training', 20, 18, 30, 60, 12, 0],
+        ];
+
+        // Déstructuration : chaque élément du sous-tableau est rangé dans sa variable
+        foreach ($laterCourses as [$title, $days, $hour, $minute, $duration, $capacity, $booked]) {
+            $course = Course::create([
+                'title' => $title,
+                'description' => null,
+                'location' => 'Salle municipale, 12 rue des Sports',
+                'starts_at' => now()->addDays($days)->setTime($hour, $minute),
+                'duration_minutes' => $duration,
+                'capacity' => $capacity,
+            ]);
+            $this->addBookings($course, $booked, BookingStatus::Confirmed);
+        }
+
         // Cours passé : ne doit pas apparaître sur la page
         $past = Course::create([
             'title' => 'Cross-training',

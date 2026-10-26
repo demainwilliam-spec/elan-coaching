@@ -171,14 +171,19 @@ footer p {
     color: var(--color-bg);
 }
 
+#cours {
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
 #contact {
     padding: 6rem 3rem;
     text-align: center;
 }
 
-/* Placée après les trois sections pour passer après leurs règles de base */
+/* Placée après les quatre sections pour passer après leurs règles de base */
 @media (max-width: 768px) {
-    .hero, #services, #contact {
+    .hero, #services, #cours, #contact {
         padding: 4rem 1.5rem;
     }
 }
@@ -303,4 +308,193 @@ footer p {
     height: 40px;
     color: var(--color-accent);
     margin: 0 auto 0.5rem;
+}
+
+/* ---------- Section cours collectifs (agenda) ---------- */
+
+#cours h2 {
+    margin-bottom: 1rem;
+}
+
+#cours > p {
+    color: var(--color-text-muted);
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+.course-carousel {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Le rail : les pages sont côte à côte et débordent à droite ; seule la zone visible s'affiche */
+.course-track {
+    display: flex;
+    align-items: stretch;          /* toutes les pages prennent la hauteur de la plus haute : le cadre ne bouge pas */
+    overflow-x: auto;              /* défilement horizontal : doigt, trackpad, ou JS */
+    scroll-snap-type: x mandatory; /* le défilement s'aimante toujours sur une page entière */
+    scrollbar-width: none;         /* masque la barre de défilement (Firefox) */
+}
+
+/* Même chose pour Chrome / Safari / Edge, qui utilisent un pseudo-élément */
+.course-track::-webkit-scrollbar {
+    display: none;
+}
+
+/* Une <ul> = une page du carrousel */
+.course-list {
+    flex: 0 0 100%;                /* ni grandir, ni rétrécir : exactement la largeur visible */
+    scroll-snap-align: start;      /* point d'aimantation : le bord gauche de la page */
+    list-style: none;
+    border: 1px solid var(--color-accent);
+    text-align: left;
+}
+
+/* Chaque cours est une grille de 3 colonnes : date | infos | réservation */
+.course-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 220px; /* 1fr = tout l'espace restant */
+    gap: 2rem;
+    align-items: center;
+    padding: 1.75rem 2rem;
+}
+
+@media (max-width: 768px) {
+    .course-row {
+        grid-template-columns: 60px 1fr; /* la colonne réservation disparaît... */
+        gap: 1rem 1.25rem;               /* gap : écart vertical puis horizontal */
+        padding: 1.5rem 1.25rem;
+    }
+}
+
+/* + : sélectionne une ligne précédée d'une autre ligne → séparateur entre les cours, pas avant le premier */
+.course-row + .course-row {
+    border-top: 1px solid var(--color-bg-alt);
+}
+
+.course-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.course-weekday,
+.course-month {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+}
+
+.course-day {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--color-accent);
+}
+
+.course-info h3 {
+    font-size: 1.4rem;   /* écrase le 2.5rem global des titres */
+    margin-bottom: 0.25rem;
+}
+
+.course-meta {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.course-description {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.course-booking {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+@media (max-width: 768px) {
+    .course-booking {
+        grid-column: 1 / -1; /* ...et passe dessous, de la 1re à la dernière ligne de grille */
+    }
+}
+
+.course-places {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+/* Dernière place : mise en avant dorée pour créer l'urgence */
+.is-last .course-places {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.is-full .course-places {
+    color: var(--color-text);
+    text-transform: uppercase;
+    font-family: var(--font-heading);
+    letter-spacing: 0.05em;
+}
+
+/* Barre de remplissage : le fond = capacité totale, le <span> = places prises */
+.course-bar {
+    height: 4px;
+    background-color: var(--color-bg-alt);
+}
+
+.course-bar span {
+    display: block; /* un <span> est "inline" par défaut : sans ça, width et height sont ignorés */
+    height: 100%;
+    background-color: var(--color-accent);
+}
+
+.is-full .course-bar span {
+    background-color: var(--color-text-muted);
+}
+
+.course-booking .btn {
+    text-align: center;
+}
+
+.course-empty {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
+.course-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.pagination-link {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+/* :not(:disabled) : pas d'effet de survol sur une flèche désactivée */
+.pagination-link:not(:disabled):hover {
+    color: var(--color-text);
+}
+
+/* :disabled : bouton avec l'attribut disabled (pas de page derrière) → grisé, non cliquable */
+.pagination-link:disabled {
+    color: var(--color-text-muted);
+    opacity: 0.4;
+    cursor: default;
+}
+
+.pagination-status {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
 }
