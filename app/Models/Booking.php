@@ -31,6 +31,20 @@ class Booking extends Model
         });
     }
 
+    // Position dans la file d'attente (1 = la prochaine promue), null si la réservation est confirmée.
+    // On trie par id plutôt que created_at : l'id est strictement croissant, created_at peut avoir des ex æquo.
+    public function waitingPosition(): ?int // ?int : un entier ou null
+    {
+        if ($this->status !== BookingStatus::Waiting) {
+            return null;
+        }
+
+        return self::where('course_id', $this->course_id)
+            ->where('status', BookingStatus::Waiting)
+            ->where('id', '<=', $this->id)
+            ->count();
+    }
+
     // Relation inverse : une réservation appartient à un cours ($booking->course)
     public function course(): BelongsTo
     {

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email', 254);
             $table->string('status', 20); // valeurs de l'enum BookingStatus : confirmed / waiting
             $table->string('cancel_token', 64)->unique(); // lien d'annulation envoyé par mail
-            $table->timestamps(); // created_at sert d'ordre d'arrivée dans la file d'attente
+            $table->timestamps();
 
             // Index unique composé : une même adresse ne peut réserver qu'une fois le même cours
             $table->unique(['course_id', 'email']);
