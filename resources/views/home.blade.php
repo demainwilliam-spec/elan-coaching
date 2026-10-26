@@ -50,6 +50,48 @@
         <a href="#contact" class="btn">Contactez-moi</a>
     </section>
 
+    <section id="cours">
+        <h2>Cours collectifs</h2>
+        <p>
+            Réservez votre place en quelques secondes. Cours complet ? Inscrivez-vous sur la liste d'attente :
+            vous recevrez un mail si une place se libère.
+        </p>
+
+        {{-- Carrousel : les pages de 4 cours sont posées côte à côte dans le rail (track), qui défile horizontalement --}}
+        <div class="course-carousel">
+            {{-- data-* : repères pour le JS (carousel.js), indépendants des classes CSS --}}
+            <div class="course-track" data-carousel-track>
+                {{-- chunk(4) : découpe la collection en groupes de 4 → une <ul> par page --}}
+                {{-- @forelse : comme @foreach, avec une branche @empty si $courses est vide --}}
+                @forelse ($courses->chunk(4) as $page)
+                    <ul class="course-list">
+                        @foreach ($page as $course)
+                            {{-- @include : insère le partial en lui passant la variable $course --}}
+                            @include('partials.course-row', ['course' => $course])
+                        @endforeach
+                    </ul>
+                @empty
+                    <ul class="course-list">
+                        <li class="course-empty">Aucun cours programmé pour le moment. Revenez bientôt !</li>
+                    </ul>
+                @endforelse
+            </div>
+
+            {{-- Navigation seulement s'il y a plus d'une page --}}
+            @if ($courses->count() > 4)
+                <nav class="course-pagination" aria-label="Pages des cours">
+                    {{-- disabled : on est sur la première page au chargement ; le JS met ensuite l'état à jour --}}
+                    <button type="button" class="pagination-link" data-carousel-prev disabled>‹ Précédents</button>
+                    {{-- aria-live : un lecteur d'écran annonce le texte quand il change --}}
+                    <span class="pagination-status" data-carousel-status aria-live="polite">
+                        Page 1 / {{ $courses->chunk(4)->count() }}
+                    </span>
+                    <button type="button" class="pagination-link" data-carousel-next>Suivants ›</button>
+                </nav>
+            @endif
+        </div>
+    </section>
+
     <section id="contact">
         <h2>Un bilan gratuit, sans engagement</h2>
         <p>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>

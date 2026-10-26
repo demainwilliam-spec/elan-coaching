@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-});
+// Contrôleur invokable : on passe la classe seule, Laravel appelle sa méthode __invoke()
+Route::get('/', HomeController::class)->name('home');
 
 // POST : réception des données du formulaire de contact.
 // name() permet d'écrire route('contact.send') dans les vues au lieu de l'URL en dur.

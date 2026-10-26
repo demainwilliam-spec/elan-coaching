@@ -6,21 +6,29 @@
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
 - CSS natif (pas de framework), Tailwind gardé uniquement pour son reset (Preflight)
-- Base de données : SQLite pour l'instant, passage à MySQL (XAMPP) prévu quand on en aura besoin
+- Base de données : MariaDB 10.4 (le « MySQL » de XAMPP), base `jf_coaching` (utf8mb4_unicode_ci), connexion Laravel `mariadb`
 - Architecture : single-page avec sections ancrées (#services, #contact...)
 
 ## Commandes
 - Lancer le serveur Laravel : `php artisan serve`
 - Lancer Vite (CSS/JS en hot-reload) : `npm run dev`
-- Les deux doivent tourner en parallèle pendant le développement
+- Démarrer MySQL dans le panneau XAMPP (`C:\xampp\xampp-control.exe`)
+- Les trois doivent tourner en parallèle pendant le développement
+- Repartir d'une base propre (supprime tout, recrée, remplit) : `php artisan migrate:fresh --seed`
+- Client MySQL en ligne de commande : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root jf_coaching`
 
 ## Fonctionnalités en place
 - Formulaire de contact (#contact) : ContactRequest (validation) → ContactController → Mailable ContactMessage
 - Envoi via SMTP Gmail (mot de passe d'application dans .env), destinataire : MAIL_CONTACT_ADDRESS
 - Anti-spam : throttle:5,10 sur la route ; débloquer en local avec `php artisan cache:clear`
+- Agenda des cours collectifs (#cours) : HomeController → Course::upcoming()->withBookingCounts() → carrousel de pages de 4 (scroll-snap + resources/js/carousel.js)
+- Modèles : Course hasMany Booking ; Booking.status = enum BookingStatus (confirmed / waiting) ; cancel_token généré à la création
+- Réservation (lot 2), annulation + mails (lot 3) et interface coach (lot 4) : à venir
 
 ## Bon à savoir
 - `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
+- Client `mysql` : utiliser `-h 127.0.0.1`, avec `localhost` la connexion est refusée (erreur 2002)
+- Ne jamais nommer une table `sessions` : elle existe déjà (sessions Laravel, `SESSION_DRIVER=database`) → les cours s'appellent `courses`
 - Sous PowerShell, git écrit ses messages normaux sur stderr : un « exit code » d'erreur ne veut pas forcément dire que la commande a échoué
 
 ## Conventions
