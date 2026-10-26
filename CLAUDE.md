@@ -14,6 +14,7 @@
 - Lancer Vite (CSS/JS en hot-reload) : `npm run dev`
 - Démarrer MySQL dans le panneau XAMPP (`C:\xampp\xampp-control.exe`)
 - Les trois doivent tourner en parallèle pendant le développement
+- Repartir d'une base propre (supprime tout, recrée, remplit) : `php artisan migrate:fresh --seed`
 - Client MySQL en ligne de commande : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root jf_coaching`
 
 ## Fonctionnalités en place
