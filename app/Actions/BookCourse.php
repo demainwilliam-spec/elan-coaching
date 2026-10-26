@@ -8,6 +8,7 @@ use App\Models\Booking;
 use App\Models\Course;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 // Action : une classe = une opération métier. Utilisable depuis un contrôleur, un test, une commande...
 class BookCourse
@@ -19,6 +20,10 @@ class BookCourse
      */
     public function handle(Course $course, string $name, string $email): Booking
     {
+        // Email normalisé : "  Alice@Mail.com " et "alice@mail.com" sont la même personne,
+        // quelle que soit la base (la collation _ci de MariaDB n'existe pas en SQLite)
+        $email = Str::lower(trim($email));
+
         try {
             // Transaction : tout ce qui est dans la fonction est enregistré ensemble, ou pas du tout
             return DB::transaction(function () use ($course, $name, $email) {
