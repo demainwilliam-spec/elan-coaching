@@ -60,6 +60,12 @@ class BookingControllerTest extends TestCase
         $response->assertSessionDoesntHaveErrors(['name', 'email']); // les champs du contact restent propres
     }
 
+    public function test_un_email_sans_domaine_complet_est_refuse(): void
+    {
+        $this->book($this->makeCourse(capacity: 5), 'Alice', 'a@b')
+            ->assertSessionHasErrors('booking.email');
+    }
+
     public function test_un_doublon_renvoie_un_message_d_erreur_et_garde_la_saisie(): void
     {
         $course = $this->makeCourse(capacity: 5);

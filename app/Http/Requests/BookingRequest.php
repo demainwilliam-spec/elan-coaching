@@ -30,7 +30,7 @@ class BookingRequest extends FormRequest
     {
         return [
             'booking.name' => 'required|string|max:100',
-            'booking.email' => 'required|email|max:254',
+            'booking.email' => 'required|email:rfc,filter|max:254', // filter : exige un domaine avec un point (refuse "a@b")
         ];
     }
 

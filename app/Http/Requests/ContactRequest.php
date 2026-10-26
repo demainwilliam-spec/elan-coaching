@@ -31,7 +31,7 @@ class ContactRequest extends FormRequest
         // Chaque règle est séparée par | et toutes doivent passer.
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email:rfc,filter|max:255', // filter : exige un domaine avec un point (refuse "a@b")
             'message' => 'required|string|min:10|max:5000',
         ];
     }

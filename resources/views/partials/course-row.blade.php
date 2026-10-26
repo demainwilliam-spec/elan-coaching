@@ -39,8 +39,16 @@
             <span style="width: {{ $course->fillPercent() }}%"></span>
         </div>
 
-        {{-- type="button" : ne fait rien pour l'instant, branché au formulaire au lot 2 --}}
-        <button type="button" @class(['btn', 'btn-secondary' => $course->isFull()])>
+        {{-- data-* : les infos du cours, recopiées dans la modale par booking-dialog.js au clic --}}
+        <button type="button" @class(['btn', 'btn-secondary' => $course->isFull()])
+            data-booking-open
+            data-course-id="{{ $course->id }}"
+            data-action="{{ route('bookings.store', $course) }}"
+            data-title="{{ $course->title }}"
+            data-when="{{ ucfirst($course->starts_at->translatedFormat('l j F \à H\hi')) }} · {{ $course->duration_minutes }} min"
+            data-location="{{ $course->location }}"
+            data-description="{{ $course->description }}"
+            data-full="{{ $course->isFull() ? '1' : '0' }}">
             {{ $course->isFull() ? "Liste d'attente" : 'Réserver' }}
         </button>
     </div>

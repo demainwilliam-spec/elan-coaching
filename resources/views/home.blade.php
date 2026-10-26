@@ -57,6 +57,11 @@
             vous recevrez un mail si une place se libère.
         </p>
 
+        {{-- booking_success : défini par BookingController après une réservation réussie --}}
+        @if (session('booking_success'))
+            <div class="form-alert">{{ session('booking_success') }}</div>
+        @endif
+
         {{-- Carrousel : les pages de 4 cours sont posées côte à côte dans le rail (track), qui défile horizontalement --}}
         <div class="course-carousel">
             {{-- data-* : repères pour le JS (carousel.js), indépendants des classes CSS --}}
@@ -90,6 +95,71 @@
                 </nav>
             @endif
         </div>
+
+        {{-- Modale de réservation : une seule pour tous les cours, remplie par booking-dialog.js --}}
+        {{-- data-reopen-course : présent seulement après une erreur → le JS rouvre la modale sur ce cours --}}
+        <dialog class="booking-dialog" aria-labelledby="booking-dialog-title" data-booking-dialog
+            @if ($errors->hasAny(['booking.name', 'booking.email']) || session('booking_error'))
+                data-reopen-course="{{ old('booking.course_id') }}"
+            @endif
+        >
+            <div class="booking-dialog-inner">
+                {{-- method="dialog" : soumettre ce formulaire ferme la modale, sans JS --}}
+                <form method="dialog" class="booking-dialog-close">
+                    <button type="submit" aria-label="Fermer">×</button>
+                </form>
+
+                <h3 id="booking-dialog-title" data-booking-heading>Réserver</h3>
+
+                <div class="booking-summary">
+                    <p class="booking-summary-title" data-booking-title></p>
+                    <p class="course-meta" data-booking-when></p>
+                    <p class="course-meta" data-booking-location></p>
+                    <p class="course-description" data-booking-description></p>
+                </div>
+
+                {{-- hidden : affiché seulement si le cours est complet (le JS retire l'attribut) --}}
+                <p class="booking-notice" data-booking-full-notice hidden>
+                    Ce cours est complet : vous serez inscrit(e) sur la liste d'attente
+                    et prévenu(e) par mail si une place se libère.
+                </p>
+
+                {{-- booking_error : refus métier (doublon, cours commencé), renvoyé par BookingController --}}
+                @if (session('booking_error'))
+                    <div class="form-alert form-alert-error">{{ session('booking_error') }}</div>
+                @endif
+
+                {{-- action : remplacée par le JS avec l'URL du cours choisi (/cours/{id}/reservations) --}}
+                <form class="booking-form" method="POST" action="" data-booking-form>
+                    @csrf
+                    {{-- Champ caché : l'id du cours revient dans old() après une erreur, pour rouvrir la bonne modale --}}
+                    <input type="hidden" name="booking[course_id]" value="{{ old('booking.course_id') }}" data-booking-course-id>
+
+                    <div class="form-field @error('booking.name') has-error @enderror">
+                        <label for="booking-name">Nom</label>
+                        {{-- name="booking[name]" : arrive côté serveur dans le tableau "booking" (booking.name) --}}
+                        <input type="text" id="booking-name" name="booking[name]" autocomplete="name"
+                            value="{{ old('booking.name') }}" required maxlength="100">
+                        @error('booking.name')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="form-field @error('booking.email') has-error @enderror">
+                        <label for="booking-email">Email</label>
+                        <input type="email" id="booking-email" name="booking[email]" autocomplete="email"
+                            value="{{ old('booking.email') }}" required maxlength="254">
+                        @error('booking.email')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <p class="booking-notice">Annulation possible jusqu'à 24 h avant le début du cours.</p>
+
+                    <button type="submit" class="btn" data-booking-submit>Confirmer la réservation</button>
+                </form>
+            </div>
+        </dialog>
     </section>
 
     <section id="contact">
