@@ -21,6 +21,9 @@
 - Formulaire de contact (#contact) : ContactRequest (validation) → ContactController → Mailable ContactMessage
 - Envoi via SMTP Gmail (mot de passe d'application dans .env), destinataire : MAIL_CONTACT_ADDRESS
 - Anti-spam : throttle:5,10 sur la route ; débloquer en local avec `php artisan cache:clear`
+- Agenda des cours collectifs (#cours) : HomeController → Course::upcoming()->withBookingCounts() → carrousel de pages de 4 (scroll-snap + resources/js/carousel.js)
+- Modèles : Course hasMany Booking ; Booking.status = enum BookingStatus (confirmed / waiting) ; cancel_token généré à la création
+- Réservation (lot 2), annulation + mails (lot 3) et interface coach (lot 4) : à venir
 
 ## Bon à savoir
 - `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
