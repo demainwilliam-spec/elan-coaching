@@ -37,7 +37,7 @@ class ContactRequest extends FormRequest
     }
 
     /**
-     * Messages d'erreur en français (le site est en APP_LOCALE=en, sans traductions installées).
+     * Messages d'erreur en français (aucun fichier de traduction lang/fr installé).
      * Clé = "champ.règle" ; :min et :max sont remplacés par les valeurs des règles.
      */
     public function messages(): array
