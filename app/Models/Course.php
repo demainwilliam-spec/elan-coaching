@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
@@ -22,5 +23,11 @@ class Course extends Model
         return [
             'starts_at' => 'datetime',
         ];
+    }
+
+    // Relation : un cours a plusieurs réservations ($course->bookings)
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
     }
 }
