@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Coach;
 
+use App\Actions\DeleteCourse;
 use App\Actions\UpdateCourse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
 use App\Models\Course;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class CourseController extends Controller
@@ -46,6 +48,33 @@ class CourseController extends Controller
         $message = "Cours « {$course->title} » modifié.";
         if ($course->wasChanged(Course::NOTIFIABLE_FIELDS) && $course->bookings()->exists()) {
             $message .= ' Les inscrits sont prévenus par mail.';
+        }
+
+        return to_route('coach.dashboard')->with('status', $message);
+    }
+
+    // GET : page de confirmation (avec le champ "message pour les inscrits"), ne supprime rien
+    public function delete(Course $course): View
+    {
+        return view('coach.courses.delete', [
+            'course' => $course,
+            'registered' => $course->bookings()->count(),
+        ]);
+    }
+
+    public function destroy(Request $request, Course $course, DeleteCourse $deleteCourse): RedirectResponse
+    {
+        // validate() directement dans le contrôleur : un seul champ, pas besoin d'un FormRequest
+        $validated = $request->validate(
+            ['coach_message' => 'nullable|string|max:1000'],
+            ['coach_message.max' => 'Le message ne doit pas dépasser 1000 caractères.'],
+        );
+
+        $notified = $deleteCourse->handle($course, $validated['coach_message'] ?? null);
+
+        $message = "Cours « {$course->title} » supprimé.";
+        if ($notified > 0) {
+            $message .= " {$notified} ".($notified > 1 ? 'inscrits prévenus' : 'inscrit prévenu').' par mail.';
         }
 
         return to_route('coach.dashboard')->with('status', $message);

@@ -741,3 +741,18 @@ footer p {
 .coach-form .form-field textarea {
     font-size: 1rem; /* 16px minimum : sinon Safari iPhone zoome automatiquement sur le champ */
 }
+
+/* Action destructrice (suppression) : couleur d'erreur au lieu du doré */
+.course-actions a.is-danger {
+    color: var(--color-error);
+}
+
+.btn-danger {
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
+
+.btn-danger:hover {
+    background-color: var(--color-error);
+    color: var(--color-bg);
+}

@@ -59,6 +59,8 @@ Route::prefix('coach')->name('coach.')->group(function () {
         Route::get('/cours/{course}/modifier', [CourseController::class, 'edit'])->name('courses.edit');
         // PUT : le verbe HTTP de la modification (le formulaire l'imite avec @method('PUT'))
         Route::put('/cours/{course}', [CourseController::class, 'update'])->name('courses.update');
+        Route::get('/cours/{course}/supprimer', [CourseController::class, 'delete'])->name('courses.delete');
+        Route::delete('/cours/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
 
         Route::post('/deconnexion', [LoginController::class, 'destroy'])->name('logout');
     });
