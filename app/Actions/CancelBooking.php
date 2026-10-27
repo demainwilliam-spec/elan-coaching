@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class CancelBooking
 {
-    // Constante de classe : la règle métier est écrite une seule fois, réutilisable ailleurs (CancelBooking::CUTOFF_HOURS)
-    public const CUTOFF_HOURS = 24;
-
     /**
      * Annule une réservation. Si elle était confirmée, la première personne en attente prend la place.
      *
@@ -26,7 +23,7 @@ class CancelBooking
             // Même verrou que BookCourse : réservations et annulations d'un même cours passent l'une après l'autre
             $course = Course::whereKey($booking->course_id)->lockForUpdate()->firstOrFail();
 
-            if ($course->starts_at->lessThan(now()->addHours(self::CUTOFF_HOURS))) {
+            if (! $course->cancellationIsOpen()) {
                 throw BookingException::cancellationClosed();
             }
 

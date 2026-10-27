@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\CancellationController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -20,3 +21,17 @@ Route::post('/contact', [ContactController::class, 'send'])
 Route::post('/cours/{course}/reservations', [BookingController::class, 'store'])
     ->name('bookings.store')
     ->middleware('throttle:10,10');
+
+// Annulation via le lien reçu par mail. {booking:cancel_token} : Laravel cherche la réservation
+// par sa colonne cancel_token (et non par son id), donc impossible de deviner le lien d'un autre
+// missing() : jeton inconnu (faux lien, ou réservation déjà annulée) → page explicative au lieu d'une 404 brute
+$cancelLinkMissing = fn () => response()->view('bookings.cancel', ['booking' => null], 404);
+
+Route::get('/annulation/{booking:cancel_token}', [CancellationController::class, 'show'])
+    ->name('bookings.cancel')
+    ->missing($cancelLinkMissing);
+
+Route::post('/annulation/{booking:cancel_token}', [CancellationController::class, 'destroy'])
+    ->name('bookings.destroy')
+    ->middleware('throttle:10,10')
+    ->missing($cancelLinkMissing);

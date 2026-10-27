@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Course extends Model
 {
+    // Constante de classe : la règle métier est écrite une seule fois (Course::CANCELLATION_CUTOFF_HOURS)
+    public const CANCELLATION_CUTOFF_HOURS = 24;
+
     // Colonnes remplissables via Course::create([...]) : protège contre l'injection de champs non prévus
     protected $fillable = [
         'title',
@@ -57,6 +60,12 @@ class Course extends Model
     public function isFull(): bool
     {
         return $this->placesLeft() === 0;
+    }
+
+    // Annulation en ligne possible jusqu'à 24 h avant le début du cours
+    public function cancellationIsOpen(): bool
+    {
+        return $this->starts_at->greaterThanOrEqualTo(now()->addHours(self::CANCELLATION_CUTOFF_HOURS));
     }
 
     // Taux de remplissage en %, pour la largeur de la barre (max(1, ...) évite une division par zéro)
