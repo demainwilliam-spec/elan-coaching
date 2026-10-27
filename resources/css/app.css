@@ -756,3 +756,56 @@ footer p {
     background-color: var(--color-error);
     color: var(--color-bg);
 }
+
+/* ---------- Espace coach : inscrits d'un cours ---------- */
+
+.coach-course-summary {
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    text-align: left;
+}
+
+.coach-list-title {
+    font-size: 1.3rem;   /* écrase le 2.5rem global des titres */
+    margin: 0 0 1rem;
+}
+
+.coach-booking-list {
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    list-style: none;
+    border: 1px solid var(--color-accent);
+    text-align: left;
+}
+
+/* Infos à gauche, bouton "Retirer" à droite */
+.coach-booking {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+}
+
+.coach-booking + .coach-booking {
+    border-top: 1px solid var(--color-bg-alt);
+}
+
+.coach-booking-name {
+    font-weight: 600;
+}
+
+.coach-booking-position {
+    margin-right: 0.4rem;
+    color: var(--color-accent);
+}
+
+.coach-booking .course-meta a {
+    color: inherit;
+    overflow-wrap: anywhere; /* une longue adresse email peut se couper au lieu de déborder sur téléphone */
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}

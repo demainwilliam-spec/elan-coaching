@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
+// "as" : alias, car il existe déjà un BookingController (côté public) importé plus haut
+use App\Http\Controllers\Coach\BookingController as CoachBookingController;
 use App\Http\Controllers\Coach\CourseController;
 use App\Http\Controllers\Coach\DashboardController;
 use App\Http\Controllers\Coach\LoginController;
@@ -61,6 +63,10 @@ Route::prefix('coach')->name('coach.')->group(function () {
         Route::put('/cours/{course}', [CourseController::class, 'update'])->name('courses.update');
         Route::get('/cours/{course}/supprimer', [CourseController::class, 'delete'])->name('courses.delete');
         Route::delete('/cours/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+
+        Route::get('/cours/{course}/inscrits', [CoachBookingController::class, 'index'])->name('bookings.index');
+        Route::post('/cours/{course}/inscrits', [CoachBookingController::class, 'store'])->name('bookings.store');
+        Route::delete('/inscriptions/{booking}', [CoachBookingController::class, 'destroy'])->name('bookings.destroy');
 
         Route::post('/deconnexion', [LoginController::class, 'destroy'])->name('logout');
     });

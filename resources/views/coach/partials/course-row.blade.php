@@ -28,6 +28,7 @@
         </div>
 
         <p class="course-actions">
+            <a href="{{ route('coach.bookings.index', $course) }}">Inscrits</a>
             <a href="{{ route('coach.courses.edit', $course) }}">Modifier</a>
             <a href="{{ route('coach.courses.duplicate', $course) }}">Dupliquer</a>
             <a href="{{ route('coach.courses.delete', $course) }}" class="is-danger">Supprimer</a>
