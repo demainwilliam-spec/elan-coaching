@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\Coach\CourseController;
 use App\Http\Controllers\Coach\DashboardController;
 use App\Http\Controllers\Coach\LoginController;
 use App\Http\Controllers\ContactController;
@@ -51,6 +52,14 @@ Route::prefix('coach')->name('coach.')->group(function () {
     // auth : pages réservées au coach connecté (sinon redirection vers coach.login, cf. bootstrap/app.php)
     Route::middleware('auth')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
+
+        Route::get('/cours/nouveau', [CourseController::class, 'create'])->name('courses.create');
+        Route::post('/cours', [CourseController::class, 'store'])->name('courses.store');
+        Route::get('/cours/{course}/dupliquer', [CourseController::class, 'duplicate'])->name('courses.duplicate');
+        Route::get('/cours/{course}/modifier', [CourseController::class, 'edit'])->name('courses.edit');
+        // PUT : le verbe HTTP de la modification (le formulaire l'imite avec @method('PUT'))
+        Route::put('/cours/{course}', [CourseController::class, 'update'])->name('courses.update');
+
         Route::post('/deconnexion', [LoginController::class, 'destroy'])->name('logout');
     });
 });

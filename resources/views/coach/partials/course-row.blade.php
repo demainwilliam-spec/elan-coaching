@@ -26,5 +26,10 @@
         <div class="course-bar" aria-hidden="true">
             <span style="width: {{ $course->fillPercent() }}%"></span>
         </div>
+
+        <p class="course-actions">
+            <a href="{{ route('coach.courses.edit', $course) }}">Modifier</a>
+            <a href="{{ route('coach.courses.duplicate', $course) }}">Dupliquer</a>
+        </p>
     </div>
 </li>

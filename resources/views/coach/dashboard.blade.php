@@ -8,6 +8,8 @@
 
     <p class="coach-summary">{{ $courses->count() }} cours à venir</p>
 
+    <a href="{{ route('coach.courses.create') }}" class="btn coach-new">Nouveau cours</a>
+
     {{-- Mêmes classes que l'agenda public : même rendu et même responsive --}}
     <ul class="course-list">
         @forelse ($courses as $course)

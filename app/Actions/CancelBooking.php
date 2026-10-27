@@ -2,16 +2,19 @@
 
 namespace App\Actions;
 
-use App\Enums\BookingStatus;
 use App\Exceptions\BookingException;
-use App\Mail\BookingPromoted;
 use App\Models\Booking;
 use App\Models\Course;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 
 class CancelBooking
 {
+    // Injection de dépendance par le constructeur. "= new PromoteWaiting" (PHP 8.1) : valeur par défaut,
+    // pour pouvoir écrire simplement "new CancelBooking" (dans les tests par exemple)
+    public function __construct(private PromoteWaiting $promoteWaiting = new PromoteWaiting)
+    {
+    }
+
     /**
      * Annule une réservation. Si elle était confirmée, la première personne en attente prend la place.
      *
@@ -36,28 +39,11 @@ class CancelBooking
                 throw BookingException::alreadyCancelled();
             }
 
-            $wasConfirmed = $booking->status === BookingStatus::Confirmed;
             $booking->delete();
 
-            // Une place en attente ne libère rien : les suivants avancent seuls (waitingPosition() est calculée)
-            if (! $wasConfirmed) {
-                return null;
-            }
-
-            // Premier arrivé = plus petit id
-            $next = $course->bookings()
-                ->where('status', BookingStatus::Waiting)
-                ->orderBy('id')
-                ->first();
-
-            if ($next !== null) {
-                $next->update(['status' => BookingStatus::Confirmed]);
-
-                // Demandé ici, en pleine transaction : ShouldQueueAfterCommit attend le COMMIT pour mettre le mail en queue
-                Mail::to($next->email)->send(new BookingPromoted($next));
-            }
-
-            return $next;
+            // Place confirmée libérée → le 1er en attente est promu (et prévenu par mail).
+            // Place en attente supprimée → aucune place libre, rien ne se passe : les suivants avancent seuls
+            return $this->promoteWaiting->handle($course)->first();
         });
     }
 }

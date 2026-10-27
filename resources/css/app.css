@@ -692,3 +692,52 @@ footer p {
     color: var(--color-text-muted);
     margin-bottom: 2rem;
 }
+
+.coach-new {
+    margin-bottom: 2rem;
+}
+
+/* Liens d'action sous la barre de remplissage (Modifier, Dupliquer...) */
+.course-actions {
+    display: flex;
+    flex-wrap: wrap; /* passent à la ligne s'ils ne tiennent pas */
+    gap: 0.5rem 1.25rem;
+    font-size: 0.9rem;
+}
+
+.course-actions a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.course-actions a:hover {
+    text-decoration: underline;
+}
+
+/* Deux champs côte à côte (durée + places) */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.coach-form .cancel-actions {
+    margin-top: 0.5rem;
+}
+
+/* L'icône calendrier du champ date reste sombre sur fond sombre : on l'inverse en clair */
+.form-field input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.coach-form .form-field input,
+.coach-form .form-field textarea {
+    font-size: 1rem; /* 16px minimum : sinon Safari iPhone zoome automatiquement sur le champ */
+}
