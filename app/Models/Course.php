@@ -12,6 +12,9 @@ class Course extends Model
     // Constante de classe : la règle métier est écrite une seule fois (Course::CANCELLATION_CUTOFF_HOURS)
     public const CANCELLATION_CUTOFF_HOURS = 24;
 
+    // Champs dont la modification concerne les inscrits : ils sont prévenus par mail (cf. UpdateCourse)
+    public const NOTIFIABLE_FIELDS = ['starts_at', 'duration_minutes', 'location'];
+
     // Colonnes remplissables via Course::create([...]) : protège contre l'injection de champs non prévus
     protected $fillable = [
         'title',

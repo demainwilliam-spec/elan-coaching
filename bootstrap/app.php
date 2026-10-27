@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Middleware "auth" : un visiteur non connecté est envoyé vers la page de connexion du coach
+        $middleware->redirectGuestsTo(fn () => route('coach.login'));
+        // Middleware "guest" : le coach déjà connecté qui ouvre la page de connexion va au tableau de bord
+        $middleware->redirectUsersTo(fn () => route('coach.dashboard'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
