@@ -4,10 +4,12 @@ namespace App\Actions;
 
 use App\Enums\BookingStatus;
 use App\Exceptions\BookingException;
+use App\Mail\BookingReceived;
 use App\Models\Booking;
 use App\Models\Course;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 // Action : une classe = une opération métier. Utilisable depuis un contrôleur, un test, une commande...
@@ -26,7 +28,7 @@ class BookCourse
 
         try {
             // Transaction : tout ce qui est dans la fonction est enregistré ensemble, ou pas du tout
-            return DB::transaction(function () use ($course, $name, $email) {
+            $booking = DB::transaction(function () use ($course, $name, $email) {
                 // On relit le cours AVEC un verrou (SELECT ... FOR UPDATE) : toute autre réservation
                 // sur ce même cours attend ici que notre transaction soit terminée
                 $course = Course::whereKey($course->id)->lockForUpdate()->firstOrFail();
@@ -53,5 +55,10 @@ class BookCourse
             // L'index unique (course_id, email) a refusé l'INSERT : la transaction a été annulée (ROLLBACK)
             throw BookingException::alreadyBooked();
         }
+
+        // Mailable "ShouldQueue" : send() le place en queue, le worker (php artisan queue:work) l'enverra
+        Mail::to($booking->email)->send(new BookingReceived($booking));
+
+        return $booking;
     }
 }

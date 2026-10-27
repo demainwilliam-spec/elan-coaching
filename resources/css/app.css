@@ -588,3 +588,41 @@ footer p {
 .booking-form .btn {
     align-self: center;
 }
+/* ---------- Page d'annulation (lien reçu par mail) ---------- */
+
+.cancel-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .cancel-page {
+        padding: 4rem 1.5rem;
+    }
+}
+
+.cancel-page .booking-summary {
+    margin-bottom: 2rem;
+    text-align: left; /* le rappel du cours se lit mieux aligné à gauche, comme dans la modale */
+}
+
+.cancel-text {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+}
+
+.cancel-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .cancel-actions {
+        flex-direction: column; /* boutons empilés */
+        align-items: center;
+        gap: 1rem;
+    }
+}
