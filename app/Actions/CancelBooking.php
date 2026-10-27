@@ -4,9 +4,11 @@ namespace App\Actions;
 
 use App\Enums\BookingStatus;
 use App\Exceptions\BookingException;
+use App\Mail\BookingPromoted;
 use App\Models\Booking;
 use App\Models\Course;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class CancelBooking
 {
@@ -48,8 +50,12 @@ class CancelBooking
                 ->orderBy('id')
                 ->first();
 
-            // ?-> (nullsafe) : n'appelle update() que si $next existe, sinon renvoie null
-            $next?->update(['status' => BookingStatus::Confirmed]);
+            if ($next !== null) {
+                $next->update(['status' => BookingStatus::Confirmed]);
+
+                // Demandé ici, en pleine transaction : ShouldQueueAfterCommit attend le COMMIT pour mettre le mail en queue
+                Mail::to($next->email)->send(new BookingPromoted($next));
+            }
 
             return $next;
         });
