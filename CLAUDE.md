@@ -14,10 +14,14 @@
 2. Copier `.env.example` en `.env`, puis `php artisan key:generate`, et renseigner les identifiants SMTP
 3. Démarrer MySQL dans XAMPP, créer la base : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root -e "CREATE DATABASE jf_coaching CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"`
 4. `php artisan migrate --seed` (le bloc `DB_*` de `.env.example` est déjà configuré pour XAMPP)
+5. Créer le compte du coach : `php artisan coach:create` (à lancer soi-même : le mot de passe est saisi dans le terminal)
 
 ## Règles métier (réservation de cours)
 - Réservation possible jusqu'au début du cours ; s'il reste de la place → confirmée, sinon → liste d'attente (illimitée)
 - Annulation possible jusqu'à 24 h avant le début du cours ; une place confirmée libérée → la 1re personne en attente est promue
+- Le coach peut retirer quelqu'un sans limite des 24 h (la personne est prévenue), inscrire quelqu'un à la main (mêmes règles qu'en ligne)
+- Modifier un cours : capacité jamais sous le nombre de confirmés ; capacité augmentée → promotions ; date / durée / lieu changés → mail à tous les inscrits
+- Supprimer un cours → mail à tous les inscrits, avec un message facultatif du coach
 
 ## Commandes
 - Lancer le serveur Laravel : `php artisan serve`
@@ -38,9 +42,12 @@
 - Réservation : modale <dialog> (resources/js/booking-dialog.js) → POST /cours/{course}/reservations → BookingRequest → BookingController → action App\Actions\BookCourse (transaction + lockForUpdate)
 - Champs du formulaire de réservation préfixés `booking[...]` et flash `booking_success` / `booking_error` : ne pas mélanger avec le formulaire de contact
 - Annulation : lien à jeton reçu par mail → GET /annulation/{cancel_token} (page de confirmation, ne modifie rien) → POST → CancellationController → action App\Actions\CancelBooking (transaction + lockForUpdate, promotion du 1er en attente)
-- Mails BookingReceived / BookingPromoted : ShouldQueueAfterCommit (queue `database`, table jobs), layout commun `emails/layout` en styles en ligne + tables ; liens construits avec APP_URL (doit valoir http://127.0.0.1:8000 en local)
+- Promotion de la liste d'attente centralisée dans App\Actions\PromoteWaiting (utilisée par CancelBooking et UpdateCourse)
+- Mails (tous ShouldQueueAfterCommit, queue `database`, table jobs) : BookingReceived, BookingPromoted, CourseUpdated reçoivent un Booking ; CourseCancelled et BookingRemoved reçoivent des valeurs simples (le modèle est supprimé avant l'envoi)
+- Layout commun des mails `emails/layout` en styles en ligne + tables ; liens construits avec APP_URL (doit valoir http://127.0.0.1:8000 en local)
 - Tester les mails avec ses propres adresses (alias Gmail `+1`, `+2`) : les emails du seeder sont fictifs
-- Interface coach (lot 4) : à venir
+- Interface coach (/coach, non liée depuis le site, `noindex`) : connexion (Coach\LoginController, throttle:5,1, « rester connecté ») ; tableau de bord ; créer / modifier / dupliquer / supprimer un cours (Coach\CourseController, actions UpdateCourse / DeleteCourse) ; inscrits d'un cours (Coach\BookingController, alias `CoachBookingController` dans routes/web.php)
+- À faire plus tard : historique des cours passés ; prévenir les personnes restées en liste d'attente après la limite des 24 h (planificateur)
 
 ## Bon à savoir
 - `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
