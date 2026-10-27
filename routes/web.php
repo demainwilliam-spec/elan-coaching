@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\Coach\LoginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -35,3 +36,20 @@ Route::post('/annulation/{booking:cancel_token}', [CancellationController::class
     ->name('bookings.destroy')
     ->middleware('throttle:10,10')
     ->missing($cancelLinkMissing);
+
+// ---------- Interface du coach ----------
+// prefix('coach') : toutes les URL commencent par /coach ; name('coach.') : tous les noms par "coach."
+Route::prefix('coach')->name('coach.')->group(function () {
+    // guest : pages réservées aux visiteurs NON connectés
+    Route::middleware('guest')->group(function () {
+        Route::get('/connexion', [LoginController::class, 'show'])->name('login');
+        // throttle:5,1 : 5 tentatives par minute et par IP, contre les essais de mots de passe à la chaîne
+        Route::post('/connexion', [LoginController::class, 'store'])->middleware('throttle:5,1');
+    });
+
+    // auth : pages réservées au coach connecté (sinon redirection vers coach.login, cf. bootstrap/app.php)
+    Route::middleware('auth')->group(function () {
+        Route::view('/', 'coach.dashboard')->name('dashboard'); // provisoire : rempli à l'étape 3
+        Route::post('/deconnexion', [LoginController::class, 'destroy'])->name('logout');
+    });
+});
