@@ -23,7 +23,8 @@
 - Lancer le serveur Laravel : `php artisan serve`
 - Lancer Vite (CSS/JS en hot-reload) : `npm run dev`
 - Démarrer MySQL dans le panneau XAMPP (`C:\xampp\xampp-control.exe`)
-- Les trois doivent tourner en parallèle pendant le développement
+- Lancer le worker de la queue (envoie les mails de réservation) : `php artisan queue:work` ; le redémarrer après toute modification de code, il garde l'ancienne version en mémoire
+- Les quatre doivent tourner en parallèle pendant le développement
 - Lancer les tests (SQLite en mémoire, ne touche pas à la base) : `php artisan test`
 - Repartir d'une base propre (supprime tout, recrée, remplit) : `php artisan migrate:fresh --seed`
 - Client MySQL en ligne de commande : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root jf_coaching`
@@ -36,7 +37,10 @@
 - Modèles : Course hasMany Booking ; Booking.status = enum BookingStatus (confirmed / waiting) ; cancel_token généré à la création
 - Réservation : modale <dialog> (resources/js/booking-dialog.js) → POST /cours/{course}/reservations → BookingRequest → BookingController → action App\Actions\BookCourse (transaction + lockForUpdate)
 - Champs du formulaire de réservation préfixés `booking[...]` et flash `booking_success` / `booking_error` : ne pas mélanger avec le formulaire de contact
-- Annulation + mails (lot 3) et interface coach (lot 4) : à venir
+- Annulation : lien à jeton reçu par mail → GET /annulation/{cancel_token} (page de confirmation, ne modifie rien) → POST → CancellationController → action App\Actions\CancelBooking (transaction + lockForUpdate, promotion du 1er en attente)
+- Mails BookingReceived / BookingPromoted : ShouldQueueAfterCommit (queue `database`, table jobs), layout commun `emails/layout` en styles en ligne + tables ; liens construits avec APP_URL (doit valoir http://127.0.0.1:8000 en local)
+- Tester les mails avec ses propres adresses (alias Gmail `+1`, `+2`) : les emails du seeder sont fictifs
+- Interface coach (lot 4) : à venir
 
 ## Bon à savoir
 - `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
