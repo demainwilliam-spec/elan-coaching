@@ -36,6 +36,11 @@
         </header>
 
         <main class="coach-page">
+            {{-- status : message de confirmation après une action du coach ("Cours créé", ...) --}}
+            @if (session('status'))
+                <div class="form-alert">{{ session('status') }}</div>
+            @endif
+
             @yield('content')
         </main>
 

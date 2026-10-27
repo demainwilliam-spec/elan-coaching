@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
+use App\Http\Controllers\Coach\DashboardController;
 use App\Http\Controllers\Coach\LoginController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
@@ -49,7 +50,7 @@ Route::prefix('coach')->name('coach.')->group(function () {
 
     // auth : pages réservées au coach connecté (sinon redirection vers coach.login, cf. bootstrap/app.php)
     Route::middleware('auth')->group(function () {
-        Route::view('/', 'coach.dashboard')->name('dashboard'); // provisoire : rempli à l'étape 3
+        Route::get('/', DashboardController::class)->name('dashboard');
         Route::post('/deconnexion', [LoginController::class, 'destroy'])->name('logout');
     });
 });

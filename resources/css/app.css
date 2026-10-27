@@ -683,3 +683,12 @@ footer p {
     height: 1.1rem;
     accent-color: var(--color-accent); /* couleur de la coche */
 }
+
+.coach-page h2 {
+    margin-bottom: 0.5rem;
+}
+
+.coach-summary {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+}
