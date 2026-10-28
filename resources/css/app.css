@@ -3,6 +3,19 @@
    tout le CSS écrit ci-dessous (hors couche) passe toujours avant lui. */
 @import 'tailwindcss/preflight.css' layer(base);
 
+/* Polices hébergées sur le site (paquets npm Fontsource) au lieu de Google Fonts :
+   le navigateur ne contacte plus Google, qui ne reçoit donc plus l'adresse IP des visiteurs (RGPD).
+   Chaque fichier déclare une graisse avec @font-face ; Vite copie les fichiers de police dans le build.
+   Mêmes graisses qu'avant, pour que l'affichage ne change pas. */
+@import '@fontsource/oswald/400.css';
+@import '@fontsource/oswald/500.css';
+@import '@fontsource/oswald/600.css';
+@import '@fontsource/oswald/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/pinyon-script/400.css';
+
 :root {
     /* Couleurs */
     --color-bg: #121212;
@@ -114,6 +127,92 @@ footer {
 footer p {
     color: var(--color-text-muted);
     font-size: 0.9rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-links a {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: var(--color-accent);
+}
+
+/* Lien "en savoir plus" sous les formulaires de contact et de réservation */
+.form-privacy {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.form-privacy a,
+.booking-notice a {
+    color: inherit; /* même gris que le texte, souligné pour qu'on le reconnaisse comme un lien */
+    text-decoration: underline;
+}
+
+/* ---------- Pages légales (mentions légales, confidentialité) ---------- */
+
+.legal-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 5rem 3rem;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    .legal-page {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Les titres du site sont grands (2.5rem) : ici on a besoin d'une hiérarchie plus serrée */
+.legal-page h1 {
+    margin-bottom: 1rem;
+}
+
+.legal-page h2 {
+    font-size: 1.5rem;
+    margin: 3rem 0 1rem;
+    color: var(--color-accent);
+}
+
+.legal-page h3 {
+    font-size: 1.15rem;
+    margin: 2rem 0 0.75rem;
+}
+
+.legal-page p,
+.legal-page ul {
+    margin-bottom: 1rem;
+}
+
+.legal-page ul {
+    padding-left: 1.5rem;
+    list-style: disc; /* le reset de Tailwind (Preflight) retire les puces */
+}
+
+.legal-page a {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
+
+.legal-updated {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* Information à compléter avant la mise en ligne : volontairement très visible */
+mark.todo {
+    background-color: var(--color-error);
+    color: var(--color-bg);
+    padding: 0 0.3rem;
 }
 
 
@@ -588,9 +687,9 @@ footer p {
 .booking-form .btn {
     align-self: center;
 }
-/* ---------- Page d'annulation (lien reçu par mail) ---------- */
+/* ---------- Pages simples centrées : annulation (lien reçu par mail), pages d'erreur ---------- */
 
-.cancel-page {
+.message-page {
     max-width: 600px;
     margin: 0 auto;
     padding: 6rem 3rem;
@@ -598,29 +697,45 @@ footer p {
 }
 
 @media (max-width: 768px) {
-    .cancel-page {
+    .message-page {
         padding: 4rem 1.5rem;
     }
 }
 
-.cancel-page .booking-summary {
+.message-page .booking-summary {
     margin-bottom: 2rem;
     text-align: left; /* le rappel du cours se lit mieux aligné à gauche, comme dans la modale */
 }
 
-.cancel-text {
+.message-text {
     color: var(--color-text-muted);
     margin-bottom: 2rem;
 }
 
-.cancel-actions {
+/* Le gros code (404, 500...) au-dessus du titre des pages d'erreur */
+.error-code {
+    font-family: var(--font-heading);
+    font-size: 6rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 4.5rem;
+    }
+}
+
+.button-row {
     display: flex;
     justify-content: center;
     gap: 1.5rem;
 }
 
 @media (max-width: 768px) {
-    .cancel-actions {
+    .button-row {
         flex-direction: column; /* boutons empilés */
         align-items: center;
         gap: 1rem;
@@ -727,7 +842,7 @@ footer p {
     }
 }
 
-.coach-form .cancel-actions {
+.coach-form .button-row {
     margin-top: 0.5rem;
 }
 

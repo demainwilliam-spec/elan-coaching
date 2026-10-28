@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <div class="cancel-actions">
+        <div class="button-row">
             <button type="submit" class="btn">{{ $course->exists ? 'Enregistrer' : 'Créer le cours' }}</button>
             <a href="{{ route('coach.dashboard') }}" class="btn btn-secondary">Annuler</a>
         </div>

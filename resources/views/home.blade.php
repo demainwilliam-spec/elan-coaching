@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Accueil')
+@section('title', 'Coach sportif, coaching personnalisé et cours collectifs')
 
 @section('content')
 
@@ -154,7 +154,11 @@
                         @enderror
                     </div>
 
-                    <p class="booking-notice">Annulation possible jusqu'à 24 h avant le début du cours.</p>
+                    <p class="booking-notice">
+                        Annulation possible jusqu'à 24 h avant le début du cours.
+                        Vos données servent uniquement à gérer votre réservation
+                        (<a href="{{ route('legal.privacy') }}">en savoir plus</a>).
+                    </p>
 
                     <button type="submit" class="btn" data-booking-submit>Confirmer la réservation</button>
                 </form>
@@ -211,6 +215,11 @@
                     <p class="form-error">{{ $message }}</p>
                 @enderror
             </div>
+
+            <p class="form-privacy">
+                Vos données servent uniquement à vous répondre
+                (<a href="{{ route('legal.privacy') }}">en savoir plus</a>).
+            </p>
 
             <button type="submit" class="btn">Envoyer</button>
         </form>

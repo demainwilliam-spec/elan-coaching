@@ -2,6 +2,7 @@
 
 ## Historique
 - 11/10/2026 : début du travail avec Claude Code (extension VS Code)
+- 28/10/2026 : lot 5 « avant le lancement » (pages légales, erreurs, SEO, polices locales, nettoyage planifié, audit)
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -47,13 +48,33 @@
 - Layout commun des mails `emails/layout` en styles en ligne + tables ; liens construits avec APP_URL (doit valoir http://127.0.0.1:8000 en local)
 - Tester les mails avec ses propres adresses (alias Gmail `+1`, `+2`) : les emails du seeder sont fictifs
 - Interface coach (/coach, non liée depuis le site, `noindex`) : connexion (Coach\LoginController, throttle:5,1, « rester connecté ») ; tableau de bord ; créer / modifier / dupliquer / supprimer un cours (Coach\CourseController, actions UpdateCourse / DeleteCourse) ; inscrits d'un cours (Coach\BookingController, alias `CoachBookingController` dans routes/web.php)
+- Pages légales (Route::view, sans contrôleur) : /mentions-legales (dont conditions de réservation) et /confidentialite (RGPD, Belgique) ; liens dans le footer et sous les formulaires ; infos manquantes signalées par `<mark class="todo">[À COMPLÉTER…]</mark>`
+- Pages d'erreur : `resources/views/errors/{404,419,429,500,503}.blade.php` sur un gabarit commun `errors/layout` (la 500 n'apparaît qu'avec APP_DEBUG=false)
+- SEO : meta description (par défaut dans `layouts/app`, surchargeable par `@section('description')`), Open Graph, canonical ; /sitemap.xml généré par une route ; robots.txt bloque /coach et /annulation/
+- Polices hébergées sur le site via les paquets npm Fontsource (importées en haut de app.css) : aucun appel à Google Fonts (RGPD)
+- Tâches planifiées (routes/console.php), chaque jour : `model:prune` (Booking MassPrunable : réservations des cours passés depuis plus de 6 mois, `Booking::RETENTION_MONTHS`) et `queue:prune-failed --hours=168` ; en local `php artisan schedule:work` si besoin
 - À faire plus tard : historique des cours passés ; prévenir les personnes restées en liste d'attente après la limite des 24 h (planificateur)
+- En attente d'infos du coach : ville (à ajouter au titre et à la description pour le référencement local), infos légales (statut, BCE, TVA, adresse, email, téléphone), toutes les images (og:image 1200×630, favicon : `public/favicon.ico` est encore celui de Laravel, photos)
+
+## Lot Déploiement (à faire)
+- Hébergeur à choisir ; le compléter dans les mentions légales et la page de confidentialité
+- `.env` de production : `APP_ENV=production`, `APP_DEBUG=false` (sinon les erreurs affichent le code et les variables), `APP_URL=https://...`
+- HTTPS (Let's Encrypt), puis en-têtes de sécurité (HSTS, X-Frame-Options, CSP...) et durées de cache des fichiers statiques
+- Worker de la queue permanent (supervisor ou équivalent), sinon aucun mail ne part
+- Cron chaque minute : `php artisan schedule:run`, sinon les tâches planifiées ne tournent jamais
+- `npm run build` sur le serveur (ou envoyer `public/build`), compte du coach via `php artisan coach:create`
+- Ajouter `Sitemap: https://<domaine>/sitemap.xml` dans robots.txt ; déclarer le site dans Google Search Console
+- Sauvegarde régulière de la base
+- Vérifier la carte de partage (WhatsApp, Facebook) une fois en ligne
 
 ## Bon à savoir
 - `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
 - Client `mysql` : utiliser `-h 127.0.0.1`, avec `localhost` la connexion est refusée (erreur 2002)
 - Ne jamais nommer une table `sessions` : elle existe déjà (sessions Laravel, `SESSION_DRIVER=database`) → les cours s'appellent `courses`
 - Sous PowerShell, git écrit ses messages normaux sur stderr : un « exit code » d'erreur ne veut pas forcément dire que la commande a échoué
+- `$deleteWhenMissingModels` ne marche pas sur un Mailable (seulement sur une classe Job) : un mail dont la réservation a été supprimée avant l'envoi part directement dans failed_jobs, sans nouvel essai ; c'est accepté, le planificateur vide failed_jobs
+- Lighthouse : le lancer avec Vite arrêté et après `npm run build` (en dev, les fichiers non compressés faussent la note de performance), en navigation privée ; dernier résultat 100/100/100/100 (28/10/2026)
+- Vérifier les failles des dépendances avant une mise en ligne : `npm audit` et `composer audit`
 
 ## Conventions
 - Branches : `main` / `dev` / `feat/xxx`, jamais de travail direct sur `main`

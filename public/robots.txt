@@ -1,2 +1,7 @@
+# Consignes pour les robots des moteurs de recherche (lues avant toute visite)
+# "*" : s'applique à tous les robots
 User-agent: *
-Disallow:
+# Interface du coach (protégée par mot de passe, déjà en noindex)
+Disallow: /coach
+# Liens d'annulation personnels envoyés par mail
+Disallow: /annulation/
