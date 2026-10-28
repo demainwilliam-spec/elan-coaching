@@ -15,7 +15,8 @@ class SeoTest extends TestCase
             ->assertOk()
             ->assertSee('<meta name="description" content="Coaching sportif individuel', false)
             ->assertSee('<meta property="og:title" content="JF Coaching — Coach sportif', false)
-            ->assertSee('<meta property="og:description" content="Coaching sportif individuel', false);
+            ->assertSee('<meta property="og:description" content="Coaching sportif individuel', false)
+            ->assertSee('<main>', false); // accessibilité : repère du contenu principal
     }
 
     public function test_le_sitemap_liste_les_pages_publiques_en_xml_valide(): void

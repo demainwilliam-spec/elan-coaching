@@ -30,7 +30,10 @@
 
         @include('partials.header')
 
-        @yield('content')
+        {{-- <main> : repère du contenu principal, utilisé par les lecteurs d'écran pour y sauter directement --}}
+        <main>
+            @yield('content')
+        </main>
 
         @include('partials.footer')
 
