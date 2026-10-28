@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Accueil')
+@section('title', 'Coach sportif, coaching personnalisé et cours collectifs')
 
 @section('content')
 
