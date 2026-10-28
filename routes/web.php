@@ -25,6 +25,12 @@ Route::post('/contact', [ContactController::class, 'send'])
 Route::view('/mentions-legales', 'legal.notice')->name('legal.notice');
 Route::view('/confidentialite', 'legal.privacy')->name('legal.privacy');
 
+// Liste des pages pour les moteurs de recherche. Générée par Laravel (et non un fichier fixe dans public/)
+// pour que les adresses complètes suivent automatiquement le domaine du site.
+// header() : précise au navigateur que la réponse est du XML et non du HTML
+Route::get('/sitemap.xml', fn () => response()->view('sitemap')->header('Content-Type', 'application/xml'))
+    ->name('sitemap');
+
 // POST : réservation d'une place pour un cours. {course} est remplacé par l'id du cours (ex. /cours/3/reservations)
 // throttle:10,10 : un peu plus large que le contact (quelqu'un peut inscrire plusieurs proches à la suite)
 Route::post('/cours/{course}/reservations', [BookingController::class, 'store'])

@@ -18,6 +18,22 @@ class SeoTest extends TestCase
             ->assertSee('<meta property="og:description" content="Coaching sportif individuel', false);
     }
 
+    public function test_le_sitemap_liste_les_pages_publiques_en_xml_valide(): void
+    {
+        $response = $this->get('/sitemap.xml')
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/xml');
+
+        // simplexml_load_string : renvoie false si le XML est mal formé
+        $xml = simplexml_load_string($response->getContent());
+        $this->assertNotFalse($xml);
+        $locs = [];
+        foreach ($xml->url as $url) {
+            $locs[] = (string) $url->loc;
+        }
+        $this->assertSame([route('home'), route('legal.notice'), route('legal.privacy')], $locs);
+    }
+
     public function test_l_adresse_canonique_ignore_les_parametres(): void
     {
         // Un lien partagé avec un suivi publicitaire (?utm_source=...) reste la même page pour Google
