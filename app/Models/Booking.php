@@ -3,12 +3,20 @@
 namespace App\Models;
 
 use App\Enums\BookingStatus;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Str;
 
 class Booking extends Model
 {
+    // MassPrunable : la commande "php artisan model:prune" supprime les lignes décrites par prunable()
+    // (en une seule requête DELETE, sans charger chaque réservation)
+    use MassPrunable;
+
+    // Durée de conservation annoncée dans la politique de confidentialité
+    public const RETENTION_MONTHS = 6;
     // course_id absent volontairement : on crée via $course->bookings()->create([...]), qui le remplit
     protected $fillable = [
         'name',
@@ -43,6 +51,14 @@ class Booking extends Model
             ->where('status', BookingStatus::Waiting)
             ->where('id', '<=', $this->id)
             ->count();
+    }
+
+    // Réservations à supprimer : celles des cours commencés il y a plus de RETENTION_MONTHS mois
+    public function prunable(): Builder
+    {
+        // whereHas : filtre les réservations selon une condition sur leur cours
+        return static::whereHas('course', fn (Builder $query) => $query
+            ->where('starts_at', '<', now()->subMonths(self::RETENTION_MONTHS)));
     }
 
     // Relation inverse : une réservation appartient à un cours ($booking->course)
