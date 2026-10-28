@@ -21,6 +21,10 @@ Route::post('/contact', [ContactController::class, 'send'])
     ->name('contact.send')
     ->middleware('throttle:5,10');
 
+// Route::view : affiche directement une vue, sans contrôleur (pages sans données de la base)
+Route::view('/mentions-legales', 'legal.notice')->name('legal.notice');
+Route::view('/confidentialite', 'legal.privacy')->name('legal.privacy');
+
 // POST : réservation d'une place pour un cours. {course} est remplacé par l'id du cours (ex. /cours/3/reservations)
 // throttle:10,10 : un peu plus large que le contact (quelqu'un peut inscrire plusieurs proches à la suite)
 Route::post('/cours/{course}/reservations', [BookingController::class, 'store'])

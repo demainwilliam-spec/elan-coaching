@@ -116,6 +116,92 @@ footer p {
     font-size: 0.9rem;
 }
 
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-links a {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: var(--color-accent);
+}
+
+/* Lien "en savoir plus" sous les formulaires de contact et de réservation */
+.form-privacy {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.form-privacy a,
+.booking-notice a {
+    color: inherit; /* même gris que le texte, souligné pour qu'on le reconnaisse comme un lien */
+    text-decoration: underline;
+}
+
+/* ---------- Pages légales (mentions légales, confidentialité) ---------- */
+
+.legal-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 5rem 3rem;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    .legal-page {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Les titres du site sont grands (2.5rem) : ici on a besoin d'une hiérarchie plus serrée */
+.legal-page h1 {
+    margin-bottom: 1rem;
+}
+
+.legal-page h2 {
+    font-size: 1.5rem;
+    margin: 3rem 0 1rem;
+    color: var(--color-accent);
+}
+
+.legal-page h3 {
+    font-size: 1.15rem;
+    margin: 2rem 0 0.75rem;
+}
+
+.legal-page p,
+.legal-page ul {
+    margin-bottom: 1rem;
+}
+
+.legal-page ul {
+    padding-left: 1.5rem;
+    list-style: disc; /* le reset de Tailwind (Preflight) retire les puces */
+}
+
+.legal-page a {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
+
+.legal-updated {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* Information à compléter avant la mise en ligne : volontairement très visible */
+mark.todo {
+    background-color: var(--color-error);
+    color: var(--color-bg);
+    padding: 0 0.3rem;
+}
+
 
 #services {
     padding: 6rem 3rem;
