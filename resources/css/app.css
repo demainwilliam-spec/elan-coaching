@@ -3,6 +3,19 @@
    tout le CSS écrit ci-dessous (hors couche) passe toujours avant lui. */
 @import 'tailwindcss/preflight.css' layer(base);
 
+/* Polices hébergées sur le site (paquets npm Fontsource) au lieu de Google Fonts :
+   le navigateur ne contacte plus Google, qui ne reçoit donc plus l'adresse IP des visiteurs (RGPD).
+   Chaque fichier déclare une graisse avec @font-face ; Vite copie les fichiers de police dans le build.
+   Mêmes graisses qu'avant, pour que l'affichage ne change pas. */
+@import '@fontsource/oswald/400.css';
+@import '@fontsource/oswald/500.css';
+@import '@fontsource/oswald/600.css';
+@import '@fontsource/oswald/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/pinyon-script/400.css';
+
 :root {
     /* Couleurs */
     --color-bg: #121212;
