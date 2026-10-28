@@ -4,11 +4,11 @@
 
 @section('content')
 
-    <section class="cancel-page">
+    <section class="message-page">
         {{-- $booking vaut null quand le jeton est inconnu (cf. missing() dans routes/web.php) --}}
         @if ($booking === null)
             <h2>Lien plus valide</h2>
-            <p class="cancel-text">
+            <p class="message-text">
                 Cette réservation n'existe plus : elle a peut-être déjà été annulée.
                 En cas de doute, contactez directement le coach.
             </p>
@@ -43,7 +43,7 @@
                 </div>
             @endif
 
-            <div class="cancel-actions">
+            <div class="button-row">
                 @if ($course->cancellationIsOpen())
                     {{-- Un vrai formulaire POST (avec @csrf) : seul un clic volontaire annule --}}
                     <form method="POST" action="{{ route('bookings.destroy', $booking->cancel_token) }}">

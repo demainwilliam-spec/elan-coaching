@@ -39,7 +39,7 @@
 
         <p class="booking-notice">Cette action est définitive.</p>
 
-        <div class="cancel-actions">
+        <div class="button-row">
             <button type="submit" class="btn btn-danger">Supprimer le cours</button>
             <a href="{{ route('coach.dashboard') }}" class="btn btn-secondary">Annuler</a>
         </div>

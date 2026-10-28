@@ -52,7 +52,7 @@
             La personne reçoit un mail avec son lien d'annulation.
         </p>
 
-        <div class="cancel-actions">
+        <div class="button-row">
             <button type="submit" class="btn">Inscrire</button>
             <a href="{{ route('coach.dashboard') }}" class="btn btn-secondary">Retour aux cours</a>
         </div>

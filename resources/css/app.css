@@ -588,9 +588,9 @@ footer p {
 .booking-form .btn {
     align-self: center;
 }
-/* ---------- Page d'annulation (lien reçu par mail) ---------- */
+/* ---------- Pages simples centrées : annulation (lien reçu par mail), pages d'erreur ---------- */
 
-.cancel-page {
+.message-page {
     max-width: 600px;
     margin: 0 auto;
     padding: 6rem 3rem;
@@ -598,29 +598,45 @@ footer p {
 }
 
 @media (max-width: 768px) {
-    .cancel-page {
+    .message-page {
         padding: 4rem 1.5rem;
     }
 }
 
-.cancel-page .booking-summary {
+.message-page .booking-summary {
     margin-bottom: 2rem;
     text-align: left; /* le rappel du cours se lit mieux aligné à gauche, comme dans la modale */
 }
 
-.cancel-text {
+.message-text {
     color: var(--color-text-muted);
     margin-bottom: 2rem;
 }
 
-.cancel-actions {
+/* Le gros code (404, 500...) au-dessus du titre des pages d'erreur */
+.error-code {
+    font-family: var(--font-heading);
+    font-size: 6rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 4.5rem;
+    }
+}
+
+.button-row {
     display: flex;
     justify-content: center;
     gap: 1.5rem;
 }
 
 @media (max-width: 768px) {
-    .cancel-actions {
+    .button-row {
         flex-direction: column; /* boutons empilés */
         align-items: center;
         gap: 1rem;
@@ -727,7 +743,7 @@ footer p {
     }
 }
 
-.coach-form .cancel-actions {
+.coach-form .button-row {
     margin-top: 0.5rem;
 }
 
