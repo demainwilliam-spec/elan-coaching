@@ -376,6 +376,33 @@ mark.todo {
     border: 1px solid var(--color-accent);
     padding: 2.5rem 1.5rem;
     background-color: var(--color-bg);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+/* (hover: hover) : seulement les appareils qui peuvent survoler (souris) ;
+   sur téléphone, un toucher laisserait la carte inversée */
+@media (hover: hover) {
+    /* Couleurs inversées, comme .btn:hover ; transform déplace la carte à l'affichage
+       sans recalculer la mise en page : fluide */
+    .service-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgb(0 0 0 / 0.18);
+        background-color: var(--color-accent);
+        color: var(--color-bg);
+    }
+
+    /* L'icône et la description ont leur propre couleur : on les inverse aussi */
+    .service-card:hover .service-icon,
+    .service-card:hover p {
+        color: var(--color-bg);
+    }
+}
+
+/* « Moins d'animations » demandé : l'inversion et l'ombre restent, le déplacement disparaît */
+@media (prefers-reduced-motion: reduce) {
+    .service-card:hover {
+        transform: none;
+    }
 }
 
 .service-card h3 {
@@ -385,6 +412,7 @@ mark.todo {
 .service-card p {
     color: var(--color-text-muted);
     font-size: 0.95rem;
+    transition: color 0.25s ease; /* au même rythme que le fond de la carte au survol */
 }
 
 .btn {
@@ -544,6 +572,7 @@ mark.todo {
     height: 40px;
     color: var(--color-accent);
     margin: 0 auto 0.5rem;
+    transition: color 0.25s ease;
 }
 
 /* ---------- Section cours collectifs (agenda) ---------- */
