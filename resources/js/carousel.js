@@ -16,11 +16,28 @@ if (track && prev && next && status) {
     // clientWidth = largeur visible du rail = largeur d'une page
     const currentPage = () => Math.round(track.scrollLeft / track.clientWidth);
 
+    // Remplit les barres d'une page de 0 à leur largeur (même effet que la 1re apparition en CSS).
+    // element.animate() : API Web Animations, une animation lancée en JS, rejouable à chaque appel
+    const fillBars = (page) => {
+        if (reducedMotion) return;
+        track.children[page].querySelectorAll('.course-bar span').forEach((bar) => {
+            bar.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 800, easing: 'ease-out' });
+        });
+    };
+
+    let shownPage = 0;
+
     const update = () => {
         const page = currentPage();
         status.textContent = `Page ${page + 1} / ${pageCount}`; // `...${}` : template string, insère une valeur
         prev.disabled = page === 0;
         next.disabled = page === pageCount - 1;
+
+        // currentPage() change dès qu'une page est visible à plus de la moitié : on rejoue ses barres pendant qu'elle arrive
+        if (page !== shownPage) {
+            shownPage = page;
+            fillBars(page);
+        }
     };
 
     // direction : -1 = page précédente, +1 = page suivante

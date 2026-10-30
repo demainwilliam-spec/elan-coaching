@@ -729,6 +729,20 @@ mark.todo {
     display: block; /* un <span> est "inline" par défaut : sans ça, width et height sont ignorés */
     height: 100%;
     background-color: var(--color-accent);
+    transform-origin: left; /* l'animation part du bord gauche, pas du centre */
+}
+
+/* La barre part écrasée à 0 (scaleX) et revient à sa vraie largeur (écrite dans le HTML) */
+@keyframes fill-bar {
+    from {
+        transform: scaleX(0);
+    }
+}
+
+/* Quand l'agenda apparaît (classe ajoutée par reveal.js), les barres se remplissent
+   juste après son glissement (délai 0.4 s) ; backwards : vides pendant ce délai */
+.course-carousel.is-revealed .course-bar span {
+    animation: fill-bar 0.8s ease-out 0.4s backwards;
 }
 
 .is-full .course-bar span {
