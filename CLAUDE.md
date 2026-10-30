@@ -3,7 +3,7 @@
 ## Historique
 - 11/10/2026 : début du travail avec Claude Code (extension VS Code)
 - 28/10/2026 : lot 5 « avant le lancement » (pages légales, erreurs, SEO, polices locales, nettoyage planifié, audit)
-- 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon
+- 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon ; animations, cartes de services cliquables, liens Instagram / Facebook
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -58,8 +58,13 @@
 - Thème noir et blanc alterné : noir par défaut (`:root`), sections blanches avec la classe `.theme-light` qui redéfinit les mêmes variables (Services, Contact) ; pages légales, d'erreur et espace coach en noir ; mails en noir et blanc (couleurs écrites en dur, les messageries ignorent les variables CSS)
 - Carrousel photo sous l'accueil (section sans titre) : liste `$photos` en haut de `home.blade.php`, images WebP dans `resources/images` servies par `Vite::asset()` (incluses au build via `import.meta.glob` dans app.js), noir et blanc par `filter: grayscale`, cadre 4:5, photo en largeur en `object-fit: contain` (`landscape`), défilement auto 5 s (resources/js/photo-carousel.js), arrêt au survol / focus, désactivé si « moins d'animations » ; pas de bouton pause (choix assumé)
 - Logo : `resources/images/logo.webp` (blanc sur fond transparent, 160 px de haut = 2× l'affichage maximal) dans le header, le footer et l'espace coach ; favicon `public/favicon.ico` (16/32/48) et `public/apple-touch-icon.png` (180), sur fond noir
+- Animations (toutes coupées si « moins d'animations », prefers-reduced-motion) :
+  - apparition au défilement : attribut `data-reveal` → resources/js/reveal.js (IntersectionObserver) ajoute `is-pending` aux éléments sous l'écran au chargement, puis `is-revealed` qui lance `@keyframes reveal` ; cartes de services en cascade via `--reveal-delay` (annulé sur téléphone) ; sans JS rien n'est caché
+  - cartes de services : liens vers #contact (resources/js/service-links.js préremplit le message selon `data-service`, sans écraser un texte tapé) ; survol (souris seulement, `@media (hover: hover)`) et focus clavier = couleurs inversées + montée + ombre
+  - barres de remplissage des cours : `@keyframes fill-bar` (scaleX) à l'apparition de l'agenda, rejouées à chaque page par carousel.js avec `element.animate()`
+- Réseaux : `partials/social-links.blade.php` (Instagram, Facebook ; icônes SVG en `currentColor`, simples liens sans widget Meta) inclus dans le header et le footer
 - Photos actuelles = captures basse résolution (444 à 689 px) : avec les originaux HD, passer le carrousel en pleine largeur et ajouter `srcset` (plusieurs tailles)
-- En attente d'infos du coach : ville (à ajouter au titre et à la description pour le référencement local), infos légales (statut, BCE, TVA, adresse, email, téléphone), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image)
+- En attente d'infos du coach : ville (à ajouter au titre et à la description pour le référencement local), infos légales (statut, BCE, TVA, adresse, email, téléphone), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
 
 ## Lot Déploiement (à faire)
 - Hébergeur à choisir ; le compléter dans les mentions légales et la page de confidentialité
@@ -78,7 +83,7 @@
 - Ne jamais nommer une table `sessions` : elle existe déjà (sessions Laravel, `SESSION_DRIVER=database`) → les cours s'appellent `courses`
 - Sous PowerShell, git écrit ses messages normaux sur stderr : un « exit code » d'erreur ne veut pas forcément dire que la commande a échoué
 - `$deleteWhenMissingModels` ne marche pas sur un Mailable (seulement sur une classe Job) : un mail dont la réservation a été supprimée avant l'envoi part directement dans failed_jobs, sans nouvel essai ; c'est accepté, le planificateur vide failed_jobs
-- Lighthouse : le lancer avec Vite arrêté et après `npm run build` (en dev, les fichiers non compressés faussent la note de performance), en navigation privée ; dernier résultat 98/100/100/100 (30/10/2026, avec les photos)
+- Lighthouse : le lancer avec Vite arrêté et après `npm run build` (en dev, les fichiers non compressés faussent la note de performance), en navigation privée ; dernier résultat 98/100/100/100 (30/10/2026, avec photos et animations) ; si « Minify JavaScript ~200 Ko » ou « 3rd parties » apparaissent, c'est que Vite tournait encore
 - Conversion d'images : PHP de XAMPP sans WebP → utiliser sharp (Node) depuis un dossier temporaire, hors des dépendances du projet ; seules les images converties sont commitées
 - Les navigateurs gardent le favicon en cache : le vérifier en navigation privée
 - Vérifier les failles des dépendances avant une mise en ligne : `npm audit` et `composer audit`
@@ -88,7 +93,8 @@
 - Un commit par étape validée, message clair
 - Variables CSS centralisées dans `resources/css/app.css` (`:root { --color-... }`) ; jamais de couleur en dur dans le CSS du site, sinon `.theme-light` ne peut pas l'inverser
 - Polices : Oswald (titres), Inter (texte courant) ; le logo est une image
-- Responsive : breakpoint unique à 768px en `max-width` (CSS écrit desktop first), media query placée juste après la règle qu'elle modifie
+- Responsive : breakpoint unique à 768px en `max-width` (CSS écrit desktop first), media query placée juste après la règle qu'elle modifie ; seules autres media queries admises : `(hover: hover)` et `(prefers-reduced-motion: reduce)`
+- Toute animation doit respecter « moins d'animations » et ne jamais cacher de contenu sans JS
 - Toute nouvelle section doit être vérifiée en mode téléphone avant d'être validée
 
 ## Façon de travailler
