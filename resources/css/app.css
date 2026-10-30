@@ -14,7 +14,6 @@
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
 @import '@fontsource/inter/600.css';
-@import '@fontsource/pinyon-script/400.css';
 
 :root {
     /* Couleurs (thème noir, par défaut) */
@@ -28,7 +27,6 @@
     /* Typographie */
     --font-heading: 'Oswald', sans-serif;
     --font-body: 'Inter', sans-serif;
-    --font-signature: 'Pinyon Script', cursive;
 }
 
 /* Thème blanc, pour une section : on redéfinit les mêmes variables sur l'élément.
@@ -78,15 +76,16 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 3rem 0;
+    padding: 0.75rem 3rem;
     border-bottom: 1px solid var(--color-bg-alt);
     background-color: var(--color-bg);
 }
 
-.logo {
-    font-family: var(--font-signature);
-    font-size: 2rem;
-    color: var(--color-accent);
+/* Logo (image blanche sur fond transparent) : on fixe la hauteur, width: auto garde les proportions */
+.logo img {
+    display: block; /* une image est "inline" par défaut : sans ça, un petit espace apparaît dessous */
+    height: 64px;
+    width: auto;
 }
 
 header nav ul {
@@ -109,11 +108,11 @@ header nav a:hover {
 
 @media (max-width: 768px) {
     header {
-        padding: 1rem 1.5rem 0;
+        padding: 0.6rem 1.5rem;
     }
 
-    .logo {
-        font-size: 1.6rem;
+    .logo img {
+        height: 48px;
     }
 
     header nav ul {
@@ -208,6 +207,12 @@ footer {
 footer p {
     color: var(--color-text-muted);
     font-size: 0.9rem;
+}
+
+.logo-footer {
+    height: 80px;
+    width: auto;
+    margin-bottom: 0.5rem;
 }
 
 .footer-links {
