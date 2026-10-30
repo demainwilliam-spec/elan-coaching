@@ -128,6 +128,73 @@ header nav a:hover {
     margin-top: 3rem;
 }
 
+/* ---------- Carrousel photo (sous l'accueil) ---------- */
+
+.photo-carousel {
+    padding: 0 3rem 6rem;
+}
+
+@media (max-width: 768px) {
+    .photo-carousel {
+        padding: 0 1.5rem 4rem;
+    }
+}
+
+/* Même principe que le rail de l'agenda : les photos côte à côte, aimantées une par une */
+.photo-track {
+    display: flex;
+    max-width: 480px;
+    margin: 0 auto;
+    aspect-ratio: 4 / 5;           /* cadre portrait : la hauteur se calcule à partir de la largeur */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.photo-track::-webkit-scrollbar {
+    display: none;
+}
+
+.photo-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    background-color: var(--color-bg); /* bandes autour d'une photo en largeur */
+}
+
+.photo-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;          /* remplit le cadre en recadrant, sans déformer */
+    filter: grayscale(100%);    /* noir et blanc, sans toucher au fichier d'origine */
+}
+
+/* Photo en largeur : affichée entière (contain) plutôt que recadrée et agrandie, donc floue */
+.photo-slide.is-landscape img {
+    object-fit: contain;
+}
+
+.photo-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.photo-dot {
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--color-accent);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* [aria-current="true"] : le point de la photo affichée (attribut mis à jour par le JS) */
+.photo-dot[aria-current="true"] {
+    background-color: var(--color-accent);
+}
+
 footer {
     display: flex;
     flex-direction: column;
