@@ -372,7 +372,9 @@ mark.todo {
     }
 }
 
+/* La carte est un lien (<a>) : le reset de Tailwind lui a déjà retiré couleur et soulignement */
 .service-card {
+    display: block;
     border: 1px solid var(--color-accent);
     padding: 2.5rem 1.5rem;
     background-color: var(--color-bg);
@@ -396,6 +398,19 @@ mark.todo {
     .service-card:hover p {
         color: var(--color-bg);
     }
+}
+
+/* Navigation au clavier (touche Tab) : même inversion qu'au survol, pour voir où l'on est.
+   :focus-visible = focus venant du clavier (pas d'un clic de souris) */
+.service-card:focus-visible {
+    outline: none; /* l'inversion des couleurs remplace le contour par défaut */
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+}
+
+.service-card:focus-visible .service-icon,
+.service-card:focus-visible p {
+    color: var(--color-bg);
 }
 
 /* « Moins d'animations » demandé : l'inversion et l'ombre restent, le déplacement disparaît */
