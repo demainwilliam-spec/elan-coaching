@@ -7,6 +7,9 @@
         <meta name="robots" content="noindex, nofollow">
         <title>Espace coach — @yield('title')</title>
 
+        <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
