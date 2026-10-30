@@ -526,9 +526,10 @@ mark.todo {
     color: var(--color-text-muted);
 }
 
+/* Gris au repos (moins mis en avant que le bouton principal), mais même survol que .btn partout */
 .btn-secondary:hover {
-    background-color: var(--color-text-muted);
-    border-color: var(--color-text-muted);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
     color: var(--color-bg);
 }
 
