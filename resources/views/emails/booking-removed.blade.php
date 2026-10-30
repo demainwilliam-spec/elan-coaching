@@ -7,7 +7,7 @@
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
         <tr>
-            <td style="padding: 4px 0 4px 16px; border-left: 3px solid #E8B33D;">
+            <td style="padding: 4px 0 4px 16px; border-left: 3px solid #0A0A0A;">
                 <p style="margin: 0; font-size: 18px; font-weight: bold;">{{ $courseTitle }}</p>
                 <p style="margin: 4px 0 0; color: #555;">{{ $courseWhen }}</p>
                 <p style="margin: 0; color: #555;">{{ $courseLocation }}</p>
@@ -17,6 +17,6 @@
 
     <p style="margin: 0;">
         Pour toute question, contactez le coach depuis
-        <a href="{{ url('/#contact') }}" style="color: #121212;">le site</a>.
+        <a href="{{ url('/#contact') }}" style="color: #0A0A0A;">le site</a>.
     </p>
 @endsection

@@ -17,18 +17,33 @@
 @import '@fontsource/pinyon-script/400.css';
 
 :root {
-    /* Couleurs */
-    --color-bg: #121212;
-    --color-bg-alt: #1C1C22;
-    --color-accent: #E8B33D;
-    --color-text: #F4F2ED;
-    --color-text-muted: #8B897F;
+    /* Couleurs (thème noir, par défaut) */
+    --color-bg: #0A0A0A;
+    --color-bg-alt: #1A1A1A;
+    --color-accent: #FFFFFF;
+    --color-text: #F2F2F2;
+    --color-text-muted: #9A9A9A;
     --color-error: #E5735A;
 
     /* Typographie */
     --font-heading: 'Oswald', sans-serif;
     --font-body: 'Inter', sans-serif;
     --font-signature: 'Pinyon Script', cursive;
+}
+
+/* Thème blanc, pour une section : on redéfinit les mêmes variables sur l'élément.
+   Ses descendants héritent des nouvelles valeurs, donc toutes les règles qui utilisent
+   var(--color-...) (cartes, boutons, champs...) s'inversent sans être modifiées. */
+.theme-light {
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F0F0F0;
+    --color-accent: #0A0A0A;
+    --color-text: #0A0A0A;
+    --color-text-muted: #5E5E5E;
+    --color-error: #C0392B; /* plus foncé que sur fond noir, pour rester lisible sur blanc */
+
+    background-color: var(--color-bg);
+    color: var(--color-text);
 }
 
 html {
@@ -64,7 +79,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 3rem 0;
-    border-bottom: 1px solid var(--color-accent);
+    border-bottom: 1px solid var(--color-bg-alt);
     background-color: var(--color-bg);
 }
 
@@ -120,8 +135,7 @@ footer {
     text-align: center;
     gap: 0.5rem;
     padding: 3rem 2rem;
-    border-top: 1px solid var(--color-accent);
-    margin-top: 4rem;
+    border-top: 1px solid var(--color-bg-alt);
 }
 
 footer p {
@@ -525,7 +539,7 @@ mark.todo {
     color: var(--color-text-muted);
 }
 
-/* Dernière place : mise en avant dorée pour créer l'urgence */
+/* Dernière place : mise en avant (couleur d'accent, en gras) pour créer l'urgence */
 .is-last .course-places {
     color: var(--color-accent);
     font-weight: 600;
@@ -653,7 +667,7 @@ mark.todo {
     margin-bottom: 1.5rem;
 }
 
-/* Rappel du cours choisi, avec un filet doré à gauche */
+/* Rappel du cours choisi, avec un filet de couleur d'accent à gauche */
 .booking-summary {
     margin-bottom: 1.5rem;
     padding-left: 1rem;
@@ -671,7 +685,7 @@ mark.todo {
     color: var(--color-text-muted);
 }
 
-/* Avertissement "cours complet" : mis en avant en doré */
+/* Avertissement "cours complet" : mis en avant avec la couleur d'accent */
 .booking-notice[data-booking-full-notice] {
     margin-bottom: 1.5rem;
     font-style: normal;
@@ -857,7 +871,7 @@ mark.todo {
     font-size: 1rem; /* 16px minimum : sinon Safari iPhone zoome automatiquement sur le champ */
 }
 
-/* Action destructrice (suppression) : couleur d'erreur au lieu du doré */
+/* Action destructrice (suppression) : couleur d'erreur au lieu de la couleur d'accent */
 .course-actions a.is-danger {
     color: var(--color-error);
 }

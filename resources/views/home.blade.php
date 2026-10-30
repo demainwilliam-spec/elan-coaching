@@ -13,7 +13,7 @@
         <a href="#contact" class="btn">Réserver un bilan gratuit</a>
     </section>
 
-    <section id="services">
+    <section id="services" class="theme-light">
         <h2>Mes services</h2>
 
         <div class="services-grid">
@@ -166,7 +166,7 @@
         </dialog>
     </section>
 
-    <section id="contact">
+    <section id="contact" class="theme-light">
         <h2>Un bilan gratuit, sans engagement</h2>
         <p>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>
 
