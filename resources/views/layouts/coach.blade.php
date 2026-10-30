@@ -15,7 +15,7 @@
     <body>
 
         <header>
-            <a href="{{ route('coach.dashboard') }}" class="logo"><img src="{{ Vite::asset('resources/images/logo.webp') }}" alt="JF Coaching — tableau de bord" width="208" height="240"></a>
+            <a href="{{ route('coach.dashboard') }}" class="logo"><img src="{{ Vite::asset('resources/images/logo.webp') }}" alt="JF Coaching — tableau de bord" width="139" height="160"></a>
             {{-- @auth : affiché seulement si quelqu'un est connecté (pas sur la page de connexion) --}}
             @auth
                 <nav>

@@ -33,7 +33,9 @@
                     {{-- lazy : les photos cachées ne sont téléchargées qu'à l'approche ; la 1re, visible tout de suite, non --}}
                     <img src="{{ Vite::asset('resources/images/'.$photo['file']) }}"
                         alt="{{ $photo['alt'] }}" width="{{ $photo['width'] }}" height="{{ $photo['height'] }}"
-                        loading="{{ $loop->first ? 'eager' : 'lazy' }}">
+                        loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                        {{-- fetchpriority : la 1re photo est le plus gros élément visible au chargement, on la télécharge en priorité --}}
+                        @if ($loop->first) fetchpriority="high" @endif>
                 </figure>
             @endforeach
         </div>

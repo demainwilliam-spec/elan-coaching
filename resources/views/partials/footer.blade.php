@@ -1,5 +1,5 @@
 <footer>
-    <img class="logo-footer" src="{{ Vite::asset('resources/images/logo.webp') }}" alt="JF Coaching" width="208" height="240" loading="lazy">
+    <img class="logo-footer" src="{{ Vite::asset('resources/images/logo.webp') }}" alt="JF Coaching" width="139" height="160" loading="lazy">
     <p>Coaching sportif — Belgique</p>
     <nav class="footer-links">
         <a href="{{ route('legal.notice') }}">Mentions légales</a>

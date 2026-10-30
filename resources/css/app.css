@@ -177,20 +177,33 @@ header nav a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.75rem;
-    margin-top: 1.25rem;
+    gap: 0.25rem;
+    margin-top: 1rem;
 }
 
+/* Zone cliquable de 24 × 24 px (minimum recommandé pour un doigt), invisible ;
+   le rond visible de 10 px est dessiné au centre par ::before */
 .photo-dot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+/* ::before : pseudo-élément, un « élément virtuel » créé par le CSS, sans balise HTML.
+   content: '' est obligatoire pour qu'il existe, même vide */
+.photo-dot::before {
+    content: '';
     width: 10px;
     height: 10px;
     border: 1px solid var(--color-accent);
     border-radius: 50%;
-    cursor: pointer;
 }
 
 /* [aria-current="true"] : le point de la photo affichée (attribut mis à jour par le JS) */
-.photo-dot[aria-current="true"] {
+.photo-dot[aria-current="true"]::before {
     background-color: var(--color-accent);
 }
 
