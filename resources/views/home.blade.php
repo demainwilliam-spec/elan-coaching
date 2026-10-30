@@ -13,7 +13,41 @@
         <a href="#contact" class="btn">Réserver un bilan gratuit</a>
     </section>
 
-    <section id="services">
+    @php
+        // Photos du carrousel : pour en ajouter une, déposer le .webp dans resources/images et ajouter une ligne.
+        // width / height : dimensions réelles du fichier (le navigateur réserve la place avant le chargement).
+        // landscape : photo en largeur, affichée entière (avec des bandes) plutôt que recadrée et agrandie
+        $photos = [
+            ['file' => 'corde.webp', 'width' => 444, 'height' => 599, 'alt' => 'Le coach grimpe à la corde dans une salle de cross-training'],
+            ['file' => 'poids.webp', 'width' => 689, 'height' => 875, 'alt' => 'Le coach soulève un haltère à bout de bras pendant une compétition'],
+            ['file' => 'stretch.webp', 'width' => 597, 'height' => 313, 'alt' => 'Le coach guide un client dans un étirement sur ballon', 'landscape' => true],
+        ];
+    @endphp
+
+    {{-- aria-roledescription / aria-label : annoncent aux lecteurs d'écran un « carrousel » de photos --}}
+    <section class="photo-carousel" aria-roledescription="carrousel" aria-label="Photos du coach" data-photo-carousel>
+        <div class="photo-track" data-photo-track>
+            @foreach ($photos as $photo)
+                <figure class="photo-slide {{ ($photo['landscape'] ?? false) ? 'is-landscape' : '' }}">
+                    {{-- Vite::asset : adresse du fichier via Vite (avec empreinte dans le nom en production) --}}
+                    {{-- lazy : les photos cachées ne sont téléchargées qu'à l'approche ; la 1re, visible tout de suite, non --}}
+                    <img src="{{ Vite::asset('resources/images/'.$photo['file']) }}"
+                        alt="{{ $photo['alt'] }}" width="{{ $photo['width'] }}" height="{{ $photo['height'] }}"
+                        loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                        {{-- fetchpriority : la 1re photo est le plus gros élément visible au chargement, on la télécharge en priorité --}}
+                        @if ($loop->first) fetchpriority="high" @endif>
+                </figure>
+            @endforeach
+        </div>
+
+        <div class="photo-controls">
+            @foreach ($photos as $photo)
+                <button type="button" class="photo-dot" aria-label="Photo {{ $loop->iteration }}" data-photo-dot></button>
+            @endforeach
+        </div>
+    </section>
+
+    <section id="services" class="theme-light">
         <h2>Mes services</h2>
 
         <div class="services-grid">
@@ -166,7 +200,7 @@
         </dialog>
     </section>
 
-    <section id="contact">
+    <section id="contact" class="theme-light">
         <h2>Un bilan gratuit, sans engagement</h2>
         <p>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>
 

@@ -5,6 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>JF Coaching — @yield('title')</title>
 
+        {{-- Icônes dans public/ (adresse fixe, sans Vite) : onglet du navigateur, écran d'accueil du téléphone --}}
+        <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
         @php
             // yieldContent : comme @yield, mais renvoie le texte dans une variable au lieu de l'afficher.
             // 2e argument : texte par défaut si la page ne définit pas sa propre @section('description')

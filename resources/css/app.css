@@ -14,21 +14,34 @@
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
 @import '@fontsource/inter/600.css';
-@import '@fontsource/pinyon-script/400.css';
 
 :root {
-    /* Couleurs */
-    --color-bg: #121212;
-    --color-bg-alt: #1C1C22;
-    --color-accent: #E8B33D;
-    --color-text: #F4F2ED;
-    --color-text-muted: #8B897F;
+    /* Couleurs (thème noir, par défaut) */
+    --color-bg: #0A0A0A;
+    --color-bg-alt: #1A1A1A;
+    --color-accent: #FFFFFF;
+    --color-text: #F2F2F2;
+    --color-text-muted: #9A9A9A;
     --color-error: #E5735A;
 
     /* Typographie */
     --font-heading: 'Oswald', sans-serif;
     --font-body: 'Inter', sans-serif;
-    --font-signature: 'Pinyon Script', cursive;
+}
+
+/* Thème blanc, pour une section : on redéfinit les mêmes variables sur l'élément.
+   Ses descendants héritent des nouvelles valeurs, donc toutes les règles qui utilisent
+   var(--color-...) (cartes, boutons, champs...) s'inversent sans être modifiées. */
+.theme-light {
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F0F0F0;
+    --color-accent: #0A0A0A;
+    --color-text: #0A0A0A;
+    --color-text-muted: #5E5E5E;
+    --color-error: #C0392B; /* plus foncé que sur fond noir, pour rester lisible sur blanc */
+
+    background-color: var(--color-bg);
+    color: var(--color-text);
 }
 
 html {
@@ -63,15 +76,16 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 3rem 0;
-    border-bottom: 1px solid var(--color-accent);
+    padding: 0.75rem 3rem;
+    border-bottom: 1px solid var(--color-bg-alt);
     background-color: var(--color-bg);
 }
 
-.logo {
-    font-family: var(--font-signature);
-    font-size: 2rem;
-    color: var(--color-accent);
+/* Logo (image blanche sur fond transparent) : on fixe la hauteur, width: auto garde les proportions */
+.logo img {
+    display: block; /* une image est "inline" par défaut : sans ça, un petit espace apparaît dessous */
+    height: 64px;
+    width: auto;
 }
 
 header nav ul {
@@ -94,11 +108,11 @@ header nav a:hover {
 
 @media (max-width: 768px) {
     header {
-        padding: 1rem 1.5rem 0;
+        padding: 0.6rem 1.5rem;
     }
 
-    .logo {
-        font-size: 1.6rem;
+    .logo img {
+        height: 48px;
     }
 
     header nav ul {
@@ -113,6 +127,86 @@ header nav a:hover {
     margin-top: 3rem;
 }
 
+/* ---------- Carrousel photo (sous l'accueil) ---------- */
+
+.photo-carousel {
+    padding: 0 3rem 6rem;
+}
+
+@media (max-width: 768px) {
+    .photo-carousel {
+        padding: 0 1.5rem 4rem;
+    }
+}
+
+/* Même principe que le rail de l'agenda : les photos côte à côte, aimantées une par une */
+.photo-track {
+    display: flex;
+    max-width: 480px;
+    margin: 0 auto;
+    aspect-ratio: 4 / 5;           /* cadre portrait : la hauteur se calcule à partir de la largeur */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.photo-track::-webkit-scrollbar {
+    display: none;
+}
+
+.photo-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    background-color: var(--color-bg); /* bandes autour d'une photo en largeur */
+}
+
+.photo-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;          /* remplit le cadre en recadrant, sans déformer */
+    filter: grayscale(100%);    /* noir et blanc, sans toucher au fichier d'origine */
+}
+
+/* Photo en largeur : affichée entière (contain) plutôt que recadrée et agrandie, donc floue */
+.photo-slide.is-landscape img {
+    object-fit: contain;
+}
+
+.photo-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 1rem;
+}
+
+/* Zone cliquable de 24 × 24 px (minimum recommandé pour un doigt), invisible ;
+   le rond visible de 10 px est dessiné au centre par ::before */
+.photo-dot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+/* ::before : pseudo-élément, un « élément virtuel » créé par le CSS, sans balise HTML.
+   content: '' est obligatoire pour qu'il existe, même vide */
+.photo-dot::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--color-accent);
+    border-radius: 50%;
+}
+
+/* [aria-current="true"] : le point de la photo affichée (attribut mis à jour par le JS) */
+.photo-dot[aria-current="true"]::before {
+    background-color: var(--color-accent);
+}
+
 footer {
     display: flex;
     flex-direction: column;
@@ -120,13 +214,18 @@ footer {
     text-align: center;
     gap: 0.5rem;
     padding: 3rem 2rem;
-    border-top: 1px solid var(--color-accent);
-    margin-top: 4rem;
+    border-top: 1px solid var(--color-bg-alt);
 }
 
 footer p {
     color: var(--color-text-muted);
     font-size: 0.9rem;
+}
+
+.logo-footer {
+    height: 80px;
+    width: auto;
+    margin-bottom: 0.5rem;
 }
 
 .footer-links {
@@ -525,7 +624,7 @@ mark.todo {
     color: var(--color-text-muted);
 }
 
-/* Dernière place : mise en avant dorée pour créer l'urgence */
+/* Dernière place : mise en avant (couleur d'accent, en gras) pour créer l'urgence */
 .is-last .course-places {
     color: var(--color-accent);
     font-weight: 600;
@@ -653,7 +752,7 @@ mark.todo {
     margin-bottom: 1.5rem;
 }
 
-/* Rappel du cours choisi, avec un filet doré à gauche */
+/* Rappel du cours choisi, avec un filet de couleur d'accent à gauche */
 .booking-summary {
     margin-bottom: 1.5rem;
     padding-left: 1rem;
@@ -671,7 +770,7 @@ mark.todo {
     color: var(--color-text-muted);
 }
 
-/* Avertissement "cours complet" : mis en avant en doré */
+/* Avertissement "cours complet" : mis en avant avec la couleur d'accent */
 .booking-notice[data-booking-full-notice] {
     margin-bottom: 1.5rem;
     font-style: normal;
@@ -857,7 +956,7 @@ mark.todo {
     font-size: 1rem; /* 16px minimum : sinon Safari iPhone zoome automatiquement sur le champ */
 }
 
-/* Action destructrice (suppression) : couleur d'erreur au lieu du doré */
+/* Action destructrice (suppression) : couleur d'erreur au lieu de la couleur d'accent */
 .course-actions a.is-danger {
     color: var(--color-error);
 }

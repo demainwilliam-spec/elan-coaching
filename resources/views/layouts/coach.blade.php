@@ -7,12 +7,15 @@
         <meta name="robots" content="noindex, nofollow">
         <title>Espace coach — @yield('title')</title>
 
+        <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
 
         <header>
-            <div class="logo"><a href="{{ route('coach.dashboard') }}">JF Coaching</a></div>
+            <a href="{{ route('coach.dashboard') }}" class="logo"><img src="{{ Vite::asset('resources/images/logo.webp') }}" alt="JF Coaching — tableau de bord" width="139" height="160"></a>
             {{-- @auth : affiché seulement si quelqu'un est connecté (pas sur la page de connexion) --}}
             @auth
                 <nav>

@@ -1,5 +1,6 @@
 <header>
-    <div class="logo"><a href="/">JF Coaching</a></div>
+    {{-- Le logo est aussi le lien vers l'accueil : son alt sert de texte au lien --}}
+    <a href="/" class="logo"><img src="{{ Vite::asset('resources/images/logo.webp') }}" alt="JF Coaching — accueil" width="139" height="160"></a>
     <nav>
         <ul>
             <li><a href="/#services">Services</a></li>
