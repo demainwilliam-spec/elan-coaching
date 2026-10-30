@@ -47,11 +47,12 @@
         </div>
     </section>
 
+    {{-- data-reveal : élément qui apparaît en glissant quand on arrive dessus (resources/js/reveal.js) --}}
     <section id="services" class="theme-light">
-        <h2>Mes services</h2>
+        <h2 data-reveal>Mes services</h2>
 
         <div class="services-grid">
-            <div class="service-card">
+            <div class="service-card" data-reveal>
                 <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <circle cx="12" cy="8" r="4"/>
                     <path d="M4 20c0-4 3.5-7 8-7s8 3 8 7"/>
@@ -60,7 +61,7 @@
                 <p>Séances en tête-à-tête, programme entièrement personnalisé, ajusté à chaque rendez-vous.</p>
             </div>
 
-            <div class="service-card">
+            <div class="service-card" data-reveal>
                 <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <circle cx="9" cy="7" r="3"/>
                     <circle cx="17" cy="9" r="2.5"/>
@@ -71,7 +72,7 @@
                 <p>De 2 à 4 personnes, même exigence qu'en individuel, tarif dégressif selon le nombre de participants.</p>
             </div>
 
-            <div class="service-card">
+            <div class="service-card" data-reveal>
                 <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <rect x="3" y="4" width="18" height="12" rx="1"/>
                     <path d="M8 20h8M12 16v4"/>
@@ -85,8 +86,8 @@
     </section>
 
     <section id="cours">
-        <h2>Cours collectifs</h2>
-        <p>
+        <h2 data-reveal>Cours collectifs</h2>
+        <p data-reveal>
             Réservez votre place en quelques secondes. Cours complet ? Inscrivez-vous sur la liste d'attente :
             vous recevrez un mail si une place se libère.
         </p>
@@ -97,7 +98,7 @@
         @endif
 
         {{-- Carrousel : les pages de 4 cours sont posées côte à côte dans le rail (track), qui défile horizontalement --}}
-        <div class="course-carousel">
+        <div class="course-carousel" data-reveal>
             {{-- data-* : repères pour le JS (carousel.js), indépendants des classes CSS --}}
             <div class="course-track" data-carousel-track>
                 {{-- chunk(4) : découpe la collection en groupes de 4 → une <ul> par page --}}
@@ -201,8 +202,8 @@
     </section>
 
     <section id="contact" class="theme-light">
-        <h2>Un bilan gratuit, sans engagement</h2>
-        <p>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>
+        <h2 data-reveal>Un bilan gratuit, sans engagement</h2>
+        <p data-reveal>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>
 
         {{-- session('success') n'existe que juste après la redirection du contrôleur --}}
         @if (session('success'))
@@ -215,7 +216,7 @@
         @endif
 
         {{-- route('contact.send') génère l'URL de la route nommée (ici /contact) --}}
-        <form class="contact-form" method="POST" action="{{ route('contact.send') }}">
+        <form class="contact-form" data-reveal method="POST" action="{{ route('contact.send') }}">
             {{-- @csrf ajoute un champ caché contenant le jeton anti-CSRF --}}
             @csrf
 
@@ -258,7 +259,7 @@
             <button type="submit" class="btn">Envoyer</button>
         </form>
 
-        <div class="contact-actions">
+        <div class="contact-actions" data-reveal>
             <p>Vous préférez appeler ?</p>
             <a href="tel:+32476000000" class="btn btn-secondary">+32 476 00 00 00</a>
         </div>
