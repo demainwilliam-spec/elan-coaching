@@ -41,6 +41,15 @@ class SeoTest extends TestCase
         ], false);
     }
 
+    public function test_les_reseaux_sont_dans_le_header_et_le_footer(): void
+    {
+        $instagram = '<a href="https://www.instagram.com/j.f.coaching/" target="_blank" rel="noopener"';
+        $facebook = '<a href="https://www.facebook.com/JFCoachingpro/" target="_blank" rel="noopener"';
+
+        // Deux fois chacun, dans l'ordre : header puis footer
+        $this->get('/')->assertSeeInOrder(['<header>', $instagram, $facebook, '<footer>', $instagram, $facebook], false);
+    }
+
     public function test_le_sitemap_liste_les_pages_publiques_en_xml_valide(): void
     {
         $response = $this->get('/sitemap.xml')
