@@ -74,10 +74,6 @@ html {
     --reveal-delay: 120ms;
 }
 
-.services-grid > :nth-child(3) {
-    --reveal-delay: 240ms;
-}
-
 @media (max-width: 768px) {
     /* Cartes empilées : chacune entre dans l'écran à son tour, un délai en plus la ferait arriver en retard */
     .services-grid > * {
@@ -206,16 +202,34 @@ header nav a:hover {
     margin-top: 3rem;
 }
 
-/* ---------- Carrousel photo (sous l'accueil) ---------- */
+/* ---------- Présentation du coach + carrousel photo (sous l'accueil) ---------- */
 
-.photo-carousel {
+/* Deux colonnes de même largeur : le texte à gauche, les photos à droite */
+.about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center; /* texte centré verticalement par rapport aux photos */
+    gap: 4rem;
+    max-width: 1000px;
+    margin: 0 auto;
     padding: 0 3rem 6rem;
 }
 
 @media (max-width: 768px) {
-    .photo-carousel {
+    .about {
+        grid-template-columns: 1fr; /* une colonne : le texte (1er dans le HTML) passe au-dessus */
+        gap: 2.5rem;
         padding: 0 1.5rem 4rem;
+        text-align: center;
     }
+}
+
+.about-text h2 {
+    margin-bottom: 1.5rem;
+}
+
+.about-text p + p {
+    margin-top: 1rem; /* p + p : tout paragraphe qui suit un autre paragraphe */
 }
 
 /* Même principe que le rail de l'agenda : les photos côte à côte, aimantées une par une */
@@ -401,9 +415,10 @@ mark.todo {
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
-    margin-bottom: 3rem;
+    max-width: 800px; /* deux cartes seulement : sans limite, elles s'étireraient sur tout l'écran */
+    margin: 0 auto 3rem; /* auto à gauche et à droite : la grille est centrée */
 }
 
 /* Media query : ces règles ne s'appliquent que si l'écran fait 768px de large ou moins.

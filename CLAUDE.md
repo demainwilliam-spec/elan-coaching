@@ -3,6 +3,7 @@
 ## Historique
 - 11/10/2026 : début du travail avec Claude Code (extension VS Code)
 - 28/10/2026 : lot 5 « avant le lancement » (pages légales, erreurs, SEO, polices locales, nettoyage planifié, audit)
+- 31/10/2026 : retours du coach après la présentation (2 cartes de services, texte de présentation à côté des photos)
 - 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon ; animations, cartes de services cliquables, liens Instagram / Facebook
 
 ## Stack
@@ -56,15 +57,16 @@
 - Tâches planifiées (routes/console.php), chaque jour : `model:prune` (Booking MassPrunable : réservations des cours passés depuis plus de 6 mois, `Booking::RETENTION_MONTHS`) et `queue:prune-failed --hours=168` ; en local `php artisan schedule:work` si besoin
 - À faire plus tard : historique des cours passés ; prévenir les personnes restées en liste d'attente après la limite des 24 h (planificateur)
 - Thème noir et blanc alterné : noir par défaut (`:root`), sections blanches avec la classe `.theme-light` qui redéfinit les mêmes variables (Services, Contact) ; pages légales, d'erreur et espace coach en noir ; mails en noir et blanc (couleurs écrites en dur, les messageries ignorent les variables CSS)
-- Carrousel photo sous l'accueil (section sans titre) : liste `$photos` en haut de `home.blade.php`, images WebP dans `resources/images` servies par `Vite::asset()` (incluses au build via `import.meta.glob` dans app.js), noir et blanc par `filter: grayscale`, cadre 4:5, photo en largeur en `object-fit: contain` (`landscape`), défilement auto 5 s (resources/js/photo-carousel.js), arrêt au survol / focus, désactivé si « moins d'animations » ; pas de bouton pause (choix assumé)
+- Présentation « Votre coach » sous l'accueil (section `.about`, grille 2 colonnes : texte à gauche, carrousel à droite ; empilés sur téléphone, texte d'abord) ; texte = brouillon avec `<mark class="todo">` à compléter par le coach
+- Carrousel photo (dans `.about`, `role="region"`) : liste `$photos` en haut de `home.blade.php`, images WebP dans `resources/images` servies par `Vite::asset()` (incluses au build via `import.meta.glob` dans app.js), noir et blanc par `filter: grayscale`, cadre 4:5, photo en largeur en `object-fit: contain` (`landscape`), défilement auto 5 s (resources/js/photo-carousel.js), arrêt au survol / focus, désactivé si « moins d'animations » ; pas de bouton pause (choix assumé)
 - Logo : `resources/images/logo.webp` (blanc sur fond transparent, 160 px de haut = 2× l'affichage maximal) dans le header, le footer et l'espace coach ; favicon `public/favicon.ico` (16/32/48) et `public/apple-touch-icon.png` (180), sur fond noir
 - Animations (toutes coupées si « moins d'animations », prefers-reduced-motion) :
   - apparition au défilement : attribut `data-reveal` → resources/js/reveal.js (IntersectionObserver) ajoute `is-pending` aux éléments sous l'écran au chargement, puis `is-revealed` qui lance `@keyframes reveal` ; cartes de services en cascade via `--reveal-delay` (annulé sur téléphone) ; sans JS rien n'est caché
-  - cartes de services : liens vers #contact (resources/js/service-links.js préremplit le message selon `data-service`, sans écraser un texte tapé) ; survol (souris seulement, `@media (hover: hover)`) et focus clavier = couleurs inversées + montée + ombre
+  - cartes de services (2 : coaching individuel → #contact, cours collectifs → #cours) : la carte avec `data-service` préremplit le message (resources/js/service-links.js préremplit le message selon `data-service`, sans écraser un texte tapé) ; survol (souris seulement, `@media (hover: hover)`) et focus clavier = couleurs inversées + montée + ombre
   - barres de remplissage des cours : `@keyframes fill-bar` (scaleX) à l'apparition de l'agenda, rejouées à chaque page par carousel.js avec `element.animate()`
 - Réseaux : `partials/social-links.blade.php` (Instagram, Facebook ; icônes SVG en `currentColor`, simples liens sans widget Meta) inclus dans le header et le footer
 - Photos actuelles = captures basse résolution (444 à 689 px) : avec les originaux HD, passer le carrousel en pleine largeur et ajouter `srcset` (plusieurs tailles)
-- En attente d'infos du coach : ville (à ajouter au titre et à la description pour le référencement local), infos légales (statut, BCE, TVA, adresse, email, téléphone), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
+- En attente d'infos du coach : texte de présentation (prénom, diplômes, années d'expérience, parcours), ville (à ajouter au titre et à la description pour le référencement local), infos légales (statut, BCE, TVA, adresse, email, téléphone), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
 
 ## Lot Déploiement (à faire)
 - Hébergeur à choisir ; le compléter dans les mentions légales et la page de confidentialité

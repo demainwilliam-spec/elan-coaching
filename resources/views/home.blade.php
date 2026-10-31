@@ -24,26 +24,46 @@
         ];
     @endphp
 
-    {{-- aria-roledescription / aria-label : annoncent aux lecteurs d'écran un « carrousel » de photos --}}
-    <section class="photo-carousel" aria-roledescription="carrousel" aria-label="Photos du coach" data-photo-carousel>
-        <div class="photo-track" data-photo-track>
-            @foreach ($photos as $photo)
-                <figure class="photo-slide {{ ($photo['landscape'] ?? false) ? 'is-landscape' : '' }}">
-                    {{-- Vite::asset : adresse du fichier via Vite (avec empreinte dans le nom en production) --}}
-                    {{-- lazy : les photos cachées ne sont téléchargées qu'à l'approche ; la 1re, visible tout de suite, non --}}
-                    <img src="{{ Vite::asset('resources/images/'.$photo['file']) }}"
-                        alt="{{ $photo['alt'] }}" width="{{ $photo['width'] }}" height="{{ $photo['height'] }}"
-                        loading="{{ $loop->first ? 'eager' : 'lazy' }}"
-                        {{-- fetchpriority : la 1re photo est le plus gros élément visible au chargement, on la télécharge en priorité --}}
-                        @if ($loop->first) fetchpriority="high" @endif>
-                </figure>
-            @endforeach
+    {{-- Présentation : texte à gauche, carrousel à droite (empilés sur téléphone, texte d'abord) --}}
+    <section class="about">
+        <div class="about-text" data-reveal>
+            <h2>Votre coach</h2>
+            <p>
+                Je m'appelle <mark class="todo">[À COMPLÉTER : prénom]</mark>, coach sportif
+                <mark class="todo">[À COMPLÉTER : diplômes / certifications]</mark>
+                depuis <mark class="todo">[À COMPLÉTER : nombre]</mark> ans.
+            </p>
+            <p>
+                Le sport fait partie de ma vie depuis toujours :
+                <mark class="todo">[À COMPLÉTER : parcours, disciplines pratiquées, compétitions…]</mark>.
+            </p>
+            <p>
+                Mon objectif : vous aider à progresser à votre rythme, avec un programme réaliste
+                et un suivi qui tient dans la durée.
+            </p>
         </div>
 
-        <div class="photo-controls">
-            @foreach ($photos as $photo)
-                <button type="button" class="photo-dot" aria-label="Photo {{ $loop->iteration }}" data-photo-dot></button>
-            @endforeach
+        {{-- role="region" + aria-label : une zone nommée « Photos du coach » ; aria-roledescription la fait annoncer comme un « carrousel » --}}
+        <div class="photo-carousel" role="region" aria-roledescription="carrousel" aria-label="Photos du coach" data-photo-carousel>
+            <div class="photo-track" data-photo-track>
+                @foreach ($photos as $photo)
+                    <figure class="photo-slide {{ ($photo['landscape'] ?? false) ? 'is-landscape' : '' }}">
+                        {{-- Vite::asset : adresse du fichier via Vite (avec empreinte dans le nom en production) --}}
+                        {{-- lazy : les photos cachées ne sont téléchargées qu'à l'approche ; la 1re, visible tout de suite, non --}}
+                        <img src="{{ Vite::asset('resources/images/'.$photo['file']) }}"
+                            alt="{{ $photo['alt'] }}" width="{{ $photo['width'] }}" height="{{ $photo['height'] }}"
+                            loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                            {{-- fetchpriority : la 1re photo est le plus gros élément visible au chargement, on la télécharge en priorité --}}
+                            @if ($loop->first) fetchpriority="high" @endif>
+                    </figure>
+                @endforeach
+            </div>
+
+            <div class="photo-controls">
+                @foreach ($photos as $photo)
+                    <button type="button" class="photo-dot" aria-label="Photo {{ $loop->iteration }}" data-photo-dot></button>
+                @endforeach
+            </div>
         </div>
     </section>
 
@@ -51,7 +71,7 @@
     <section id="services" class="theme-light">
         <h2 data-reveal>Mes services</h2>
 
-        {{-- Cartes = liens vers le formulaire (marche sans JS) ; data-service : le JS préremplit le message (service-links.js) --}}
+        {{-- Cartes = liens (marchent sans JS) ; data-service : le JS préremplit le message du formulaire (service-links.js) --}}
         <div class="services-grid">
             <a href="#contact" class="service-card" data-reveal data-service="le coaching individuel">
                 <svg class="service-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -62,24 +82,16 @@
                 <p>Séances en tête-à-tête, programme entièrement personnalisé, ajusté à chaque rendez-vous.</p>
             </a>
 
-            <a href="#contact" class="service-card" data-reveal data-service="le coaching en petit groupe">
+            {{-- Pas de data-service : cette carte mène à l'agenda, où l'on réserve directement --}}
+            <a href="#cours" class="service-card" data-reveal>
                 <svg class="service-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <circle cx="9" cy="7" r="3"/>
                     <circle cx="17" cy="9" r="2.5"/>
                     <path d="M2 20c0-3.5 3-6.5 7-6.5s7 3 7 6.5"/>
                     <path d="M17 13.5c2.5 0.3 4.5 2.5 4.5 6.5"/>
                 </svg>
-                <h3>Petit groupe</h3>
-                <p>De 2 à 4 personnes, même exigence qu'en individuel, tarif dégressif selon le nombre de participants.</p>
-            </a>
-
-            <a href="#contact" class="service-card" data-reveal data-service="le coaching à distance">
-                <svg class="service-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <rect x="3" y="4" width="18" height="12" rx="1"/>
-                    <path d="M8 20h8M12 16v4"/>
-                </svg>
-                <h3>À distance</h3>
-                <p>Un programme structuré à réaliser en autonomie, avec un suivi régulier pour ajuster la progression.</p>
+                <h3>Cours collectifs</h3>
+                <p>Des séances en groupe encadrées par le coach : consultez l'agenda et réservez votre place en ligne.</p>
             </a>
         </div>
 
