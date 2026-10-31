@@ -24,26 +24,46 @@
         ];
     @endphp
 
-    {{-- aria-roledescription / aria-label : annoncent aux lecteurs d'écran un « carrousel » de photos --}}
-    <section class="photo-carousel" aria-roledescription="carrousel" aria-label="Photos du coach" data-photo-carousel>
-        <div class="photo-track" data-photo-track>
-            @foreach ($photos as $photo)
-                <figure class="photo-slide {{ ($photo['landscape'] ?? false) ? 'is-landscape' : '' }}">
-                    {{-- Vite::asset : adresse du fichier via Vite (avec empreinte dans le nom en production) --}}
-                    {{-- lazy : les photos cachées ne sont téléchargées qu'à l'approche ; la 1re, visible tout de suite, non --}}
-                    <img src="{{ Vite::asset('resources/images/'.$photo['file']) }}"
-                        alt="{{ $photo['alt'] }}" width="{{ $photo['width'] }}" height="{{ $photo['height'] }}"
-                        loading="{{ $loop->first ? 'eager' : 'lazy' }}"
-                        {{-- fetchpriority : la 1re photo est le plus gros élément visible au chargement, on la télécharge en priorité --}}
-                        @if ($loop->first) fetchpriority="high" @endif>
-                </figure>
-            @endforeach
+    {{-- Présentation : texte à gauche, carrousel à droite (empilés sur téléphone, texte d'abord) --}}
+    <section class="about">
+        <div class="about-text" data-reveal>
+            <h2>Votre coach</h2>
+            <p>
+                Je m'appelle <mark class="todo">[À COMPLÉTER : prénom]</mark>, coach sportif
+                <mark class="todo">[À COMPLÉTER : diplômes / certifications]</mark>
+                depuis <mark class="todo">[À COMPLÉTER : nombre]</mark> ans.
+            </p>
+            <p>
+                Le sport fait partie de ma vie depuis toujours :
+                <mark class="todo">[À COMPLÉTER : parcours, disciplines pratiquées, compétitions…]</mark>.
+            </p>
+            <p>
+                Mon objectif : vous aider à progresser à votre rythme, avec un programme réaliste
+                et un suivi qui tient dans la durée.
+            </p>
         </div>
 
-        <div class="photo-controls">
-            @foreach ($photos as $photo)
-                <button type="button" class="photo-dot" aria-label="Photo {{ $loop->iteration }}" data-photo-dot></button>
-            @endforeach
+        {{-- role="region" + aria-label : une zone nommée « Photos du coach » ; aria-roledescription la fait annoncer comme un « carrousel » --}}
+        <div class="photo-carousel" role="region" aria-roledescription="carrousel" aria-label="Photos du coach" data-photo-carousel>
+            <div class="photo-track" data-photo-track>
+                @foreach ($photos as $photo)
+                    <figure class="photo-slide {{ ($photo['landscape'] ?? false) ? 'is-landscape' : '' }}">
+                        {{-- Vite::asset : adresse du fichier via Vite (avec empreinte dans le nom en production) --}}
+                        {{-- lazy : les photos cachées ne sont téléchargées qu'à l'approche ; la 1re, visible tout de suite, non --}}
+                        <img src="{{ Vite::asset('resources/images/'.$photo['file']) }}"
+                            alt="{{ $photo['alt'] }}" width="{{ $photo['width'] }}" height="{{ $photo['height'] }}"
+                            loading="{{ $loop->first ? 'eager' : 'lazy' }}"
+                            {{-- fetchpriority : la 1re photo est le plus gros élément visible au chargement, on la télécharge en priorité --}}
+                            @if ($loop->first) fetchpriority="high" @endif>
+                    </figure>
+                @endforeach
+            </div>
+
+            <div class="photo-controls">
+                @foreach ($photos as $photo)
+                    <button type="button" class="photo-dot" aria-label="Photo {{ $loop->iteration }}" data-photo-dot></button>
+                @endforeach
+            </div>
         </div>
     </section>
 

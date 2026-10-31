@@ -32,6 +32,16 @@ class SeoTest extends TestCase
             ->assertSeeInOrder(['width="444"', 'loading="eager"', 'width="689"', 'loading="lazy"', 'width="597"', 'loading="lazy"'], false);
     }
 
+    public function test_la_presentation_du_coach_precede_les_photos(): void
+    {
+        $this->get('/')->assertSeeInOrder([
+            '<section class="about">',
+            '<h2>Votre coach</h2>',
+            'Mon objectif : vous aider à progresser',
+            'data-photo-carousel',
+        ], false);
+    }
+
     public function test_les_cartes_de_services_menent_au_contact_et_a_l_agenda(): void
     {
         $this->get('/')
