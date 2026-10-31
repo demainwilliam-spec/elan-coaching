@@ -66,4 +66,10 @@ class Booking extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    // Compte du client qui a réservé ($booking->client), null pour une réservation sans compte
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
 }

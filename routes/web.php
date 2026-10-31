@@ -54,15 +54,17 @@ Route::post('/annulation/{booking:cancel_token}', [CancellationController::class
 // ---------- Interface du coach ----------
 // prefix('coach') : toutes les URL commencent par /coach ; name('coach.') : tous les noms par "coach."
 Route::prefix('coach')->name('coach.')->group(function () {
-    // guest : pages réservées aux visiteurs NON connectés
-    Route::middleware('guest')->group(function () {
+    // guest:web : pages réservées aux visiteurs NON connectés en tant que coach.
+    // Le guard est toujours nommé (web = coach) : sans lui, "auth" et "guest" utilisent le guard
+    // par défaut, qui peut devenir "client" pendant une requête (cf. config/auth.php)
+    Route::middleware('guest:web')->group(function () {
         Route::get('/connexion', [LoginController::class, 'show'])->name('login');
         // throttle:5,1 : 5 tentatives par minute et par IP, contre les essais de mots de passe à la chaîne
         Route::post('/connexion', [LoginController::class, 'store'])->middleware('throttle:5,1');
     });
 
-    // auth : pages réservées au coach connecté (sinon redirection vers coach.login, cf. bootstrap/app.php)
-    Route::middleware('auth')->group(function () {
+    // auth:web : pages réservées au coach connecté (sinon redirection vers coach.login, cf. bootstrap/app.php)
+    Route::middleware('auth:web')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::get('/cours/nouveau', [CourseController::class, 'create'])->name('courses.create');

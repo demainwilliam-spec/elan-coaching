@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use App\Models\User;
 
 return [
@@ -38,9 +39,17 @@ return [
     */
 
     'guards' => [
+        // Guard du coach (table users) : c'est celui du middleware "auth" sans précision
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+
+        // Guard des clients (table clients) : middleware "auth:client", Auth::guard('client')
+        // Clé de session distincte : être connecté comme client ne donne aucun accès à /coach
+        'client' => [
+            'driver' => 'session',
+            'provider' => 'clients',
         ],
     ],
 
@@ -65,6 +74,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        // Où le guard "client" va chercher les comptes : le modèle Eloquent Client
+        'clients' => [
+            'driver' => 'eloquent',
+            'model' => Client::class,
         ],
 
         // 'users' => [

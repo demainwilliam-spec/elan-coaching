@@ -3,8 +3,8 @@
 @section('title', 'Tableau de bord')
 
 @section('content')
-    {{-- auth()->user() : l'utilisateur connecté (le coach) --}}
-    <h2>Bonjour {{ auth()->user()->name }}</h2>
+    {{-- auth('web')->user() : le coach connecté (guard web) --}}
+    <h2>Bonjour {{ auth('web')->user()->name }}</h2>
 
     <p class="coach-summary">{{ $courses->count() }} cours à venir</p>
 
