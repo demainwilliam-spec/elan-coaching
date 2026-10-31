@@ -264,8 +264,6 @@
             <p>Vous préférez appeler ?</p>
             <a href="tel:+32476000000" class="btn btn-secondary">+32 476 00 00 00</a>
         </div>
-
-        <p class="contact-note">Prise de rendez-vous en ligne : bientôt disponible</p>
     </section>
 
 @endsection
