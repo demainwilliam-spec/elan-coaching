@@ -66,7 +66,8 @@
   - barres de remplissage des cours : `@keyframes fill-bar` (scaleX) à l'apparition de l'agenda, rejouées à chaque page par carousel.js avec `element.animate()`
 - Réseaux : `partials/social-links.blade.php` (Instagram, Facebook ; icônes SVG en `currentColor`, simples liens sans widget Meta) inclus dans le header et le footer
 - Photos actuelles = captures basse résolution (444 à 689 px) : avec les originaux HD, passer le carrousel en pleine largeur et ajouter `srcset` (plusieurs tailles)
-- En attente d'infos du coach : texte de présentation (prénom, diplômes, années d'expérience, parcours), ville (à ajouter au titre et à la description pour le référencement local), infos légales (statut, BCE, TVA, adresse, email, téléphone), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
+- Référencement local : le coach est basé à Éghezée (province de Namur) ; la ville figure dans le titre de l'accueil, la description par défaut et le texte de présentation (vérifié par SeoTest) ; données structurées `LocalBusiness` (JSON-LD) à ajouter avec l'adresse
+- En attente d'infos du coach : texte de présentation (prénom, diplômes, années d'expérience, parcours), infos légales (statut, BCE, TVA, adresse, email, téléphone), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
 
 ## Lot Déploiement (à faire)
 - Hébergeur à choisir ; le compléter dans les mentions légales et la page de confidentialité

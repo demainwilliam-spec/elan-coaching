@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Coach sportif, coaching personnalisé et cours collectifs')
+@section('title', 'Coach sportif à Éghezée, coaching personnalisé et cours collectifs')
 
 @section('content')
 
@@ -31,7 +31,7 @@
             <p>
                 Je m'appelle <mark class="todo">[À COMPLÉTER : prénom]</mark>, coach sportif
                 <mark class="todo">[À COMPLÉTER : diplômes / certifications]</mark>
-                depuis <mark class="todo">[À COMPLÉTER : nombre]</mark> ans.
+                depuis <mark class="todo">[À COMPLÉTER : nombre]</mark> ans, basé à Éghezée.
             </p>
             <p>
                 Le sport fait partie de ma vie depuis toujours :
