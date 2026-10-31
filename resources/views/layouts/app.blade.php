@@ -3,6 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {{-- @hasSection : vrai si la page a défini @section('noindex') (pages du compte client) --}}
+        @hasSection('noindex')
+            <meta name="robots" content="noindex, nofollow">
+        @endif
         <title>JF Coaching — @yield('title')</title>
 
         {{-- Icônes dans public/ (adresse fixe, sans Vite) : onglet du navigateur, écran d'accueil du téléphone --}}

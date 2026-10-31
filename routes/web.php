@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Account\AccountController;
+// Alias : il existe aussi un LoginController côté coach
+use App\Http\Controllers\Account\LoginController as AccountLoginController;
+use App\Http\Controllers\Account\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
 // "as" : alias, car il existe déjà un BookingController (côté public) importé plus haut
@@ -50,6 +54,25 @@ Route::post('/annulation/{booking:cancel_token}', [CancellationController::class
     ->name('bookings.destroy')
     ->middleware('throttle:10,10')
     ->missing($cancelLinkMissing);
+
+// ---------- Comptes des clients (guard "client") ----------
+Route::prefix('compte')->name('account.')->group(function () {
+    // guest:client : pages réservées aux visiteurs non connectés comme client
+    // (un client déjà connecté est renvoyé vers son compte, cf. bootstrap/app.php)
+    Route::middleware('guest:client')->group(function () {
+        Route::get('/inscription', [RegisterController::class, 'show'])->name('register');
+        // throttle:5,10 : limite la création de comptes à la chaîne par un robot
+        Route::post('/inscription', [RegisterController::class, 'store'])->middleware('throttle:5,10');
+        Route::get('/connexion', [AccountLoginController::class, 'show'])->name('login');
+        Route::post('/connexion', [AccountLoginController::class, 'store'])->middleware('throttle:5,1');
+    });
+
+    // auth:client : pages réservées au client connecté (sinon redirection vers account.login)
+    Route::middleware('auth:client')->group(function () {
+        Route::get('/', AccountController::class)->name('show');
+        Route::post('/deconnexion', [AccountLoginController::class, 'destroy'])->name('logout');
+    });
+});
 
 // ---------- Interface du coach ----------
 // prefix('coach') : toutes les URL commencent par /coach ; name('coach.') : tous les noms par "coach."

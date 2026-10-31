@@ -152,8 +152,10 @@ header nav a:hover {
     list-style: none;
 }
 
-/* Zone cliquable de 28 px autour d'une icône de 20 px (au moins 24 px pour un doigt) */
-.social-links a {
+/* Zone cliquable de 28 px autour d'une icône de 20 px (au moins 24 px pour un doigt).
+   .account-link : l'icône du compte client, habillée comme les réseaux */
+.social-links a,
+.account-link {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -163,11 +165,13 @@ header nav a:hover {
     transition: color 0.2s ease;
 }
 
-.social-links a:hover {
+.social-links a:hover,
+.account-link:hover {
     color: var(--color-accent);
 }
 
-.social-links svg {
+.social-links svg,
+.account-link svg {
     width: 20px;
     height: 20px;
 }
@@ -1016,7 +1020,8 @@ mark.todo {
     color: var(--color-accent);
 }
 
-.coach-form {
+.coach-form,
+.account-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -1025,7 +1030,8 @@ mark.todo {
     text-align: left;
 }
 
-.coach-form .btn {
+.coach-form .btn,
+.account-form .btn {
     align-self: center;
 }
 
@@ -1099,7 +1105,8 @@ mark.todo {
 }
 
 .coach-form .form-field input,
-.coach-form .form-field textarea {
+.coach-form .form-field textarea,
+.account-form .form-field input {
     font-size: 1rem; /* 16px minimum : sinon Safari iPhone zoome automatiquement sur le champ */
 }
 
@@ -1169,4 +1176,18 @@ mark.todo {
 .btn-small {
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
+}
+
+/* ---------- Compte client (inscription, connexion, mon compte) ---------- */
+/* Formulaire : mêmes règles que .coach-form (voir plus haut), dans une page .message-page */
+
+/* Liens vers le compte : sous les formulaires (« Déjà un compte ? ») et sous l'agenda des cours */
+.account-switch {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.account-switch a {
+    color: var(--color-accent);
 }

@@ -144,6 +144,18 @@
             @endif
         </div>
 
+        {{-- Invitation à créer un compte (le compte sert surtout à réserver : on le propose ici) --}}
+        <p class="account-switch">
+            {{-- @auth('client') : le client est connecté, auth('client')->user() existe forcément dans ce bloc --}}
+            @auth('client')
+                Connecté en tant que {{ auth('client')->user()->name }} · <a href="{{ route('account.show') }}">Mon compte</a>
+            @else
+                Réservez plus vite avec un compte :
+                <a href="{{ route('account.register') }}">Créer un compte</a> ·
+                <a href="{{ route('account.login') }}">Se connecter</a>
+            @endauth
+        </p>
+
         {{-- Modale de réservation : une seule pour tous les cours, remplie par booking-dialog.js --}}
         {{-- data-reopen-course : présent seulement après une erreur → le JS rouvre la modale sur ce cours --}}
         <dialog class="booking-dialog" aria-labelledby="booking-dialog-title" data-booking-dialog

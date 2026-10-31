@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,10 +12,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Middleware "auth" : un visiteur non connecté est envoyé vers la page de connexion du coach
-        $middleware->redirectGuestsTo(fn () => route('coach.login'));
-        // Middleware "guest" : le coach déjà connecté qui ouvre la page de connexion va au tableau de bord
-        $middleware->redirectUsersTo(fn () => route('coach.dashboard'));
+        // Deux espaces connectés : on choisit la destination selon l'adresse demandée.
+        // $request->is('coach', 'coach/*') : vrai pour /coach et tout ce qui commence par /coach/
+
+        // Middleware "auth" : un visiteur non connecté est envoyé vers la bonne page de connexion
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('coach', 'coach/*')
+            ? route('coach.login')
+            : route('account.login'));
+        // Middleware "guest" : une personne déjà connectée qui ouvre une page de connexion va à son espace
+        $middleware->redirectUsersTo(fn (Request $request) => $request->is('coach', 'coach/*')
+            ? route('coach.dashboard')
+            : route('account.show'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
