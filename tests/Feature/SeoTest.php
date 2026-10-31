@@ -13,9 +13,10 @@ class SeoTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('<meta name="description" content="Coaching sportif individuel', false)
-            ->assertSee('<meta property="og:title" content="JF Coaching — Coach sportif', false)
-            ->assertSee('<meta property="og:description" content="Coaching sportif individuel', false)
+            ->assertSee('<title>JF Coaching — Coach sportif à Éghezée', false) // référencement local : la ville dans le titre
+            ->assertSee('<meta name="description" content="Coach sportif à Éghezée', false)
+            ->assertSee('<meta property="og:title" content="JF Coaching — Coach sportif à Éghezée', false)
+            ->assertSee('<meta property="og:description" content="Coach sportif à Éghezée', false)
             ->assertSee('<main>', false) // accessibilité : repère du contenu principal
             ->assertSee('<link rel="icon" href="/favicon.ico"', false)
             ->assertSee('<link rel="apple-touch-icon" href="/apple-touch-icon.png">', false);
