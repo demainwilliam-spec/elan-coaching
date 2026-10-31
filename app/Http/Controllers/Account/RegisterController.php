@@ -22,7 +22,8 @@ class RegisterController extends Controller
         // validated() : uniquement les champs validés (name, email, password), jamais un champ ajouté en douce
         $client = Client::create($request->validated());
 
-        // Événement "compte créé" : à l'étape suivante, il déclenchera l'envoi du mail de vérification
+        // Événement "compte créé" : Laravel y répond en appelant $client->sendEmailVerificationNotification()
+        // (car Client implémente MustVerifyEmail), qui envoie notre mail VerifyAccountEmail
         event(new Registered($client));
 
         // Connecté directement après l'inscription, sans retaper son mot de passe
@@ -30,6 +31,6 @@ class RegisterController extends Controller
         $request->session()->regenerate();
 
         return redirect()->route('account.show')
-            ->with('account_success', 'Bienvenue ! Votre compte est créé.');
+            ->with('account_success', 'Bienvenue ! Votre compte est créé : un mail de confirmation vient de vous être envoyé.');
     }
 }

@@ -2,17 +2,30 @@
 
 namespace App\Models;
 
+use App\Mail\VerifyAccountEmail;
 use Database\Factories\ClientFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 // Authenticatable : la classe de base des modèles qui peuvent se connecter (comme User pour le coach)
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 
-class Client extends Authenticatable
+// implements MustVerifyEmail : Laravel envoie le mail de vérification à l'inscription (événement Registered).
+// Les méthodes hasVerifiedEmail(), markEmailAsVerified()... sont déjà fournies par Authenticatable
+class Client extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<ClientFactory> */
-    use HasFactory, Notifiable; // Notifiable : permet d'envoyer les mails de vérification et de mot de passe oublié
+    use HasFactory, MassPrunable, Notifiable; // Notifiable : permet d'envoyer les mails de vérification et de mot de passe oublié
+
+    // Durée de validité du lien de confirmation reçu par mail
+    public const VERIFICATION_LINK_MINUTES = 60;
+
+    // Un compte jamais confirmé est supprimé après ce délai (faute de frappe, robot, adresse d'autrui)
+    public const UNVERIFIED_RETENTION_DAYS = 7;
 
     protected $fillable = [
         'name',
@@ -32,6 +45,19 @@ class Client extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed', // le mot de passe est haché automatiquement à l'enregistrement
         ];
+    }
+
+    // Remplace le mail de vérification de Laravel (en anglais, avec son propre gabarit) par le nôtre
+    public function sendEmailVerificationNotification(): void
+    {
+        Mail::to($this)->send(new VerifyAccountEmail($this));
+    }
+
+    // Comptes à supprimer par "php artisan model:prune" : jamais confirmés et créés il y a plus de 7 jours
+    public function prunable(): Builder
+    {
+        return static::whereNull('email_verified_at')
+            ->where('created_at', '<', now()->subDays(self::UNVERIFIED_RETENTION_DAYS));
     }
 
     // Relation : un client a plusieurs réservations ($client->bookings)

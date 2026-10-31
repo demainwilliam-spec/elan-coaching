@@ -6,6 +6,9 @@
 @section('content')
 
     <section class="message-page">
+        {{-- Ex. après un clic sur le lien de confirmation sans être connecté --}}
+        @include('account.partials.alerts')
+
         <h2>Connexion</h2>
         <p class="message-text">Accédez à votre compte pour réserver et gérer vos cours.</p>
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Account\AccountController;
+use App\Http\Controllers\Account\EmailVerificationController;
 // Alias : il existe aussi un LoginController côté coach
 use App\Http\Controllers\Account\LoginController as AccountLoginController;
 use App\Http\Controllers\Account\RegisterController;
@@ -67,9 +68,19 @@ Route::prefix('compte')->name('account.')->group(function () {
         Route::post('/connexion', [AccountLoginController::class, 'store'])->middleware('throttle:5,1');
     });
 
+    // Lien de confirmation reçu par mail : accessible connecté ou non (la signature du lien suffit)
+    // {client} : le compte, retrouvé par son id ; {hash} : empreinte de l'adresse à confirmer
+    Route::get('/verification/{client}/{hash}', [EmailVerificationController::class, 'verify'])
+        ->name('verification.verify')
+        ->middleware('throttle:6,1');
+
     // auth:client : pages réservées au client connecté (sinon redirection vers account.login)
     Route::middleware('auth:client')->group(function () {
         Route::get('/', AccountController::class)->name('show');
+        // throttle:3,10 : 3 renvois max toutes les 10 minutes, pour ne pas inonder une boîte mail
+        Route::post('/verification', [EmailVerificationController::class, 'send'])
+            ->name('verification.send')
+            ->middleware('throttle:3,10');
         Route::post('/deconnexion', [AccountLoginController::class, 'destroy'])->name('logout');
     });
 });
