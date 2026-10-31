@@ -51,7 +51,7 @@
     <section id="services" class="theme-light">
         <h2 data-reveal>Mes services</h2>
 
-        {{-- Cartes = liens vers le formulaire (marche sans JS) ; data-service : le JS préremplit le message (service-links.js) --}}
+        {{-- Cartes = liens (marchent sans JS) ; data-service : le JS préremplit le message du formulaire (service-links.js) --}}
         <div class="services-grid">
             <a href="#contact" class="service-card" data-reveal data-service="le coaching individuel">
                 <svg class="service-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -62,24 +62,16 @@
                 <p>Séances en tête-à-tête, programme entièrement personnalisé, ajusté à chaque rendez-vous.</p>
             </a>
 
-            <a href="#contact" class="service-card" data-reveal data-service="le coaching en petit groupe">
+            {{-- Pas de data-service : cette carte mène à l'agenda, où l'on réserve directement --}}
+            <a href="#cours" class="service-card" data-reveal>
                 <svg class="service-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <circle cx="9" cy="7" r="3"/>
                     <circle cx="17" cy="9" r="2.5"/>
                     <path d="M2 20c0-3.5 3-6.5 7-6.5s7 3 7 6.5"/>
                     <path d="M17 13.5c2.5 0.3 4.5 2.5 4.5 6.5"/>
                 </svg>
-                <h3>Petit groupe</h3>
-                <p>De 2 à 4 personnes, même exigence qu'en individuel, tarif dégressif selon le nombre de participants.</p>
-            </a>
-
-            <a href="#contact" class="service-card" data-reveal data-service="le coaching à distance">
-                <svg class="service-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <rect x="3" y="4" width="18" height="12" rx="1"/>
-                    <path d="M8 20h8M12 16v4"/>
-                </svg>
-                <h3>À distance</h3>
-                <p>Un programme structuré à réaliser en autonomie, avec un suivi régulier pour ajuster la progression.</p>
+                <h3>Cours collectifs</h3>
+                <p>Des séances en groupe encadrées par le coach : consultez l'agenda et réservez votre place en ligne.</p>
             </a>
         </div>
 

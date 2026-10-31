@@ -32,13 +32,15 @@ class SeoTest extends TestCase
             ->assertSeeInOrder(['width="444"', 'loading="eager"', 'width="689"', 'loading="lazy"', 'width="597"', 'loading="lazy"'], false);
     }
 
-    public function test_les_cartes_de_services_menent_au_formulaire_de_contact(): void
+    public function test_les_cartes_de_services_menent_au_contact_et_a_l_agenda(): void
     {
-        $this->get('/')->assertSeeInOrder([
-            'href="#contact" class="service-card" data-reveal data-service="le coaching individuel"',
-            'href="#contact" class="service-card" data-reveal data-service="le coaching en petit groupe"',
-            'href="#contact" class="service-card" data-reveal data-service="le coaching à distance"',
-        ], false);
+        $this->get('/')
+            ->assertSeeInOrder([
+                'href="#contact" class="service-card" data-reveal data-service="le coaching individuel"',
+                'href="#cours" class="service-card" data-reveal>',
+            ], false)
+            ->assertDontSee('Petit groupe')
+            ->assertDontSee('À distance');
     }
 
     public function test_les_reseaux_sont_dans_le_header_et_le_footer(): void

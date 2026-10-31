@@ -74,10 +74,6 @@ html {
     --reveal-delay: 120ms;
 }
 
-.services-grid > :nth-child(3) {
-    --reveal-delay: 240ms;
-}
-
 @media (max-width: 768px) {
     /* Cartes empilées : chacune entre dans l'écran à son tour, un délai en plus la ferait arriver en retard */
     .services-grid > * {
@@ -401,9 +397,10 @@ mark.todo {
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
-    margin-bottom: 3rem;
+    max-width: 800px; /* deux cartes seulement : sans limite, elles s'étireraient sur tout l'écran */
+    margin: 0 auto 3rem; /* auto à gauche et à droite : la grille est centrée */
 }
 
 /* Media query : ces règles ne s'appliquent que si l'écran fait 768px de large ou moins.
