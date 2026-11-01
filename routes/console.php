@@ -17,3 +17,6 @@ Schedule::command('model:prune')->daily();
 // Vide les mails en échec (table failed_jobs) de plus de 7 jours, par exemple ceux d'une réservation
 // supprimée avec son cours avant l'envoi
 Schedule::command('queue:prune-failed --hours=168')->daily();
+
+// Supprime les jetons « mot de passe oublié » des clients expirés (plus de 60 min)
+Schedule::command('auth:clear-resets clients')->daily();

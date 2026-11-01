@@ -4,6 +4,7 @@ use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\Account\EmailVerificationController;
 // Alias : il existe aussi un LoginController côté coach
 use App\Http\Controllers\Account\LoginController as AccountLoginController;
+use App\Http\Controllers\Account\PasswordResetController;
 use App\Http\Controllers\Account\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
@@ -66,6 +67,14 @@ Route::prefix('compte')->name('account.')->group(function () {
         Route::post('/inscription', [RegisterController::class, 'store'])->middleware('throttle:5,10');
         Route::get('/connexion', [AccountLoginController::class, 'show'])->name('login');
         Route::post('/connexion', [AccountLoginController::class, 'store'])->middleware('throttle:5,1');
+
+        // Mot de passe oublié : demande du lien, puis formulaire du nouveau mot de passe (lien reçu par mail)
+        Route::get('/mot-de-passe-oublie', [PasswordResetController::class, 'request'])->name('password.request');
+        Route::post('/mot-de-passe-oublie', [PasswordResetController::class, 'email'])->middleware('throttle:5,10');
+        Route::get('/reinitialisation/{token}', [PasswordResetController::class, 'edit'])->name('password.reset');
+        Route::post('/reinitialisation', [PasswordResetController::class, 'update'])
+            ->name('password.update')
+            ->middleware('throttle:5,10');
     });
 
     // Lien de confirmation reçu par mail : accessible connecté ou non (la signature du lien suffit)

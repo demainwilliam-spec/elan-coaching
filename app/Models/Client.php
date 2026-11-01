@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Mail\ResetPasswordEmail;
 use App\Mail\VerifyAccountEmail;
 use Database\Factories\ClientFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -51,6 +52,13 @@ class Client extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification(): void
     {
         Mail::to($this)->send(new VerifyAccountEmail($this));
+    }
+
+    // Même principe pour « mot de passe oublié » : appelée par le broker avec le jeton à mettre dans le lien.
+    // #[\SensitiveParameter] : en cas d'erreur, PHP masque cette valeur dans les traces (logs, page de debug)
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        Mail::to($this)->send(new ResetPasswordEmail($this, $token));
     }
 
     // Comptes à supprimer par "php artisan model:prune" : jamais confirmés et créés il y a plus de 7 jours

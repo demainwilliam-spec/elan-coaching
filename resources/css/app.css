@@ -1208,3 +1208,14 @@ mark.todo {
 .account-notice strong {
     color: var(--color-text);
 }
+
+/* Petit lien sous un champ (« Mot de passe oublié ? »), aligné à droite */
+.form-link {
+    align-self: flex-end;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.form-link:hover {
+    color: var(--color-accent);
+}

@@ -114,6 +114,14 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+
+        // Broker des clients : Password::broker('clients')
+        'clients' => [
+            'provider' => 'clients',
+            'table' => 'client_password_reset_tokens',
+            'expire' => 60, // minutes de validité du lien
+            'throttle' => 60, // secondes à attendre avant de redemander un lien pour la même adresse
+        ],
     ],
 
     /*

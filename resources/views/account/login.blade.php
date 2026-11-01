@@ -25,6 +25,7 @@
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" name="password" autocomplete="current-password" required>
                 @error('password') <p class="form-error">{{ $message }}</p> @enderror
+                <a href="{{ route('account.password.request') }}" class="form-link">Mot de passe oublié ?</a>
             </div>
 
             <label class="form-check">
