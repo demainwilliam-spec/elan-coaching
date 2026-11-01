@@ -14,11 +14,15 @@ class BookingController extends Controller
     // BookCourse $bookCourse : injection de dépendance, Laravel crée l'objet tout seul
     public function store(BookingRequest $request, Course $course, BookCourse $bookCourse): RedirectResponse
     {
+        $client = $request->bookingClient();
+
         try {
+            // Avec un compte confirmé : nom et email du compte ; sinon : ceux tapés dans le formulaire
             $booking = $bookCourse->handle(
                 $course,
-                $request->validated('booking.name'),
-                $request->validated('booking.email'),
+                $client ? $client->name : $request->validated('booking.name'),
+                $client ? $client->email : $request->validated('booking.email'),
+                $client,
             );
         } catch (BookingException $e) {
             // Refus métier : on rouvre le formulaire avec la saisie et le message

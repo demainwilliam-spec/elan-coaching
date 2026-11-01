@@ -12,8 +12,15 @@ use Illuminate\View\View;
 // Même fonctionnement que Coach\LoginController, mais sur le guard "client"
 class LoginController extends Controller
 {
-    public function show(): View
+    public function show(Request $request): View
     {
+        // Lien « Se connecter » de l'agenda (?retour=cours) : après connexion, retour aux cours.
+        // Valeur comparée à une liste fixe, jamais une adresse libre (sinon un lien piégé pourrait
+        // renvoyer vers un autre site après la connexion : faille « open redirect »)
+        if ($request->query('retour') === 'cours') {
+            redirect()->setIntendedUrl(url('/').'#cours'); // l'adresse qu'utilisera intended() dans store()
+        }
+
         return view('account.login');
     }
 

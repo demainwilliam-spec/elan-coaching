@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Client;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -28,10 +29,27 @@ class BookingRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Client confirmé : le nom et l'email viennent du compte, le formulaire n'en contient pas
+        if ($this->bookingClient()) {
+            return [];
+        }
+
         return [
             'booking.name' => 'required|string|max:100',
             'booking.email' => 'required|email:rfc,filter|max:254', // filter : exige un domaine avec un point (refuse "a@b")
         ];
+    }
+
+    /**
+     * Le compte avec lequel on réserve en un clic : le client connecté, seulement si son adresse est confirmée.
+     * Un client non confirmé réserve comme un visiteur (formulaire prérempli).
+     */
+    public function bookingClient(): ?Client
+    {
+        // user('client') : le client connecté (guard "client"), ou null ; fonctionne sans middleware auth sur la route
+        $client = $this->user('client');
+
+        return $client?->hasVerifiedEmail() ? $client : null;
     }
 
     /**

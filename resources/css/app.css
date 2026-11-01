@@ -1219,3 +1219,25 @@ mark.todo {
 .form-link:hover {
     color: var(--color-accent);
 }
+
+/* Agenda, client connecté déjà inscrit : un lien vers son compte à la place du bouton « Réserver » */
+.course-booked {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.course-booked:hover {
+    text-decoration: underline;
+}
+
+/* Modale, client confirmé : « Au nom de ... » à la place des champs nom et email */
+.booking-account {
+    color: var(--color-text-muted);
+}
+
+.booking-account strong {
+    color: var(--color-text);
+}

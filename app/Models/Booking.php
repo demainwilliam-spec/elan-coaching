@@ -19,6 +19,7 @@ class Booking extends Model
     public const RETENTION_MONTHS = 6;
     // course_id absent volontairement : on crée via $course->bookings()->create([...]), qui le remplit
     protected $fillable = [
+        'client_id', // null pour une réservation sans compte
         'name',
         'email',
         'status',
