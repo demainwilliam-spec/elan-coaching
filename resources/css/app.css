@@ -1344,3 +1344,64 @@ mark.todo {
     clip-path: inset(50%); /* rogne tout l'élément */
     white-space: nowrap;
 }
+
+/* ---------- Page « Mon profil » ---------- */
+
+/* Liens discrets « Modifier mon profil » / « Retour à mon compte » */
+.account-back {
+    color: var(--color-accent);
+    white-space: nowrap; /* le lien ne se coupe pas en deux lignes */
+}
+
+/* Espace entre les trois formulaires de la page */
+.account-section {
+    margin-bottom: 4rem;
+}
+
+.account-warning {
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.account-warning a {
+    color: var(--color-accent);
+}
+
+/* La page profil est large (comme Mon compte) et alignée à gauche : ses formulaires prennent toute
+   la largeur au lieu des 400px des autres formulaires du compte */
+.profile-page {
+    text-align: left;
+}
+
+.profile-page .account-form {
+    max-width: none;
+}
+
+.profile-page .account-form .btn {
+    align-self: flex-start; /* bouton à gauche, aligné avec les champs */
+}
+
+.profile-page .form-privacy {
+    text-align: left;
+}
+
+/* Champs côte à côte : grille de 3 colonnes de même largeur (1fr = une part de l'espace disponible).
+   align-items: start : chaque champ reste en haut de sa case, même si un autre affiche une erreur dessous */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr; /* une seule colonne : les champs reviennent les uns sous les autres */
+    }
+}
+
+/* Précision sous un champ (« Seulement pour changer d'email ») */
+.form-hint {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}

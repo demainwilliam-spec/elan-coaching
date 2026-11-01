@@ -10,7 +10,10 @@
         @include('account.partials.alerts')
 
         <h2>Bonjour {{ $client->name }}</h2>
-        <p class="message-text">Connecté avec l'adresse {{ $client->email }}.</p>
+        <p class="message-text">
+            Connecté avec l'adresse {{ $client->email }}.
+            <a href="{{ route('account.profile') }}" class="account-back">Modifier mon profil</a>
+        </p>
 
         {{-- Tant que l'adresse n'est pas confirmée : rappel + bouton pour renvoyer le mail --}}
         @unless ($client->hasVerifiedEmail())

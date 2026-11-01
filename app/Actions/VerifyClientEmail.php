@@ -5,12 +5,14 @@ namespace App\Actions;
 use App\Models\Booking;
 use App\Models\Client;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class VerifyClientEmail
 {
     /**
-     * Marque l'adresse comme confirmée et rattache au compte les réservations faites avec cette adresse.
+     * Marque l'adresse comme confirmée, rattache au compte les réservations faites avec cette adresse
+     * et fait passer ses réservations à venir sur cette adresse (cas d'un changement d'email).
      * Le rattachement n'a lieu qu'ici, après la preuve que l'adresse appartient bien au client :
      * sinon n'importe qui pourrait créer un compte avec l'adresse d'un autre et voir ses réservations.
      */
@@ -27,6 +29,18 @@ class VerifyClientEmail
             Booking::whereNull('client_id')
                 ->where('email', $client->email)
                 ->update(['client_id' => $client->id]);
+
+            // Adresse changée depuis le profil : les réservations à venir du compte passent sur la nouvelle
+            // adresse, pour que leurs mails (promotion, cours modifié...) arrivent au bon endroit.
+            // Cours où cette adresse est déjà inscrite : exclus (l'index unique course_id + email refuserait).
+            // Liste lue à part : MariaDB interdit un UPDATE de bookings avec une sous-requête sur bookings
+            $taken = Booking::where('email', $client->email)->pluck('course_id');
+
+            $client->bookings()
+                ->where('email', '!=', $client->email)
+                ->whereNotIn('course_id', $taken)
+                ->whereHas('course', fn (Builder $query) => $query->where('starts_at', '>', now()))
+                ->update(['email' => $client->email]);
         });
 
         event(new Verified($client)); // événement standard de Laravel, pour d'éventuels besoins futurs

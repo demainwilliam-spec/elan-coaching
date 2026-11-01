@@ -5,6 +5,7 @@ use App\Http\Controllers\Account\EmailVerificationController;
 // Alias : il existe aussi un LoginController côté coach
 use App\Http\Controllers\Account\LoginController as AccountLoginController;
 use App\Http\Controllers\Account\PasswordResetController;
+use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Account\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
@@ -68,14 +69,17 @@ Route::prefix('compte')->name('account.')->group(function () {
         Route::get('/connexion', [AccountLoginController::class, 'show'])->name('login');
         Route::post('/connexion', [AccountLoginController::class, 'store'])->middleware('throttle:5,1');
 
-        // Mot de passe oublié : demande du lien, puis formulaire du nouveau mot de passe (lien reçu par mail)
+        // Mot de passe oublié : demande du lien (visiteur non connecté)
         Route::get('/mot-de-passe-oublie', [PasswordResetController::class, 'request'])->name('password.request');
         Route::post('/mot-de-passe-oublie', [PasswordResetController::class, 'email'])->middleware('throttle:5,10');
-        Route::get('/reinitialisation/{token}', [PasswordResetController::class, 'edit'])->name('password.reset');
-        Route::post('/reinitialisation', [PasswordResetController::class, 'update'])
-            ->name('password.update')
-            ->middleware('throttle:5,10');
     });
+
+    // Formulaire du nouveau mot de passe (lien reçu par mail) : accessible connecté ou non,
+    // car le lien est aussi demandé depuis le profil par un client connecté (le jeton suffit comme preuve)
+    Route::get('/reinitialisation/{token}', [PasswordResetController::class, 'edit'])->name('password.reset');
+    Route::post('/reinitialisation', [PasswordResetController::class, 'update'])
+        ->name('password.update')
+        ->middleware('throttle:5,10');
 
     // Lien de confirmation reçu par mail : accessible connecté ou non (la signature du lien suffit)
     // {client} : le compte, retrouvé par son id ; {hash} : empreinte de l'adresse à confirmer
@@ -91,7 +95,19 @@ Route::prefix('compte')->name('account.')->group(function () {
             ->name('verification.send')
             ->middleware('throttle:3,10');
         Route::post('/deconnexion', [AccountLoginController::class, 'destroy'])->name('logout');
+
+        // Profil : nom / email, lien de changement de mot de passe, suppression du compte
+        // (throttle : essais de mot de passe et envois de mails limités)
+        Route::get('/profil', [ProfileController::class, 'edit'])->name('profile');
+        Route::put('/profil', [ProfileController::class, 'update'])->name('profile.update')->middleware('throttle:10,10');
+        Route::post('/profil/mot-de-passe', [ProfileController::class, 'sendPasswordLink'])
+            ->name('profile.password')
+            ->middleware('throttle:3,10');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy')->middleware('throttle:10,10');
     });
+
+    // Page affichée après la suppression du compte (la personne n'est plus connectée)
+    Route::view('/supprime', 'account.deleted')->name('deleted');
 });
 
 // ---------- Interface du coach ----------
