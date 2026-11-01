@@ -42,7 +42,7 @@
         {{-- Client connecté déjà inscrit : un lien vers son compte à la place du bouton.
              isset : vrai si le cours est dans $myBookings (préparé par HomeController : [id du cours => statut]) --}}
         @if (isset($myBookings[$course->id]))
-            <a href="{{ route('account.show') }}" class="course-booked">
+            <a href="{{ route('account.show') }}#reservations" class="course-booked">
                 {{ $myBookings[$course->id] === \App\Enums\BookingStatus::Confirmed ? 'Inscrit ✓' : "En liste d'attente" }}
             </a>
         @else

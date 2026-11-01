@@ -1241,3 +1241,106 @@ mark.todo {
 .booking-account strong {
     color: var(--color-text);
 }
+
+/* « Mes réservations » (page Mon compte) */
+
+/* La page Mon compte est plus large que les autres pages simples (600px), pour le tableau */
+.account-page {
+    max-width: 900px;
+}
+
+.account-heading {
+    margin-bottom: 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+}
+
+/* ---------- Tableau de données (réservations du client) ---------- */
+
+.data-table {
+    width: 100%;
+    margin-bottom: 3rem;
+    border-collapse: collapse; /* une seule bordure entre deux cellules, au lieu de deux collées */
+    text-align: left;
+}
+
+.data-table th {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-accent);
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+/* Même séparateur discret que les lignes de l'agenda */
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-bg-alt);
+    vertical-align: middle;
+}
+
+/* Sur téléphone, 5 colonnes ne tiennent pas : chaque ligne devient un bloc, une cellule par ligne.
+   display: block retire la mise en page en tableau ; l'en-tête est masqué, chaque cellule affiche
+   le nom de sa colonne avant son contenu (::before + attr(data-label) : lit l'attribut HTML) */
+@media (max-width: 768px) {
+    .data-table thead {
+        display: none;
+    }
+
+    .data-table tr,
+    .data-table td {
+        display: block;
+    }
+
+    .data-table tr {
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--color-bg-alt);
+    }
+
+    .data-table td {
+        display: flex;
+        gap: 1rem;
+        padding: 0.3rem 0;
+        border-bottom: none;
+    }
+
+    .data-table td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 5rem; /* colonne fixe de 5rem pour les noms : les valeurs sont alignées */
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+    }
+}
+
+/* Info secondaire dans une cellule (durée du cours, « moins de 24 h ») */
+.data-table-muted {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.data-table-action {
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .data-table-action {
+        padding-top: 0.75rem;
+    }
+}
+
+/* Texte lu par les lecteurs d'écran mais invisible à l'écran (ex. titre de la colonne Action).
+   Pas display: none, qui le cacherait aussi aux lecteurs d'écran */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%); /* rogne tout l'élément */
+    white-space: nowrap;
+}

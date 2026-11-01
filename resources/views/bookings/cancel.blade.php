@@ -50,7 +50,9 @@
                         @csrf
                         <button type="submit" class="btn">Confirmer l'annulation</button>
                     </form>
-                    <a href="/" class="btn btn-secondary">Garder ma réservation</a>
+                    {{-- Propriétaire connecté (venu de « Mon compte ») : retour à son compte, sinon à l'accueil --}}
+                    @php($ownerLoggedIn = $booking->client_id !== null && auth('client')->id() === $booking->client_id)
+                    <a href="{{ $ownerLoggedIn ? route('account.show') : '/' }}" class="btn btn-secondary">Garder ma réservation</a>
                 @else
                     <a href="/#contact" class="btn">Contacter le coach</a>
                 @endif
