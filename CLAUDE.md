@@ -5,6 +5,7 @@
 - 28/10/2026 : lot 5 « avant le lancement » (pages légales, erreurs, SEO, polices locales, nettoyage planifié, audit)
 - 31/10/2026 : retours du coach après la présentation (2 cartes de services, texte de présentation à côté des photos)
 - 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon ; animations, cartes de services cliquables, liens Instagram / Facebook
+- 31/10 – 01/11/2026 : ville (Éghezée) pour le référencement local ; comptes clients (branche feat/comptes-clients)
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -25,6 +26,10 @@
 - Le coach peut retirer quelqu'un sans limite des 24 h (la personne est prévenue), inscrire quelqu'un à la main (mêmes règles qu'en ligne)
 - Modifier un cours : capacité jamais sous le nombre de confirmés ; capacité augmentée → promotions ; date / durée / lieu changés → mail à tous les inscrits
 - Supprimer un cours → mail à tous les inscrits, avec un message facultatif du coach
+- Compte client facultatif : on peut toujours réserver sans compte ; un compte = une place par cours
+- Réservation en un clic seulement avec une adresse confirmée ; sinon formulaire prérempli (réservation rattachée au compte à la confirmation)
+- Une réservation (avec ou sans compte) est rattachée au compte confirmé de même adresse
+- Compte supprimé (par le client ou pour inactivité) → ses réservations restent, détachées du compte (client_id null)
 
 ## Commandes
 - Lancer le serveur Laravel : `php artisan serve`
@@ -35,6 +40,8 @@
 - Lancer les tests (SQLite en mémoire, ne touche pas à la base) : `php artisan test`
 - Repartir d'une base propre (supprime tout, recrée, remplit) : `php artisan migrate:fresh --seed`
 - Client MySQL en ligne de commande : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root jf_coaching`
+- Prévenir les clients inactifs (lancée chaque jour par le planificateur) : `php artisan clients:warn-inactive`
+- Exécuter du code Laravel ponctuel : `php artisan tinker --execute="..."` (sans --execute, tinker attend une saisie et bloque)
 
 ## Fonctionnalités en place
 - Formulaire de contact (#contact) : ContactRequest (validation) → ContactController → Mailable ContactMessage
@@ -52,10 +59,21 @@
 - Interface coach (/coach, non liée depuis le site, `noindex`) : connexion (Coach\LoginController, throttle:5,1, « rester connecté ») ; tableau de bord ; créer / modifier / dupliquer / supprimer un cours (Coach\CourseController, actions UpdateCourse / DeleteCourse) ; inscrits d'un cours (Coach\BookingController, alias `CoachBookingController` dans routes/web.php)
 - Pages légales (Route::view, sans contrôleur) : /mentions-legales (dont conditions de réservation) et /confidentialite (RGPD, Belgique) ; liens dans le footer et sous les formulaires ; infos manquantes signalées par `<mark class="todo">[À COMPLÉTER…]</mark>`
 - Pages d'erreur : `resources/views/errors/{404,419,429,500,503}.blade.php` sur un gabarit commun `errors/layout` (la 500 n'apparaît qu'avec APP_DEBUG=false)
-- SEO : meta description (par défaut dans `layouts/app`, surchargeable par `@section('description')`), Open Graph, canonical ; /sitemap.xml généré par une route ; robots.txt bloque /coach et /annulation/
+- SEO : meta description (par défaut dans `layouts/app`, surchargeable par `@section('description')`), Open Graph, canonical ; /sitemap.xml généré par une route ; robots.txt bloque /coach, /annulation/ et /compte ; `@section('noindex', true)` ajoute la balise noindex dans `layouts/app`
 - Polices hébergées sur le site via les paquets npm Fontsource (importées en haut de app.css) : aucun appel à Google Fonts (RGPD)
-- Tâches planifiées (routes/console.php), chaque jour : `model:prune` (Booking MassPrunable : réservations des cours passés depuis plus de 6 mois, `Booking::RETENTION_MONTHS`) et `queue:prune-failed --hours=168` ; en local `php artisan schedule:work` si besoin
-- À faire plus tard : historique des cours passés ; prévenir les personnes restées en liste d'attente après la limite des 24 h (planificateur)
+- Tâches planifiées (routes/console.php), chaque jour : `model:prune` (Booking MassPrunable : réservations des cours passés depuis plus de 6 mois, `Booking::RETENTION_MONTHS` ; Client MassPrunable : comptes non confirmés après 7 jours, comptes inactifs), `queue:prune-failed --hours=168`, `auth:clear-resets clients` (jetons de mot de passe expirés) et `clients:warn-inactive` ; en local `php artisan schedule:work` si besoin
+- Comptes clients (/compte, `noindex`, bloqué dans robots.txt) :
+  - guard `client` + provider `clients` + broker `clients` (config/auth.php), table `clients` séparée de `users` (coach) ; modèle Client (MustVerifyEmail, MassPrunable) ; Booking.client_id nullable, `nullOnDelete`
+  - guards toujours nommés : `auth:web` / `guest:web` côté coach, `auth:client` / `guest:client` côté client, `auth('client')->user()` / `$request->user('client')` dans le code ; sans nom, le guard par défaut peut basculer sur `client` pendant une requête
+  - redirections selon l'adresse (/coach… ou non) dans bootstrap/app.php
+  - contrôleurs dans App\Http\Controllers\Account : RegisterController, LoginController (alias `AccountLoginController`, `?retour=cours` comparé à une valeur fixe contre l'open redirect), EmailVerificationController, PasswordResetController, AccountController (Mon compte + tableau « Mes réservations »), ProfileController
+  - vérification de l'email : lien signé 60 min (`URL::temporarySignedRoute`, hash de l'adresse), valable sans être connecté ; action App\Actions\VerifyClientEmail (rattache les réservations de même adresse, fait passer les réservations à venir sur une nouvelle adresse)
+  - mot de passe oublié : broker `clients`, table `client_password_reset_tokens` ; le lien confirme aussi l'adresse ; changement de mot de passe depuis le profil = même lien par mail (pas de formulaire)
+  - profil : nom / email (mot de passe actuel exigé pour changer d'email, alerte EmailChanged à l'ancienne adresse), suppression du compte ; formulaires séparés par error bags (`validateWithBag`)
+  - mails : VerifyAccountEmail, ResetPasswordEmail, EmailChanged, InactiveAccountWarning (méthodes `sendEmailVerificationNotification` / `sendPasswordResetNotification` de Client remplacées par nos Mailables)
+  - inactivité : `last_active_at` mis à jour par `Client::markActive()` (événement Login dans AppServiceProvider, y compris « rester connecté », et réservation avec le compte) ; avertissement après 11 mois, suppression 30 jours après l'avertissement (`Client::INACTIVE_RETENTION_MONTHS`, `INACTIVE_WARNING_DAYS`)
+  - affichage : icône compte dans le header, invitation sous l'agenda, modale de réservation selon visiteur / client confirmé / non confirmé, agenda « Inscrit ✓ / En liste d'attente » ; classes CSS `.account-*`, tableau `.data-table` (empilé sur téléphone via `data-label`), grille `.form-row`, `.visually-hidden`
+- À faire plus tard : historique des cours passés (« Mes réservations » ne montre que les cours à venir) ; prévenir les personnes restées en liste d'attente après la limite des 24 h (planificateur) ; éventuellement indiquer dans les inscrits du coach qui a un compte
 - Thème noir et blanc alterné : noir par défaut (`:root`), sections blanches avec la classe `.theme-light` qui redéfinit les mêmes variables (Services, Contact) ; pages légales, d'erreur et espace coach en noir ; mails en noir et blanc (couleurs écrites en dur, les messageries ignorent les variables CSS)
 - Présentation « Votre coach » sous l'accueil (section `.about`, grille 2 colonnes : texte à gauche, carrousel à droite ; empilés sur téléphone, texte d'abord) ; texte = brouillon avec `<mark class="todo">` à compléter par le coach
 - Carrousel photo (dans `.about`, `role="region"`) : liste `$photos` en haut de `home.blade.php`, images WebP dans `resources/images` servies par `Vite::asset()` (incluses au build via `import.meta.glob` dans app.js), noir et blanc par `filter: grayscale`, cadre 4:5, photo en largeur en `object-fit: contain` (`landscape`), défilement auto 5 s (resources/js/photo-carousel.js), arrêt au survol / focus, désactivé si « moins d'animations » ; pas de bouton pause (choix assumé)
@@ -90,6 +108,10 @@
 - Conversion d'images : PHP de XAMPP sans WebP → utiliser sharp (Node) depuis un dossier temporaire, hors des dépendances du projet ; seules les images converties sont commitées
 - Les navigateurs gardent le favicon en cache : le vérifier en navigation privée
 - Vérifier les failles des dépendances avant une mise en ligne : `npm audit` et `composer audit`
+- MariaDB refuse un UPDATE d'une table avec une sous-requête sur cette même table (erreur 1093), alors que SQLite (tests) l'accepte : lire la liste à part d'abord (cf. VerifyClientEmail) et vérifier ce genre de requête sur la vraie base
+- `update()` / `create()` ignorent sans erreur les colonnes absentes de `$fillable` (ex. `email_verified_at`) : utiliser `forceFill()` quand c'est voulu
+- Changer de mot de passe invalide les cookies « rester connecté » des autres appareils (`remember_token` renouvelé), mais pas une session déjà ouverte ailleurs : elle expire après 2 h d'inactivité (`SESSION_LIFETIME`)
+- Se déconnecter (coach ou client) vide toute la session : un coach connecté dans le même navigateur qu'un client est déconnecté aussi (accepté)
 
 ## Conventions
 - Branches : `main` / `dev` / `feat/xxx`, jamais de travail direct sur `main`

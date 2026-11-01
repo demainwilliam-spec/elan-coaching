@@ -7,6 +7,7 @@ use App\Enums\BookingStatus;
 use App\Exceptions\BookingException;
 use App\Models\Booking;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class CancellationController extends Controller
@@ -30,10 +31,13 @@ class CancellationController extends Controller
 
         $course = $booking->course;
         $what = $booking->status === BookingStatus::Confirmed ? 'Votre réservation' : 'Votre inscription sur la liste d\'attente';
+        $message = "{$what} au cours {$course->title} du {$course->starts_at->translatedFormat('l j F \à H\hi')} est annulée.";
 
-        return redirect('/#cours')->with(
-            'booking_success',
-            "{$what} au cours {$course->title} du {$course->starts_at->translatedFormat('l j F \à H\hi')} est annulée."
-        );
+        // Annulation depuis « Mon compte » (client connecté, propriétaire de la réservation) : retour à son compte
+        if ($booking->client_id !== null && Auth::guard('client')->id() === $booking->client_id) {
+            return to_route('account.show')->with('account_success', $message);
+        }
+
+        return redirect('/#cours')->with('booking_success', $message);
     }
 }

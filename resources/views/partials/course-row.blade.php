@@ -39,6 +39,13 @@
             <span style="width: {{ $course->fillPercent() }}%"></span>
         </div>
 
+        {{-- Client connecté déjà inscrit : un lien vers son compte à la place du bouton.
+             isset : vrai si le cours est dans $myBookings (préparé par HomeController : [id du cours => statut]) --}}
+        @if (isset($myBookings[$course->id]))
+            <a href="{{ route('account.show') }}#reservations" class="course-booked">
+                {{ $myBookings[$course->id] === \App\Enums\BookingStatus::Confirmed ? 'Inscrit ✓' : "En liste d'attente" }}
+            </a>
+        @else
         {{-- data-* : les infos du cours, recopiées dans la modale par booking-dialog.js au clic --}}
         <button type="button" @class(['btn', 'btn-secondary' => $course->isFull()])
             data-booking-open
@@ -51,5 +58,6 @@
             data-full="{{ $course->isFull() ? '1' : '0' }}">
             {{ $course->isFull() ? "Liste d'attente" : 'Réserver' }}
         </button>
+        @endif
     </div>
 </li>

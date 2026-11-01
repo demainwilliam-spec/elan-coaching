@@ -152,8 +152,10 @@ header nav a:hover {
     list-style: none;
 }
 
-/* Zone cliquable de 28 px autour d'une icône de 20 px (au moins 24 px pour un doigt) */
-.social-links a {
+/* Zone cliquable de 28 px autour d'une icône de 20 px (au moins 24 px pour un doigt).
+   .account-link : l'icône du compte client, habillée comme les réseaux */
+.social-links a,
+.account-link {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -163,11 +165,13 @@ header nav a:hover {
     transition: color 0.2s ease;
 }
 
-.social-links a:hover {
+.social-links a:hover,
+.account-link:hover {
     color: var(--color-accent);
 }
 
-.social-links svg {
+.social-links svg,
+.account-link svg {
     width: 20px;
     height: 20px;
 }
@@ -1016,7 +1020,8 @@ mark.todo {
     color: var(--color-accent);
 }
 
-.coach-form {
+.coach-form,
+.account-form {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -1025,7 +1030,8 @@ mark.todo {
     text-align: left;
 }
 
-.coach-form .btn {
+.coach-form .btn,
+.account-form .btn {
     align-self: center;
 }
 
@@ -1099,7 +1105,8 @@ mark.todo {
 }
 
 .coach-form .form-field input,
-.coach-form .form-field textarea {
+.coach-form .form-field textarea,
+.account-form .form-field input {
     font-size: 1rem; /* 16px minimum : sinon Safari iPhone zoome automatiquement sur le champ */
 }
 
@@ -1169,4 +1176,232 @@ mark.todo {
 .btn-small {
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
+}
+
+/* ---------- Compte client (inscription, connexion, mon compte) ---------- */
+/* Formulaire : mêmes règles que .coach-form (voir plus haut), dans une page .message-page */
+
+/* Liens vers le compte : sous les formulaires (« Déjà un compte ? ») et sous l'agenda des cours */
+.account-switch {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.account-switch a {
+    color: var(--color-accent);
+}
+
+/* Rappel « Confirmez votre adresse » : filet de couleur d'accent à gauche, comme .booking-summary */
+.account-notice {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-accent);
+    text-align: left;
+    color: var(--color-text-muted);
+}
+
+.account-notice strong {
+    color: var(--color-text);
+}
+
+/* Petit lien sous un champ (« Mot de passe oublié ? »), aligné à droite */
+.form-link {
+    align-self: flex-end;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.form-link:hover {
+    color: var(--color-accent);
+}
+
+/* Agenda, client connecté déjà inscrit : un lien vers son compte à la place du bouton « Réserver » */
+.course-booked {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.course-booked:hover {
+    text-decoration: underline;
+}
+
+/* Modale, client confirmé : « Au nom de ... » à la place des champs nom et email */
+.booking-account {
+    color: var(--color-text-muted);
+}
+
+.booking-account strong {
+    color: var(--color-text);
+}
+
+/* « Mes réservations » (page Mon compte) */
+
+/* La page Mon compte est plus large que les autres pages simples (600px), pour le tableau */
+.account-page {
+    max-width: 900px;
+}
+
+.account-heading {
+    margin-bottom: 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+}
+
+/* ---------- Tableau de données (réservations du client) ---------- */
+
+.data-table {
+    width: 100%;
+    margin-bottom: 3rem;
+    border-collapse: collapse; /* une seule bordure entre deux cellules, au lieu de deux collées */
+    text-align: left;
+}
+
+.data-table th {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-accent);
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+/* Même séparateur discret que les lignes de l'agenda */
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-bg-alt);
+    vertical-align: middle;
+}
+
+/* Sur téléphone, 5 colonnes ne tiennent pas : chaque ligne devient un bloc, une cellule par ligne.
+   display: block retire la mise en page en tableau ; l'en-tête est masqué, chaque cellule affiche
+   le nom de sa colonne avant son contenu (::before + attr(data-label) : lit l'attribut HTML) */
+@media (max-width: 768px) {
+    .data-table thead {
+        display: none;
+    }
+
+    .data-table tr,
+    .data-table td {
+        display: block;
+    }
+
+    .data-table tr {
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--color-bg-alt);
+    }
+
+    .data-table td {
+        display: flex;
+        gap: 1rem;
+        padding: 0.3rem 0;
+        border-bottom: none;
+    }
+
+    .data-table td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 5rem; /* colonne fixe de 5rem pour les noms : les valeurs sont alignées */
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+    }
+}
+
+/* Info secondaire dans une cellule (durée du cours, « moins de 24 h ») */
+.data-table-muted {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.data-table-action {
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .data-table-action {
+        padding-top: 0.75rem;
+    }
+}
+
+/* Texte lu par les lecteurs d'écran mais invisible à l'écran (ex. titre de la colonne Action).
+   Pas display: none, qui le cacherait aussi aux lecteurs d'écran */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%); /* rogne tout l'élément */
+    white-space: nowrap;
+}
+
+/* ---------- Page « Mon profil » ---------- */
+
+/* Liens discrets « Modifier mon profil » / « Retour à mon compte » */
+.account-back {
+    color: var(--color-accent);
+    white-space: nowrap; /* le lien ne se coupe pas en deux lignes */
+}
+
+/* Espace entre les trois formulaires de la page */
+.account-section {
+    margin-bottom: 4rem;
+}
+
+.account-warning {
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.account-warning a {
+    color: var(--color-accent);
+}
+
+/* La page profil est large (comme Mon compte) et alignée à gauche : ses formulaires prennent toute
+   la largeur au lieu des 400px des autres formulaires du compte */
+.profile-page {
+    text-align: left;
+}
+
+.profile-page .account-form {
+    max-width: none;
+}
+
+.profile-page .account-form .btn {
+    align-self: flex-start; /* bouton à gauche, aligné avec les champs */
+}
+
+.profile-page .form-privacy {
+    text-align: left;
+}
+
+/* Champs côte à côte : grille de 3 colonnes de même largeur (1fr = une part de l'espace disponible).
+   align-items: start : chaque champ reste en haut de sa case, même si un autre affiche une erreur dessous */
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr; /* une seule colonne : les champs reviennent les uns sous les autres */
+    }
+}
+
+/* Précision sous un champ (« Seulement pour changer d'email ») */
+.form-hint {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
 }

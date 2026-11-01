@@ -8,7 +8,7 @@
     <article class="legal-page">
         <h1>Politique de confidentialité</h1>
 
-        <p class="legal-updated">Dernière mise à jour : 28 octobre 2026</p>
+        <p class="legal-updated">Dernière mise à jour : 1er novembre 2026</p>
 
         <p>
             JF Coaching collecte le minimum de données nécessaires pour vous répondre et gérer vos réservations.
@@ -37,6 +37,15 @@
             <li><strong>Durée :</strong> supprimées immédiatement si vous annulez, et automatiquement 6 mois après la date du cours.</li>
         </ul>
 
+        <h3>Compte client (facultatif)</h3>
+        <ul>
+            <li><strong>Données :</strong> nom, adresse email, mot de passe, date de confirmation de l'adresse, et la liste de vos réservations.</li>
+            <li><strong>Pourquoi :</strong> vous permettre de réserver sans ressaisir vos coordonnées et de suivre vos réservations (base légale : l'exécution du service que vous demandez en créant un compte).</li>
+            <li><strong>Mot de passe :</strong> jamais enregistré tel quel, seulement sous une forme chiffrée irréversible : personne, pas même le coach, ne peut le lire.</li>
+            <li><strong>Durée :</strong> tant que le compte existe. Vous pouvez le supprimer vous-même à tout moment depuis la page « Mon profil ». Un compte sans aucune activité (connexion ou réservation) pendant {{ \App\Models\Client::INACTIVE_RETENTION_MONTHS }} mois est supprimé automatiquement, après un email d'avertissement envoyé {{ \App\Models\Client::INACTIVE_WARNING_DAYS }} jours avant. Un compte dont l'adresse n'est jamais confirmée est supprimé automatiquement après {{ \App\Models\Client::UNVERIFIED_RETENTION_DAYS }} jours.</li>
+            <li><strong>À la suppression du compte :</strong> vos réservations à venir sont maintenues (vous restez inscrit et pouvez les annuler par le lien reçu par email) ; elles sont ensuite supprimées comme toutes les réservations, 6 mois après la date du cours.</li>
+        </ul>
+
         <h3>Données techniques</h3>
         <ul>
             <li><strong>Données :</strong> adresse IP et type de navigateur.</li>
@@ -60,13 +69,18 @@
         </p>
         <ul>
             <li><code>jf-coaching-session</code> : garde les informations de votre visite (par exemple un formulaire mal rempli) ; supprimé après 2 heures d'inactivité ;</li>
-            <li><code>XSRF-TOKEN</code> : protège les formulaires contre les envois frauduleux ; même durée.</li>
+            <li><code>XSRF-TOKEN</code> : protège les formulaires contre les envois frauduleux ; même durée ;</li>
+            <li><code>remember_client_…</code> : seulement si vous cochez « Rester connecté » en vous connectant à votre compte ; vous garde connecté sur cet appareil pendant 400 jours au maximum, ou jusqu'à ce que vous vous déconnectiez.</li>
         </ul>
 
         <h2>Vos droits</h2>
         <p>
             Vous pouvez à tout moment demander à consulter, corriger ou supprimer vos données, ou vous opposer à leur utilisation.
             Écrivez à <mark class="todo">[À COMPLÉTER : email du coach]</mark> : nous répondons dans un délai d'un mois maximum.
+        </p>
+        <p>
+            Si vous avez un compte, vous pouvez aussi corriger votre nom et votre email, ou supprimer votre compte,
+            vous-même depuis la page « Mon profil ».
         </p>
         <p>
             Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une plainte auprès de

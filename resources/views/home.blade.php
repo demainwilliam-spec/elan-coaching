@@ -144,6 +144,18 @@
             @endif
         </div>
 
+        {{-- Invitation à créer un compte (le compte sert surtout à réserver : on le propose ici) --}}
+        <p class="account-switch">
+            {{-- @auth('client') : le client est connecté, auth('client')->user() existe forcément dans ce bloc --}}
+            @auth('client')
+                Connecté en tant que {{ auth('client')->user()->name }} · <a href="{{ route('account.show') }}">Mon compte</a>
+            @else
+                Réservez plus vite avec un compte :
+                <a href="{{ route('account.register') }}">Créer un compte</a> ·
+                <a href="{{ route('account.login', ['retour' => 'cours']) }}">Se connecter</a>
+            @endauth
+        </p>
+
         {{-- Modale de réservation : une seule pour tous les cours, remplie par booking-dialog.js --}}
         {{-- data-reopen-course : présent seulement après une erreur → le JS rouvre la modale sur ce cours --}}
         <dialog class="booking-dialog" aria-labelledby="booking-dialog-title" data-booking-dialog
@@ -183,24 +195,42 @@
                     {{-- Champ caché : l'id du cours revient dans old() après une erreur, pour rouvrir la bonne modale --}}
                     <input type="hidden" name="booking[course_id]" value="{{ old('booking.course_id') }}" data-booking-course-id>
 
-                    <div class="form-field @error('booking.name') has-error @enderror">
-                        <label for="booking-name">Nom</label>
-                        {{-- name="booking[name]" : arrive côté serveur dans le tableau "booking" (booking.name) --}}
-                        <input type="text" id="booking-name" name="booking[name]" autocomplete="name"
-                            value="{{ old('booking.name') }}" required maxlength="100">
-                        @error('booking.name')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    {{-- @php(...) : variable locale à la vue ; null pour un visiteur --}}
+                    @php($client = auth('client')->user())
 
-                    <div class="form-field @error('booking.email') has-error @enderror">
-                        <label for="booking-email">Email</label>
-                        <input type="email" id="booking-email" name="booking[email]" autocomplete="email"
-                            value="{{ old('booking.email') }}" required maxlength="254">
-                        @error('booking.email')
-                            <p class="form-error">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    @if ($client?->hasVerifiedEmail())
+                        {{-- Client confirmé : aucun champ, la réservation est faite au nom du compte --}}
+                        <p class="booking-account">
+                            Au nom de <strong>{{ $client->name }}</strong> ({{ $client->email }})
+                        </p>
+                    @else
+                        @if ($client)
+                            {{-- Client pas encore confirmé : formulaire prérempli, rattaché au compte à la confirmation --}}
+                            <p class="booking-notice">
+                                Confirmez votre adresse email (lien reçu par mail) pour réserver en un clic.
+                            </p>
+                        @endif
+
+                        <div class="form-field @error('booking.name') has-error @enderror">
+                            <label for="booking-name">Nom</label>
+                            {{-- name="booking[name]" : arrive côté serveur dans le tableau "booking" (booking.name) --}}
+                            {{-- old(champ, défaut) : la saisie précédente après une erreur, sinon le nom du compte --}}
+                            <input type="text" id="booking-name" name="booking[name]" autocomplete="name"
+                                value="{{ old('booking.name', $client?->name) }}" required maxlength="100">
+                            @error('booking.name')
+                                <p class="form-error">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="form-field @error('booking.email') has-error @enderror">
+                            <label for="booking-email">Email</label>
+                            <input type="email" id="booking-email" name="booking[email]" autocomplete="email"
+                                value="{{ old('booking.email', $client?->email) }}" required maxlength="254">
+                            @error('booking.email')
+                                <p class="form-error">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    @endif
 
                     <p class="booking-notice">
                         Annulation possible jusqu'à 24 h avant le début du cours.
@@ -210,6 +240,14 @@
 
                     <button type="submit" class="btn" data-booking-submit>Confirmer la réservation</button>
                 </form>
+
+                @guest('client')
+                    {{-- Visiteur : le compte évite de retaper nom et email à chaque réservation --}}
+                    <p class="account-switch">
+                        Vous avez un compte ? <a href="{{ route('account.login', ['retour' => 'cours']) }}">Se connecter</a> ·
+                        <a href="{{ route('account.register') }}">Créer un compte</a>
+                    </p>
+                @endguest
             </div>
         </dialog>
     </section>

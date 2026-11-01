@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\Account\AccountController;
+use App\Http\Controllers\Account\EmailVerificationController;
+// Alias : il existe aussi un LoginController côté coach
+use App\Http\Controllers\Account\LoginController as AccountLoginController;
+use App\Http\Controllers\Account\PasswordResetController;
+use App\Http\Controllers\Account\ProfileController;
+use App\Http\Controllers\Account\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
 // "as" : alias, car il existe déjà un BookingController (côté public) importé plus haut
@@ -51,18 +58,72 @@ Route::post('/annulation/{booking:cancel_token}', [CancellationController::class
     ->middleware('throttle:10,10')
     ->missing($cancelLinkMissing);
 
+// ---------- Comptes des clients (guard "client") ----------
+Route::prefix('compte')->name('account.')->group(function () {
+    // guest:client : pages réservées aux visiteurs non connectés comme client
+    // (un client déjà connecté est renvoyé vers son compte, cf. bootstrap/app.php)
+    Route::middleware('guest:client')->group(function () {
+        Route::get('/inscription', [RegisterController::class, 'show'])->name('register');
+        // throttle:5,10 : limite la création de comptes à la chaîne par un robot
+        Route::post('/inscription', [RegisterController::class, 'store'])->middleware('throttle:5,10');
+        Route::get('/connexion', [AccountLoginController::class, 'show'])->name('login');
+        Route::post('/connexion', [AccountLoginController::class, 'store'])->middleware('throttle:5,1');
+
+        // Mot de passe oublié : demande du lien (visiteur non connecté)
+        Route::get('/mot-de-passe-oublie', [PasswordResetController::class, 'request'])->name('password.request');
+        Route::post('/mot-de-passe-oublie', [PasswordResetController::class, 'email'])->middleware('throttle:5,10');
+    });
+
+    // Formulaire du nouveau mot de passe (lien reçu par mail) : accessible connecté ou non,
+    // car le lien est aussi demandé depuis le profil par un client connecté (le jeton suffit comme preuve)
+    Route::get('/reinitialisation/{token}', [PasswordResetController::class, 'edit'])->name('password.reset');
+    Route::post('/reinitialisation', [PasswordResetController::class, 'update'])
+        ->name('password.update')
+        ->middleware('throttle:5,10');
+
+    // Lien de confirmation reçu par mail : accessible connecté ou non (la signature du lien suffit)
+    // {client} : le compte, retrouvé par son id ; {hash} : empreinte de l'adresse à confirmer
+    Route::get('/verification/{client}/{hash}', [EmailVerificationController::class, 'verify'])
+        ->name('verification.verify')
+        ->middleware('throttle:6,1');
+
+    // auth:client : pages réservées au client connecté (sinon redirection vers account.login)
+    Route::middleware('auth:client')->group(function () {
+        Route::get('/', AccountController::class)->name('show');
+        // throttle:3,10 : 3 renvois max toutes les 10 minutes, pour ne pas inonder une boîte mail
+        Route::post('/verification', [EmailVerificationController::class, 'send'])
+            ->name('verification.send')
+            ->middleware('throttle:3,10');
+        Route::post('/deconnexion', [AccountLoginController::class, 'destroy'])->name('logout');
+
+        // Profil : nom / email, lien de changement de mot de passe, suppression du compte
+        // (throttle : essais de mot de passe et envois de mails limités)
+        Route::get('/profil', [ProfileController::class, 'edit'])->name('profile');
+        Route::put('/profil', [ProfileController::class, 'update'])->name('profile.update')->middleware('throttle:10,10');
+        Route::post('/profil/mot-de-passe', [ProfileController::class, 'sendPasswordLink'])
+            ->name('profile.password')
+            ->middleware('throttle:3,10');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy')->middleware('throttle:10,10');
+    });
+
+    // Page affichée après la suppression du compte (la personne n'est plus connectée)
+    Route::view('/supprime', 'account.deleted')->name('deleted');
+});
+
 // ---------- Interface du coach ----------
 // prefix('coach') : toutes les URL commencent par /coach ; name('coach.') : tous les noms par "coach."
 Route::prefix('coach')->name('coach.')->group(function () {
-    // guest : pages réservées aux visiteurs NON connectés
-    Route::middleware('guest')->group(function () {
+    // guest:web : pages réservées aux visiteurs NON connectés en tant que coach.
+    // Le guard est toujours nommé (web = coach) : sans lui, "auth" et "guest" utilisent le guard
+    // par défaut, qui peut devenir "client" pendant une requête (cf. config/auth.php)
+    Route::middleware('guest:web')->group(function () {
         Route::get('/connexion', [LoginController::class, 'show'])->name('login');
         // throttle:5,1 : 5 tentatives par minute et par IP, contre les essais de mots de passe à la chaîne
         Route::post('/connexion', [LoginController::class, 'store'])->middleware('throttle:5,1');
     });
 
-    // auth : pages réservées au coach connecté (sinon redirection vers coach.login, cf. bootstrap/app.php)
-    Route::middleware('auth')->group(function () {
+    // auth:web : pages réservées au coach connecté (sinon redirection vers coach.login, cf. bootstrap/app.php)
+    Route::middleware('auth:web')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::get('/cours/nouveau', [CourseController::class, 'create'])->name('courses.create');

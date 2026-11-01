@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Client;
 use App\Models\User;
 
 return [
@@ -38,9 +39,17 @@ return [
     */
 
     'guards' => [
+        // Guard du coach (table users) : c'est celui du middleware "auth" sans précision
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+
+        // Guard des clients (table clients) : middleware "auth:client", Auth::guard('client')
+        // Clé de session distincte : être connecté comme client ne donne aucun accès à /coach
+        'client' => [
+            'driver' => 'session',
+            'provider' => 'clients',
         ],
     ],
 
@@ -65,6 +74,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', User::class),
+        ],
+
+        // Où le guard "client" va chercher les comptes : le modèle Eloquent Client
+        'clients' => [
+            'driver' => 'eloquent',
+            'model' => Client::class,
         ],
 
         // 'users' => [
@@ -98,6 +113,14 @@ return [
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,
+        ],
+
+        // Broker des clients : Password::broker('clients')
+        'clients' => [
+            'provider' => 'clients',
+            'table' => 'client_password_reset_tokens',
+            'expire' => 60, // minutes de validité du lien
+            'throttle' => 60, // secondes à attendre avant de redemander un lien pour la même adresse
         ],
     ],
 

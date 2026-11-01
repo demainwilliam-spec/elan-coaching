@@ -5,3 +5,5 @@ User-agent: *
 Disallow: /coach
 # Liens d'annulation personnels envoyés par mail
 Disallow: /annulation/
+# Espace client (connexion, inscription, réservations : pages personnelles)
+Disallow: /compte

@@ -26,7 +26,7 @@ class LoginController extends Controller
 
         // attempt() : cherche l'utilisateur par email et compare le hash du mot de passe.
         // 2e argument : "se souvenir de moi" → cookie longue durée en plus de la session
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::guard('web')->attempt($credentials, $request->boolean('remember'))) {
             // Message volontairement vague : on ne dit pas si c'est l'email ou le mot de passe qui est faux
             return back()
                 ->withErrors(['email' => 'Email ou mot de passe incorrect.'])
@@ -42,7 +42,7 @@ class LoginController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::logout();
+        Auth::guard('web')->logout(); // guard('web') : le coach, jamais un client
 
         // On jette toute la session et le jeton CSRF : rien de la session connectée n'est réutilisable
         $request->session()->invalidate();
