@@ -71,6 +71,9 @@ class BookCourse
             throw BookingException::alreadyBooked();
         }
 
+        // Réserver avec son compte = activité (repousse la suppression pour inactivité)
+        $client?->markActive();
+
         // Mailable "ShouldQueue" : send() le place en queue, le worker (php artisan queue:work) l'enverra
         Mail::to($booking->email)->send(new BookingReceived($booking));
 

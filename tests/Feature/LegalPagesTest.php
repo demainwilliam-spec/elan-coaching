@@ -15,6 +15,18 @@ class LegalPagesTest extends TestCase
         $this->get(route('legal.privacy'))->assertOk()->assertSee('Autorité de protection des données');
     }
 
+    public function test_la_confidentialite_decrit_le_compte_client(): void
+    {
+        $this->get(route('legal.privacy'))
+            ->assertSee('Compte client (facultatif)')
+            // Durée tirée de la constante du modèle : la page suit si la règle change
+            ->assertSee('supprimé automatiquement après '.\App\Models\Client::UNVERIFIED_RETENTION_DAYS.' jours')
+            ->assertSee('remember_client_');
+
+        // La page d'inscription renvoie bien vers la politique de confidentialité
+        $this->get(route('account.register'))->assertSee('href="'.route('legal.privacy').'"', false);
+    }
+
     public function test_le_site_ne_charge_rien_depuis_google_fonts(): void
     {
         // La page de confidentialité affirme qu'aucune donnée n'est envoyée à des tiers en dehors de Gmail
