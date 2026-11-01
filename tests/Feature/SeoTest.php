@@ -17,6 +17,7 @@ class SeoTest extends TestCase
             ->assertSee('<meta name="description" content="Coach sportif à Éghezée', false)
             ->assertSee('<meta property="og:title" content="JF Coaching — Coach sportif à Éghezée', false)
             ->assertSee('<meta property="og:description" content="Coach sportif à Éghezée', false)
+            ->assertSee('<h1>Coach sportif à Éghezée</h1>', false) // titre principal : 2e signal SEO après <title>
             ->assertSee('<main>', false) // accessibilité : repère du contenu principal
             ->assertSee('<link rel="icon" href="/favicon.ico"', false)
             ->assertSee('<link rel="apple-touch-icon" href="/apple-touch-icon.png">', false);

@@ -16,7 +16,7 @@
         @php
             // yieldContent : comme @yield, mais renvoie le texte dans une variable au lieu de l'afficher.
             // 2e argument : texte par défaut si la page ne définit pas sa propre @section('description')
-            $description = \Illuminate\Support\Facades\View::yieldContent('description', 'Coach sportif à Éghezée (province de Namur) : coaching individuel et cours collectifs à réserver en ligne. Bilan gratuit pour reprendre votre élan.');
+            $description = \Illuminate\Support\Facades\View::yieldContent('description', 'Coach sportif à Éghezée (province de Namur) : coaching individuel et cours collectifs à réserver en ligne. Premier bilan gratuit et sans engagement.');
         @endphp
 
         {{-- Description affichée par Google sous le titre (~155 caractères max) --}}
