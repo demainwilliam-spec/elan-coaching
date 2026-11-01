@@ -5,7 +5,7 @@
 @section('content')
 
     <section class="hero">
-        <h1>Reprenez votre élan.</h1>
+        <h1>Coach sportif à Éghezée</h1>
         <p>
             Un accompagnement sportif construit autour de vous : bilan honnête,
             programme réaliste, suivi qui tient dans la durée.
