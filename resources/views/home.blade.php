@@ -29,17 +29,19 @@
         <div class="about-text" data-reveal>
             <h2>Votre coach</h2>
             <p>
-                Je m'appelle <mark class="todo">[À COMPLÉTER : prénom]</mark>, coach sportif
-                <mark class="todo">[À COMPLÉTER : diplômes / certifications]</mark>
-                depuis <mark class="todo">[À COMPLÉTER : nombre]</mark> ans, basé à Éghezée.
+                Diplômé en Éducation Physique et curieux du sport et du mouvement depuis mes 10 ans,
+                c’est suite à une douleur au dos que je me suis mis en quête de comprendre le corps
+                pour comprendre d’où venaient ces douleurs. C’est ainsi que mon chemin en coaching postural a commencé.
             </p>
             <p>
-                Le sport fait partie de ma vie depuis toujours :
-                <mark class="todo">[À COMPLÉTER : parcours, disciplines pratiquées, compétitions…]</mark>.
+                J’aide aujourd’hui, à Éghezée et dans la région, les personnes désireuses d’améliorer leur santé physique.
+                Je vous guide via des coachings individuels et des cours collectifs à prendre soin
+                de votre plus bel outil : votre corps.
             </p>
             <p>
-                Mon objectif : vous aider à progresser à votre rythme, avec un programme réaliste
-                et un suivi qui tient dans la durée.
+                Chaque adaptation mise en place sert à vous aider à progresser et avancer à votre rythme
+                afin de comprendre comment votre corps fonctionne et ainsi devenir autonome dans votre développement ;
+                c’est ce que je nomme la véritable Éducation Physique.
             </p>
         </div>
 

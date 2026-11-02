@@ -6,6 +6,7 @@
 - 31/10/2026 : retours du coach après la présentation (2 cartes de services, texte de présentation à côté des photos)
 - 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon ; animations, cartes de services cliquables, liens Instagram / Facebook
 - 31/10 – 01/11/2026 : ville (Éghezée) pour le référencement local ; comptes clients (branche feat/comptes-clients)
+- 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -75,7 +76,7 @@
   - affichage : icône compte dans le header, invitation sous l'agenda, modale de réservation selon visiteur / client confirmé / non confirmé, agenda « Inscrit ✓ / En liste d'attente » ; classes CSS `.account-*`, tableau `.data-table` (empilé sur téléphone via `data-label`), grille `.form-row`, `.visually-hidden`
 - À faire plus tard : historique des cours passés (« Mes réservations » ne montre que les cours à venir) ; prévenir les personnes restées en liste d'attente après la limite des 24 h (planificateur) ; éventuellement indiquer dans les inscrits du coach qui a un compte
 - Thème noir et blanc alterné : noir par défaut (`:root`), sections blanches avec la classe `.theme-light` qui redéfinit les mêmes variables (Services, Contact) ; pages légales, d'erreur et espace coach en noir ; mails en noir et blanc (couleurs écrites en dur, les messageries ignorent les variables CSS)
-- Présentation « Votre coach » sous l'accueil (section `.about`, grille 2 colonnes : texte à gauche, carrousel à droite ; empilés sur téléphone, texte d'abord) ; texte = brouillon avec `<mark class="todo">` à compléter par le coach
+- Présentation « Votre coach » sous l'accueil (section `.about`, grille 2 colonnes : texte à gauche, carrousel à droite ; empilés sur téléphone, texte d'abord) ; texte définitif fourni par le coach (Éducation Physique, coaching postural), à garder tel quel hormis la mention d'Éghezée
 - Carrousel photo (dans `.about`, `role="region"`) : liste `$photos` en haut de `home.blade.php`, images WebP dans `resources/images` servies par `Vite::asset()` (incluses au build via `import.meta.glob` dans app.js), noir et blanc par `filter: grayscale`, cadre 4:5, photo en largeur en `object-fit: contain` (`landscape`), défilement auto 5 s (resources/js/photo-carousel.js), arrêt au survol / focus, désactivé si « moins d'animations » ; pas de bouton pause (choix assumé)
 - Logo : `resources/images/logo.webp` (blanc sur fond transparent, 160 px de haut = 2× l'affichage maximal) dans le header, le footer et l'espace coach ; favicon `public/favicon.ico` (16/32/48) et `public/apple-touch-icon.png` (180), sur fond noir
 - Animations (toutes coupées si « moins d'animations », prefers-reduced-motion) :
@@ -84,8 +85,8 @@
   - barres de remplissage des cours : `@keyframes fill-bar` (scaleX) à l'apparition de l'agenda, rejouées à chaque page par carousel.js avec `element.animate()`
 - Réseaux : `partials/social-links.blade.php` (Instagram, Facebook ; icônes SVG en `currentColor`, simples liens sans widget Meta) inclus dans le header et le footer
 - Photos actuelles = captures basse résolution (444 à 689 px) : avec les originaux HD, passer le carrousel en pleine largeur et ajouter `srcset` (plusieurs tailles)
-- Référencement local : le coach est basé à Éghezée (province de Namur) ; la ville figure dans le titre de l'accueil, la description par défaut et le texte de présentation (vérifié par SeoTest) ; données structurées `LocalBusiness` (JSON-LD) à ajouter avec l'adresse
-- En attente d'infos du coach : texte de présentation (prénom, diplômes, années d'expérience, parcours), infos légales (statut, BCE, TVA, adresse, email, téléphone), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
+- Référencement local : le coach est basé à Éghezée (province de Namur) ; la ville figure dans le `<title>` et le h1 de l'accueil (« Coach sportif à Éghezée »), la description par défaut et le texte de présentation (vérifié par SeoTest) ; « coaching postural » dans la description (mot-clé plus précis que « coach sportif ») ; données structurées `LocalBusiness` (JSON-LD) à ajouter avec l'adresse
+- En attente d'infos du coach : slogan éventuel (à placer sous le h1), infos légales (statut, BCE, TVA, adresse, email, téléphone), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
 
 ## Lot Déploiement (à faire)
 - Hébergeur à choisir ; le compléter dans les mentions légales et la page de confidentialité

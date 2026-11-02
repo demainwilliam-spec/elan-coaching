@@ -14,7 +14,7 @@ class SeoTest extends TestCase
         $this->get('/')
             ->assertOk()
             ->assertSee('<title>JF Coaching — Coach sportif à Éghezée', false) // référencement local : la ville dans le titre
-            ->assertSee('<meta name="description" content="Coach sportif à Éghezée', false)
+            ->assertSee('<meta name="description" content="Coach sportif à Éghezée (province de Namur) : coaching postural', false)
             ->assertSee('<meta property="og:title" content="JF Coaching — Coach sportif à Éghezée', false)
             ->assertSee('<meta property="og:description" content="Coach sportif à Éghezée', false)
             ->assertSee('<h1>Coach sportif à Éghezée</h1>', false) // titre principal : 2e signal SEO après <title>
@@ -39,7 +39,7 @@ class SeoTest extends TestCase
         $this->get('/')->assertSeeInOrder([
             '<section class="about">',
             '<h2>Votre coach</h2>',
-            'Mon objectif : vous aider à progresser',
+            'à Éghezée et dans la région', // référencement local : la ville aussi dans le texte
             'data-photo-carousel',
         ], false);
     }
