@@ -12,6 +12,7 @@ use App\Http\Controllers\CancellationController;
 // "as" : alias, car il existe déjà un BookingController (côté public) importé plus haut
 use App\Http\Controllers\Coach\BookingController as CoachBookingController;
 use App\Http\Controllers\Coach\CourseController;
+use App\Http\Controllers\Coach\CourseTemplateController;
 use App\Http\Controllers\Coach\DashboardController;
 use App\Http\Controllers\Coach\LoginController;
 use App\Http\Controllers\ContactController;
@@ -138,6 +139,15 @@ Route::prefix('coach')->name('coach.')->group(function () {
         Route::get('/cours/{course}/inscrits', [CoachBookingController::class, 'index'])->name('bookings.index');
         Route::post('/cours/{course}/inscrits', [CoachBookingController::class, 'store'])->name('bookings.store');
         Route::delete('/inscriptions/{booking}', [CoachBookingController::class, 'destroy'])->name('bookings.destroy');
+
+        // Planning type : {template} est remplacé par le CourseTemplate de cet id (route model binding)
+        Route::get('/planning', [CourseTemplateController::class, 'index'])->name('templates.index');
+        Route::post('/planning/generer', [CourseTemplateController::class, 'generate'])->name('templates.generate');
+        Route::get('/planning/nouveau', [CourseTemplateController::class, 'create'])->name('templates.create');
+        Route::post('/planning', [CourseTemplateController::class, 'store'])->name('templates.store');
+        Route::get('/planning/{template}/modifier', [CourseTemplateController::class, 'edit'])->name('templates.edit');
+        Route::put('/planning/{template}', [CourseTemplateController::class, 'update'])->name('templates.update');
+        Route::delete('/planning/{template}', [CourseTemplateController::class, 'destroy'])->name('templates.destroy');
 
         Route::post('/deconnexion', [LoginController::class, 'destroy'])->name('logout');
     });

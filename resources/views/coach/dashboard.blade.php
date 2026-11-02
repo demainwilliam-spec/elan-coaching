@@ -8,7 +8,11 @@
 
     <p class="coach-summary">{{ $courses->count() }} cours à venir</p>
 
-    <a href="{{ route('coach.courses.create') }}" class="btn coach-new">Nouveau cours</a>
+    {{-- button-row : côte à côte sur ordinateur, empilés sur téléphone --}}
+    <div class="button-row coach-new">
+        <a href="{{ route('coach.courses.create') }}" class="btn">Nouveau cours</a>
+        <a href="{{ route('coach.templates.index') }}" class="btn">Planning type</a>
+    </div>
 
     {{-- Mêmes classes que l'agenda public : même rendu et même responsive --}}
     <ul class="course-list">

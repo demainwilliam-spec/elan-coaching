@@ -6,7 +6,7 @@
 - 31/10/2026 : retours du coach après la présentation (2 cartes de services, texte de présentation à côté des photos)
 - 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon ; animations, cartes de services cliquables, liens Instagram / Facebook
 - 31/10 – 01/11/2026 : ville (Éghezée) pour le référencement local ; comptes clients (branche feat/comptes-clients)
-- 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées ; annulation jusqu'à midi le jour du cours (au lieu de 24 h avant)
+- 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées ; annulation jusqu'à midi le jour du cours (au lieu de 24 h avant) ; planning type du coach et génération des cours (branche feat/planning-type)
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -58,6 +58,8 @@
 - Layout commun des mails `emails/layout` en styles en ligne + tables ; liens construits avec APP_URL (doit valoir http://127.0.0.1:8000 en local)
 - Tester les mails avec ses propres adresses (alias Gmail `+1`, `+2`) : les emails du seeder sont fictifs
 - Interface coach (/coach, non liée depuis le site, `noindex`) : connexion (Coach\LoginController, throttle:5,1, « rester connecté ») ; tableau de bord ; créer / modifier / dupliquer / supprimer un cours (Coach\CourseController, actions UpdateCourse / DeleteCourse) ; inscrits d'un cours (Coach\BookingController, alias `CoachBookingController` dans routes/web.php)
+- Planning type (/coach/planning, bouton à côté de « Nouveau cours ») : créneaux habituels du coach (table `course_templates` : `weekday` ISO 1 = lundi … 7 = dimanche, `start_time` en `time`, secondes ajoutées par un mutateur) ; CRUD Coach\CourseTemplateController + CourseTemplateRequest (hérite de CourseRequest, un seul créneau par jour et par heure) ; vrais créneaux dans CourseTemplateSeeder (rejouable, `updateOrCreate`) : mardi 18h30 Cardio training, mercredi 18h00 et 19h10, jeudi 18h00 Circuit training, 26 places
+- Génération des cours : formulaire « du … au … » sur la page du planning → action App\Actions\GenerateCourses (transaction) ; « du » prérempli au lendemain du dernier cours de l'agenda (prolonge sans recréer les cours supprimés exprès) ; cours déjà existant à la même date et heure sauté ; créneau déjà passé ignoré ; 6 mois maximum (`CourseTemplateController::GENERATION_MAX_MONTHS`) ; les cours générés sont indépendants du modèle
 - Pages légales (Route::view, sans contrôleur) : /mentions-legales (dont conditions de réservation) et /confidentialite (RGPD, Belgique) ; liens dans le footer et sous les formulaires ; infos manquantes signalées par `<mark class="todo">[À COMPLÉTER…]</mark>` (il ne reste que l'hébergeur)
 - Coordonnées du coach (nom, BCE / TVA, email, téléphone, adresse, lieux des séances) centralisées dans `config/coach.php`, lues avec `config('coach.…')` : mentions légales, confidentialité, contact, cartes de services (lieu sous la description, `.service-place`), données structurées, lieu prérempli d'un nouveau cours (salle des cours collectifs)
 - Pages d'erreur : `resources/views/errors/{404,419,429,500,503}.blade.php` sur un gabarit commun `errors/layout` (la 500 n'apparaît qu'avec APP_DEBUG=false)
@@ -96,7 +98,7 @@
 - Worker de la queue permanent (supervisor ou équivalent), sinon aucun mail ne part
 - `MAIL_CONTACT_ADDRESS` = adresse du coach (jftheys@hotmail.com) dans le `.env` de production
 - Cron chaque minute : `php artisan schedule:run`, sinon les tâches planifiées ne tournent jamais
-- `npm run build` sur le serveur (ou envoyer `public/build`), compte du coach via `php artisan coach:create`
+- `npm run build` sur le serveur (ou envoyer `public/build`), compte du coach via `php artisan coach:create`, planning type via `php artisan db:seed --class=CourseTemplateSeeder` (surtout pas `--seed` seul : il ajouterait les cours de démonstration)
 - Ajouter `Sitemap: https://<domaine>/sitemap.xml` dans robots.txt ; déclarer le site dans Google Search Console
 - Sauvegarde régulière de la base
 - Vérifier la carte de partage (WhatsApp, Facebook) une fois en ligne
