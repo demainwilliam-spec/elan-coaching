@@ -12,6 +12,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Pas de WithoutModelEvents : l'événement "creating" de Booking génère le cancel_token
-        $this->call(CourseSeeder::class);
+        $this->call([CourseSeeder::class, CourseTemplateSeeder::class]);
     }
 }

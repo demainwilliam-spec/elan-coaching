@@ -580,10 +580,17 @@ mark.todo {
 }
 
 .form-field input,
+.form-field select,
 .form-field textarea {
     padding: 0.8rem 1rem;
     background-color: var(--color-bg-alt);
     border: 1px solid var(--color-text-muted);
+    color: var(--color-text);
+}
+
+/* Les options de la liste déroulante : mêmes couleurs que le champ (sinon texte clair sur fond clair) */
+.form-field select option {
+    background-color: var(--color-bg-alt);
     color: var(--color-text);
 }
 
@@ -593,6 +600,7 @@ mark.todo {
 
 /* :focus = le champ dans lequel le curseur se trouve */
 .form-field input:focus,
+.form-field select:focus,
 .form-field textarea:focus {
     outline: 1px solid var(--color-accent);
     border-color: var(--color-accent);
@@ -1106,21 +1114,35 @@ mark.todo {
     margin-top: 0.5rem;
 }
 
-/* L'icône calendrier du champ date reste sombre sur fond sombre : on l'inverse en clair */
-.form-field input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+/* L'icône calendrier (ou horloge) du champ date reste sombre sur fond sombre : on l'inverse en clair */
+.form-field input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+.form-field input[type="time"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
 }
 
 .coach-form .form-field input,
+.coach-form .form-field select,
 .coach-form .form-field textarea,
 .account-form .form-field input {
     font-size: 1rem; /* 16px minimum : sinon Safari iPhone zoome automatiquement sur le champ */
 }
 
 /* Action destructrice (suppression) : couleur d'erreur au lieu de la couleur d'accent */
-.course-actions a.is-danger {
+.course-actions a.is-danger,
+.course-actions .link-button.is-danger {
     color: var(--color-error);
+}
+
+/* Bouton d'un formulaire (ex. suppression en DELETE) habillé comme les liens d'action voisins */
+.link-button {
+    color: var(--color-accent);
+    font: inherit;
+    cursor: pointer;
+}
+
+.link-button:hover {
+    text-decoration: underline;
 }
 
 .btn-danger {
@@ -1393,17 +1415,16 @@ mark.todo {
     text-align: left;
 }
 
-/* Champs côte à côte : grille de 3 colonnes de même largeur (1fr = une part de l'espace disponible).
+/* Profil : 3 champs côte à côte (nom, email, mot de passe), de même largeur (1fr = une part de l'espace disponible).
+   Limité à .profile-page : ailleurs, .form-row garde ses 2 colonnes (formulaires du coach).
    align-items: start : chaque champ reste en haut de sa case, même si un autre affiche une erreur dessous */
-.form-row {
-    display: grid;
+.profile-page .form-row {
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
     align-items: start;
 }
 
 @media (max-width: 768px) {
-    .form-row {
+    .profile-page .form-row {
         grid-template-columns: 1fr; /* une seule colonne : les champs reviennent les uns sous les autres */
     }
 }

@@ -21,6 +21,7 @@
                 <nav>
                     <ul>
                         <li><a href="{{ route('coach.dashboard') }}">Cours</a></li>
+                        <li><a href="{{ route('coach.templates.index') }}">Planning type</a></li>
                         <li><a href="/" target="_blank">Voir le site</a></li>
                         <li>
                             {{-- Déconnexion en POST : un simple lien (GET) ne doit rien modifier --}}
