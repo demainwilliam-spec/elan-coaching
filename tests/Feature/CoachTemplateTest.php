@@ -43,6 +43,13 @@ class CoachTemplateTest extends TestCase
             ->assertRedirect(route('coach.login'));
     }
 
+    public function test_le_tableau_de_bord_mene_au_planning(): void
+    {
+        $this->actingAs($this->coach, 'web')
+            ->get(route('coach.dashboard'))
+            ->assertSee('href="'.route('coach.templates.index').'"', false);
+    }
+
     public function test_le_planning_liste_les_creneaux_dans_l_ordre_de_la_semaine(): void
     {
         $this->seed(\Database\Seeders\CourseTemplateSeeder::class);

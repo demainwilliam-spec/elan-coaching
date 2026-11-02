@@ -142,6 +142,7 @@ Route::prefix('coach')->name('coach.')->group(function () {
 
         // Planning type : {template} est remplacé par le CourseTemplate de cet id (route model binding)
         Route::get('/planning', [CourseTemplateController::class, 'index'])->name('templates.index');
+        Route::post('/planning/generer', [CourseTemplateController::class, 'generate'])->name('templates.generate');
         Route::get('/planning/nouveau', [CourseTemplateController::class, 'create'])->name('templates.create');
         Route::post('/planning', [CourseTemplateController::class, 'store'])->name('templates.store');
         Route::get('/planning/{template}/modifier', [CourseTemplateController::class, 'edit'])->name('templates.edit');
