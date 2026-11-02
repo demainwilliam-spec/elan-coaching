@@ -48,7 +48,9 @@
         // width / height : dimensions réelles du fichier (le navigateur réserve la place avant le chargement).
         // landscape : photo en largeur, affichée entière (avec des bandes) plutôt que recadrée et agrandie
         $photos = [
-            ['file' => 'corde.webp', 'width' => 444, 'height' => 599, 'alt' => 'Le coach grimpe à la corde dans une salle de cross-training'],
+            ['file' => 'posture.webp', 'width' => 1200, 'height' => 800, 'alt' => 'Le coach corrige la position de la jambe d\'un client allongé sur un tapis', 'landscape' => true],
+            ['file' => 'etirements.webp', 'width' => 1080, 'height' => 1101, 'alt' => 'Le coach accompagne deux personnes pendant un exercice d\'étirement avec des briques'],
+            ['file' => 'groupe.webp', 'width' => 1200, 'height' => 900, 'alt' => 'Photo de groupe joyeuse après un cours collectif', 'landscape' => true],
             ['file' => 'poids.webp', 'width' => 689, 'height' => 875, 'alt' => 'Le coach soulève un haltère à bout de bras pendant une compétition'],
             ['file' => 'stretch.webp', 'width' => 597, 'height' => 313, 'alt' => 'Le coach guide un client dans un étirement sur ballon', 'landscape' => true],
         ];
