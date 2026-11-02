@@ -26,12 +26,14 @@ class SeoTest extends TestCase
     public function test_le_carrousel_affiche_les_photos_avec_texte_alternatif(): void
     {
         $this->get('/')
-            ->assertSee('alt="Le coach grimpe à la corde', false)
+            ->assertSee('alt="Le coach corrige la position', false)
+            ->assertSee('alt="Photo de groupe', false)
+            ->assertDontSee('corde.webp') // photo retirée
             ->assertSee('alt="Le coach soulève un haltère', false)
             ->assertSee('alt="Le coach guide un client', false)
             // assertSeeInOrder : ces morceaux apparaissent dans cet ordre (peu importe ce qu'il y a entre)
             // → la 1re photo est chargée tout de suite, les suivantes à l'approche
-            ->assertSeeInOrder(['width="444"', 'loading="eager"', 'width="689"', 'loading="lazy"', 'width="597"', 'loading="lazy"'], false);
+            ->assertSeeInOrder(['width="1200"', 'loading="eager"', 'width="1080"', 'loading="lazy"', 'width="597"', 'loading="lazy"'], false);
     }
 
     public function test_la_presentation_du_coach_precede_les_photos(): void
