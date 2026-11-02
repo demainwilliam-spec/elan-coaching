@@ -2,6 +2,36 @@
 
 @section('title', 'Coach sportif à Éghezée, coaching personnalisé et cours collectifs')
 
+{{-- Données structurées (JSON-LD, vocabulaire schema.org) : fiche d'identité lisible par Google (nom, adresse,
+     téléphone, zone), invisible pour le visiteur ; aide à apparaître dans les résultats locaux et sur Maps.
+     Vérifiable avec https://search.google.com/test/rich-results une fois en ligne --}}
+@push('head')
+    @php
+        $business = [
+            '@context' => 'https://schema.org',
+            '@type' => 'LocalBusiness',
+            'name' => config('coach.business_name'),
+            'description' => 'Coaching postural, coaching individuel et cours collectifs à Éghezée.',
+            'url' => url('/'),
+            'logo' => Vite::asset('resources/images/logo.webp'),
+            'telephone' => config('coach.phone.link'),
+            'email' => config('coach.email'),
+            'vatID' => config('coach.vat'),
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => config('coach.address.street'),
+                'postalCode' => config('coach.address.postal_code'),
+                'addressLocality' => config('coach.address.locality'),
+                'addressRegion' => config('coach.address.region'),
+                'addressCountry' => config('coach.address.country'),
+            ],
+            'areaServed' => 'Éghezée',
+        ];
+    @endphp
+    {{-- JSON_HEX_TAG : écrit < et > en < / >, un texte ne peut donc jamais fermer la balise <script> --}}
+    <script type="application/ld+json">{!! json_encode($business, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+@endpush
+
 @section('content')
 
     <section class="hero">
@@ -82,6 +112,7 @@
                 </svg>
                 <h3>Coaching individuel</h3>
                 <p>Séances en tête-à-tête, programme entièrement personnalisé, ajusté à chaque rendez-vous.</p>
+                <p class="service-place">{{ config('coach.places.individual') }}</p>
             </a>
 
             {{-- Pas de data-service : cette carte mène à l'agenda, où l'on réserve directement --}}
@@ -94,6 +125,7 @@
                 </svg>
                 <h3>Cours collectifs</h3>
                 <p>Des séances en groupe encadrées par le coach : consultez l'agenda et réservez votre place en ligne.</p>
+                <p class="service-place">{{ config('coach.places.group') }}</p>
             </a>
         </div>
 
@@ -314,7 +346,7 @@
 
         <div class="contact-actions" data-reveal>
             <p>Vous préférez appeler ?</p>
-            <a href="tel:+32476000000" class="btn btn-secondary">+32 476 00 00 00</a>
+            <a href="tel:{{ config('coach.phone.link') }}" class="btn btn-secondary">{{ config('coach.phone.display') }}</a>
         </div>
     </section>
 

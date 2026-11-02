@@ -11,17 +11,22 @@
 
         <h2>Éditeur du site</h2>
         <p>
-            JF Coaching<br>
-            <mark class="todo">[À COMPLÉTER : nom et prénom du coach, ou dénomination de la société]</mark><br>
-            <mark class="todo">[À COMPLÉTER : statut — indépendant en personne physique, SRL…]</mark><br>
-            <mark class="todo">[À COMPLÉTER : adresse (rue, numéro, code postal, commune)]</mark>, Belgique
+            {{ config('coach.business_name') }}<br>
+            {{ config('coach.owner') }}<br>
+            {{ config('coach.address.street') }}, {{ config('coach.address.postal_code') }} {{ config('coach.address.locality') }}, Belgique
         </p>
         <p>
-            Numéro d'entreprise (BCE) : <mark class="todo">[À COMPLÉTER]</mark><br>
-            TVA : <mark class="todo">[À COMPLÉTER : numéro de TVA, ou « non assujetti »]</mark><br>
-            Email : <mark class="todo">[À COMPLÉTER]</mark><br>
-            Téléphone : <mark class="todo">[À COMPLÉTER]</mark>
+            Numéro d'entreprise (BCE) : {{ config('coach.company_number') }}<br>
+            TVA : {{ config('coach.vat') }}<br>
+            Email : <a href="mailto:{{ config('coach.email') }}">{{ config('coach.email') }}</a><br>
+            Téléphone : <a href="tel:{{ config('coach.phone.link') }}">{{ config('coach.phone.display') }}</a>
         </p>
+
+        <h2>Lieux des séances</h2>
+        <ul>
+            <li>Coachings individuels : {{ config('coach.places.individual') }}</li>
+            <li>Cours collectifs : {{ config('coach.places.group') }}, sauf autre lieu indiqué dans l'agenda</li>
+        </ul>
 
         <h2>Hébergement</h2>
         <p>
@@ -39,7 +44,7 @@
 
         <h2>Propriété intellectuelle</h2>
         <p>
-            Les textes, le logo et la présentation de ce site appartiennent à JF Coaching. Toute reproduction sans autorisation est interdite.
+            Le contenu du site (textes, logo, éléments graphiques) est protégé. Toute reproduction sans autorisation préalable est interdite.
         </p>
 
         <h2>Données personnelles</h2>

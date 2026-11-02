@@ -16,7 +16,11 @@ class CourseController extends Controller
     public function create(): View
     {
         // Cours vide (non enregistré), avec des valeurs par défaut pour préremplir le formulaire
-        return view('coach.courses.form', ['course' => new Course(['duration_minutes' => 60, 'capacity' => 10])]);
+        return view('coach.courses.form', ['course' => new Course([
+            'duration_minutes' => 60,
+            'capacity' => 10,
+            'location' => config('coach.places.group'), // salle habituelle des cours collectifs (config/coach.php)
+        ])]);
     }
 
     public function duplicate(Course $course): View

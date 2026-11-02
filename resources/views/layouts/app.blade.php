@@ -32,6 +32,9 @@
         <meta property="og:title" content="JF Coaching — @yield('title')">
         <meta property="og:description" content="{{ $description }}">
 
+        {{-- @stack : emplacement où une page peut ajouter des balises avec @push('head') (ex. données structurées de l'accueil) --}}
+        @stack('head')
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>

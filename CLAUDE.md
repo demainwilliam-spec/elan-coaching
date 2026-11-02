@@ -6,7 +6,7 @@
 - 31/10/2026 : retours du coach après la présentation (2 cartes de services, texte de présentation à côté des photos)
 - 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon ; animations, cartes de services cliquables, liens Instagram / Facebook
 - 31/10 – 01/11/2026 : ville (Éghezée) pour le référencement local ; comptes clients (branche feat/comptes-clients)
-- 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach
+- 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -58,7 +58,8 @@
 - Layout commun des mails `emails/layout` en styles en ligne + tables ; liens construits avec APP_URL (doit valoir http://127.0.0.1:8000 en local)
 - Tester les mails avec ses propres adresses (alias Gmail `+1`, `+2`) : les emails du seeder sont fictifs
 - Interface coach (/coach, non liée depuis le site, `noindex`) : connexion (Coach\LoginController, throttle:5,1, « rester connecté ») ; tableau de bord ; créer / modifier / dupliquer / supprimer un cours (Coach\CourseController, actions UpdateCourse / DeleteCourse) ; inscrits d'un cours (Coach\BookingController, alias `CoachBookingController` dans routes/web.php)
-- Pages légales (Route::view, sans contrôleur) : /mentions-legales (dont conditions de réservation) et /confidentialite (RGPD, Belgique) ; liens dans le footer et sous les formulaires ; infos manquantes signalées par `<mark class="todo">[À COMPLÉTER…]</mark>`
+- Pages légales (Route::view, sans contrôleur) : /mentions-legales (dont conditions de réservation) et /confidentialite (RGPD, Belgique) ; liens dans le footer et sous les formulaires ; infos manquantes signalées par `<mark class="todo">[À COMPLÉTER…]</mark>` (il ne reste que l'hébergeur)
+- Coordonnées du coach (nom, BCE / TVA, email, téléphone, adresse, lieux des séances) centralisées dans `config/coach.php`, lues avec `config('coach.…')` : mentions légales, confidentialité, contact, cartes de services (lieu sous la description, `.service-place`), données structurées, lieu prérempli d'un nouveau cours (salle des cours collectifs)
 - Pages d'erreur : `resources/views/errors/{404,419,429,500,503}.blade.php` sur un gabarit commun `errors/layout` (la 500 n'apparaît qu'avec APP_DEBUG=false)
 - SEO : meta description (par défaut dans `layouts/app`, surchargeable par `@section('description')`), Open Graph, canonical ; /sitemap.xml généré par une route ; robots.txt bloque /coach, /annulation/ et /compte ; `@section('noindex', true)` ajoute la balise noindex dans `layouts/app`
 - Polices hébergées sur le site via les paquets npm Fontsource (importées en haut de app.css) : aucun appel à Google Fonts (RGPD)
@@ -85,14 +86,15 @@
   - barres de remplissage des cours : `@keyframes fill-bar` (scaleX) à l'apparition de l'agenda, rejouées à chaque page par carousel.js avec `element.animate()`
 - Réseaux : `partials/social-links.blade.php` (Instagram, Facebook ; icônes SVG en `currentColor`, simples liens sans widget Meta) inclus dans le header et le footer
 - Photos actuelles = captures basse résolution (444 à 689 px) : avec les originaux HD, passer le carrousel en pleine largeur et ajouter `srcset` (plusieurs tailles)
-- Référencement local : le coach est basé à Éghezée (province de Namur) ; la ville figure dans le `<title>` et le h1 de l'accueil (« Coach sportif à Éghezée »), la description par défaut et le texte de présentation (vérifié par SeoTest) ; « coaching postural » dans la description (mot-clé plus précis que « coach sportif ») ; données structurées `LocalBusiness` (JSON-LD) à ajouter avec l'adresse
-- En attente d'infos du coach : slogan éventuel (à placer sous le h1), infos légales (statut, BCE, TVA, adresse, email, téléphone), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
+- Référencement local : le coach est basé à Éghezée (province de Namur) ; la ville figure dans le `<title>` et le h1 de l'accueil (« Coach sportif à Éghezée »), la description par défaut et le texte de présentation (vérifié par SeoTest) ; « coaching postural » dans la description (mot-clé plus précis que « coach sportif ») ; données structurées `LocalBusiness` (JSON-LD) sur l'accueil seulement, poussées dans le `<head>` par `@push('head')` / `@stack('head')`, construites avec `json_encode` (+ `JSON_HEX_TAG`) ; à vérifier une fois en ligne avec le test des résultats enrichis de Google
+- En attente d'infos du coach : slogan éventuel (à placer sous le h1), photos HD, image de partage og:image (1200×630), accord du client visible sur la photo `stretch` (droit à l'image), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
 
 ## Lot Déploiement (à faire)
 - Hébergeur à choisir ; le compléter dans les mentions légales et la page de confidentialité
 - `.env` de production : `APP_ENV=production`, `APP_DEBUG=false` (sinon les erreurs affichent le code et les variables), `APP_URL=https://...`
 - HTTPS (Let's Encrypt), puis en-têtes de sécurité (HSTS, X-Frame-Options, CSP...) et durées de cache des fichiers statiques
 - Worker de la queue permanent (supervisor ou équivalent), sinon aucun mail ne part
+- `MAIL_CONTACT_ADDRESS` = adresse du coach (jftheys@hotmail.com) dans le `.env` de production
 - Cron chaque minute : `php artisan schedule:run`, sinon les tâches planifiées ne tournent jamais
 - `npm run build` sur le serveur (ou envoyer `public/build`), compte du coach via `php artisan coach:create`
 - Ajouter `Sitemap: https://<domaine>/sitemap.xml` dans robots.txt ; déclarer le site dans Google Search Console
