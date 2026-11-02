@@ -8,7 +8,7 @@
     <article class="legal-page">
         <h1>Politique de confidentialité</h1>
 
-        <p class="legal-updated">Dernière mise à jour : 1er novembre 2026</p>
+        <p class="legal-updated">Dernière mise à jour : 2 novembre 2026</p>
 
         <p>
             JF Coaching collecte le minimum de données nécessaires pour vous répondre et gérer vos réservations.
@@ -17,7 +17,10 @@
 
         <h2>Responsable du traitement</h2>
         <p>
-            JF Coaching — coordonnées complètes dans les <a href="{{ route('legal.notice') }}">mentions légales</a>.
+            {{ config('coach.business_name') }} ({{ config('coach.owner') }}),
+            {{ config('coach.address.street') }}, {{ config('coach.address.postal_code') }} {{ config('coach.address.locality') }} :
+            <a href="mailto:{{ config('coach.email') }}">{{ config('coach.email') }}</a>.
+            Coordonnées complètes dans les <a href="{{ route('legal.notice') }}">mentions légales</a>.
         </p>
 
         <h2>Quelles données, pourquoi, combien de temps ?</h2>
@@ -76,7 +79,7 @@
         <h2>Vos droits</h2>
         <p>
             Vous pouvez à tout moment demander à consulter, corriger ou supprimer vos données, ou vous opposer à leur utilisation.
-            Écrivez à <mark class="todo">[À COMPLÉTER : email du coach]</mark> : nous répondons dans un délai d'un mois maximum.
+            Écrivez à <a href="mailto:{{ config('coach.email') }}">{{ config('coach.email') }}</a> : nous répondons dans un délai d'un mois maximum.
         </p>
         <p>
             Si vous avez un compte, vous pouvez aussi corriger votre nom et votre email, ou supprimer votre compte,

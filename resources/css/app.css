@@ -491,6 +491,14 @@ mark.todo {
     transition: color 0.25s ease; /* au même rythme que le fond de la carte au survol */
 }
 
+/* Lieu des séances, sous la description : séparé par un filet, plus discret */
+.service-card .service-place {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid currentColor;
+    font-size: 0.85rem;
+}
+
 .btn {
     display: inline-block;
     padding: 0.9rem 2rem;
