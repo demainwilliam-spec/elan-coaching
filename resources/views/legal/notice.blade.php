@@ -37,7 +37,7 @@
         <ul>
             <li>La réservation est gratuite et possible en ligne jusqu'au début du cours, avec ou sans compte client. Le compte est facultatif : il évite de ressaisir ses coordonnées et permet de retrouver ses réservations.</li>
             <li>S'il reste de la place, votre réservation est confirmée immédiatement. Sinon, vous êtes inscrit sur la liste d'attente.</li>
-            <li>Vous pouvez annuler jusqu'à 24 heures avant le début du cours, grâce au lien reçu par email ou depuis « Mes réservations » si vous avez un compte. Passé ce délai, contactez directement le coach.</li>
+            <li>Vous pouvez annuler jusqu'à midi le jour du cours, grâce au lien reçu par email ou depuis « Mes réservations » si vous avez un compte. Passé ce délai, contactez directement le coach.</li>
             <li>Quand une place se libère, la première personne de la liste d'attente obtient la place et en est prévenue par email.</li>
             <li>Le coach peut modifier ou annuler un cours. Toutes les personnes inscrites sont alors prévenues par email.</li>
         </ul>

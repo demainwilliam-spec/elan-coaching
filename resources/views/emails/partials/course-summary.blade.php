@@ -14,7 +14,8 @@
 </table>
 
 <p style="margin: 24px 0 8px; font-size: 14px; color: #555;">
-    Un empêchement ? Annulation possible jusqu'à {{ \App\Models\Course::CANCELLATION_CUTOFF_HOURS }} h avant le début du cours :
+    {{-- Date limite en toutes lettres : « jusqu'au mardi 3 novembre à 12h00 » --}}
+    Un empêchement ? Annulation possible jusqu'au {{ $course->cancellationDeadline()->translatedFormat('l j F \à H\hi') }} :
 </p>
 {{-- route() donne une URL absolue, construite avec APP_URL (le worker n'a pas de requête HTTP pour deviner l'adresse) --}}
 <a href="{{ route('bookings.cancel', $booking->cancel_token) }}"

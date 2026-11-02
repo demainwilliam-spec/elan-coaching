@@ -71,6 +71,8 @@ class BookingMailsTest extends TestCase
         $mail->assertHasSubject('Réservation confirmée : Cross-training du '.$booking->course->starts_at->translatedFormat('j F'));
         $mail->assertSeeInHtml('Votre place est confirmée');
         $mail->assertSeeInHtml(route('bookings.cancel', $booking->cancel_token));
+        // Heure limite en toutes lettres : « jusqu'au mardi 3 novembre à 12h00 »
+        $mail->assertSeeInHtml('jusqu\'au '.$booking->course->starts_at->translatedFormat('l j F').' à 12h00', false);
     }
 
     public function test_le_mail_de_liste_d_attente_donne_la_position(): void

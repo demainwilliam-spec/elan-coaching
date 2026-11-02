@@ -70,28 +70,41 @@ class CancelBookingTest extends TestCase
         $this->assertSame(0, $course->bookings()->count());
     }
 
-    public function test_l_annulation_est_refusee_a_moins_de_24_h_du_cours(): void
+    public function test_l_annulation_est_refusee_apres_midi_le_jour_du_cours(): void
     {
-        $course = $this->makeCourse(capacity: 5, startsIn: '+23 hours');
+        // travelTo : fige l'horloge (now()) à ce moment-là, pour que le test ne dépende pas de l'heure où il tourne
+        $this->travelTo(now()->setTime(12, 1)); // 12h01
+        $course = $this->makeCourse(capacity: 5, startsIn: '+6 hours'); // cours à 18h01, le même jour
         $alice = $this->book($course, 'Alice');
 
         try {
             (new CancelBooking)->handle($alice);
             $this->fail('Une BookingException était attendue'); // si on arrive ici, le test échoue
         } catch (BookingException $e) {
-            $this->assertStringContainsString('moins de 24 h', $e->getMessage());
+            $this->assertStringContainsString('jusqu\'à midi le jour du cours', $e->getMessage());
         }
 
         $this->assertModelExists($alice); // la réservation est toujours là
     }
 
-    public function test_l_annulation_est_acceptee_a_plus_de_24_h_du_cours(): void
+    public function test_l_annulation_est_acceptee_le_matin_du_cours(): void
     {
-        $alice = $this->book($this->makeCourse(capacity: 5, startsIn: '+25 hours'), 'Alice');
+        $this->travelTo(now()->setTime(11, 59)); // 11h59 : encore dans les temps
+        $alice = $this->book($this->makeCourse(capacity: 5, startsIn: '+7 hours'), 'Alice'); // cours à 18h59
 
         (new CancelBooking)->handle($alice);
 
         $this->assertModelMissing($alice);
+    }
+
+    public function test_l_heure_limite_est_midi_le_jour_du_cours_et_jamais_apres_son_debut(): void
+    {
+        $evening = new Course(['starts_at' => '2026-11-10 18:30']);
+        $this->assertEquals('2026-11-10 12:00', $evening->cancellationDeadline()->format('Y-m-d H:i'));
+
+        // Garde-fou : un cours avant midi (le coach n'en donne pas) se ferme à son début, pas après
+        $morning = new Course(['starts_at' => '2026-11-10 10:00']);
+        $this->assertEquals('2026-11-10 10:00', $morning->cancellationDeadline()->format('Y-m-d H:i'));
     }
 
     public function test_une_deuxieme_annulation_est_refusee_sans_promouvoir_personne_de_plus(): void

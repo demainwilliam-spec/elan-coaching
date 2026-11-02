@@ -6,11 +6,13 @@ use App\Enums\BookingStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class Course extends Model
 {
-    // Constante de classe : la règle métier est écrite une seule fois (Course::CANCELLATION_CUTOFF_HOURS)
-    public const CANCELLATION_CUTOFF_HOURS = 24;
+    // Constante de classe : la règle métier est écrite une seule fois (Course::CANCELLATION_DEADLINE_TIME)
+    // Annulation en ligne jusqu'à midi le jour du cours (heure belge, cf. config/app.php)
+    public const CANCELLATION_DEADLINE_TIME = '12:00';
 
     // Champs dont la modification concerne les inscrits : ils sont prévenus par mail (cf. UpdateCourse)
     public const NOTIFIABLE_FIELDS = ['starts_at', 'duration_minutes', 'location'];
@@ -65,10 +67,19 @@ class Course extends Model
         return $this->placesLeft() === 0;
     }
 
-    // Annulation en ligne possible jusqu'à 24 h avant le début du cours
+    // Dernier moment pour annuler en ligne : midi le jour du cours.
+    // min() : garde-fou pour un cours avant midi (le coach n'en donne pas) → jamais après le début du cours
+    public function cancellationDeadline(): Carbon
+    {
+        // copy() : setTimeFromTimeString() modifierait sinon starts_at lui-même (objet Carbon partagé)
+        $noon = $this->starts_at->copy()->setTimeFromTimeString(self::CANCELLATION_DEADLINE_TIME);
+
+        return $noon->min($this->starts_at);
+    }
+
     public function cancellationIsOpen(): bool
     {
-        return $this->starts_at->greaterThanOrEqualTo(now()->addHours(self::CANCELLATION_CUTOFF_HOURS));
+        return now()->lessThanOrEqualTo($this->cancellationDeadline());
     }
 
     // Taux de remplissage en %, pour la largeur de la barre (max(1, ...) évite une division par zéro)

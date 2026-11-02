@@ -66,17 +66,18 @@ class AccountReservationsTest extends TestCase
             ->assertSee('Aucune réservation à venir.');
     }
 
-    public function test_le_bouton_annuler_disparait_a_moins_de_24_h(): void
+    public function test_le_bouton_annuler_disparait_apres_midi_le_jour_du_cours(): void
     {
+        $this->travelTo(now()->setTime(13, 0));
         $client = Client::factory()->create(['email' => 'alice@test.be']);
         $open = (new BookCourse)->handle($this->makeCourse('Dans 3 jours', '+3 days'), 'Alice', 'alice@test.be', $client);
-        $closed = (new BookCourse)->handle($this->makeCourse('Dans 10 heures', '+10 hours'), 'Alice', 'alice@test.be', $client);
+        $closed = (new BookCourse)->handle($this->makeCourse('Ce soir', '+5 hours'), 'Alice', 'alice@test.be', $client);
 
         $this->actingAs($client, 'client')
             ->get(route('account.show'))
             ->assertSee(route('bookings.cancel', $open->cancel_token))
             ->assertDontSee(route('bookings.cancel', $closed->cancel_token))
-            ->assertSee('Moins de 24 h : contactez le coach');
+            ->assertSee('Délai dépassé : contactez le coach');
     }
 
     public function test_annuler_depuis_mon_compte_ramene_au_compte(): void

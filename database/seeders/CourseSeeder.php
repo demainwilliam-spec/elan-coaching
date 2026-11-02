@@ -40,7 +40,7 @@ class CourseSeeder extends Seeder
             'title' => 'Circuit training en plein air',
             'description' => 'Ateliers en extérieur, enchaînés en circuit. Prévoir une tenue adaptée à la météo.',
             'location' => 'Parc de la Source, entrée principale',
-            'starts_at' => now()->addDays(6)->setTime(10, 0),
+            'starts_at' => now()->addDays(6)->setTime(14, 0),
             'duration_minutes' => 75,
             'capacity' => 10,
         ]);
@@ -62,7 +62,7 @@ class CourseSeeder extends Seeder
         $laterCourses = [
             ['Cross-training', 11, 18, 30, 60, 12, 2],
             ['Renforcement musculaire', 13, 12, 15, 45, 8, 3],
-            ['Circuit training en plein air', 15, 10, 0, 75, 10, 5],
+            ['Circuit training en plein air', 15, 14, 0, 75, 10, 5],
             ['Mobilité & stretching', 18, 19, 0, 45, 15, 1],
             ['Cross-training', 20, 18, 30, 60, 12, 0],
         ];

@@ -20,10 +20,10 @@ class CancelBooking
     /**
      * Annule une réservation. Si elle était confirmée, la première personne en attente prend la place.
      *
-     * @param  bool  $byCoach  retrait par le coach : pas de limite des 24 h, et la personne est prévenue par mail
+     * @param  bool  $byCoach  retrait par le coach : pas de limite de midi, et la personne est prévenue par mail
      * @return Booking|null la réservation promue, ou null si personne ne l'a été
      *
-     * @throws BookingException si le cours commence dans moins de 24 h ou si la réservation est déjà annulée
+     * @throws BookingException si l'heure limite (midi le jour du cours) est passée ou si la réservation est déjà annulée
      */
     public function handle(Booking $booking, bool $byCoach = false): ?Booking
     {

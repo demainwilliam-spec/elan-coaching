@@ -1325,7 +1325,7 @@ mark.todo {
     }
 }
 
-/* Info secondaire dans une cellule (durée du cours, « moins de 24 h ») */
+/* Info secondaire dans une cellule (durée du cours, « délai dépassé ») */
 .data-table-muted {
     display: block;
     font-size: 0.85rem;
