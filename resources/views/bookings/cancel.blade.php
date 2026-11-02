@@ -38,7 +38,7 @@
                 <div class="form-alert form-alert-error">{{ session('cancel_error') }}</div>
             @elseif (! $course->cancellationIsOpen())
                 <div class="form-alert form-alert-error">
-                    Le cours commence dans moins de 24 h : l'annulation en ligne n'est plus possible.
+                    L'annulation en ligne n'est possible que jusqu'à midi le jour du cours.
                     Contactez directement le coach.
                 </div>
             @endif

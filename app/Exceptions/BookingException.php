@@ -27,7 +27,7 @@ class BookingException extends Exception
 
     public static function cancellationClosed(): self
     {
-        return new self('Le cours commence dans moins de 24 h : l\'annulation en ligne n\'est plus possible. Contactez directement le coach.');
+        return new self('L\'annulation en ligne n\'est possible que jusqu\'à midi le jour du cours. Contactez directement le coach.');
     }
 
     public static function alreadyCancelled(): self

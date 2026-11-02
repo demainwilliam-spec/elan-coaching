@@ -60,7 +60,7 @@ class BookingController extends Controller
     public function destroy(Booking $booking, CancelBooking $cancelBooking): RedirectResponse
     {
         try {
-            // byCoach: true → argument nommé : pas de limite des 24 h, et la personne est prévenue par mail
+            // byCoach: true → argument nommé : pas de limite de midi, et la personne est prévenue par mail
             $promoted = $cancelBooking->handle($booking, byCoach: true);
         } catch (BookingException $e) {
             return back()->with('status', $e->getMessage()); // déjà retiré (double clic)

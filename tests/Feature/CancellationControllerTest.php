@@ -55,18 +55,20 @@ class CancellationControllerTest extends TestCase
         $this->assertModelMissing($booking);
     }
 
-    public function test_a_moins_de_24_h_la_page_n_affiche_pas_le_bouton(): void
+    public function test_apres_midi_le_jour_du_cours_la_page_n_affiche_pas_le_bouton(): void
     {
-        $booking = $this->makeBooking(startsIn: '+5 hours');
+        $this->travelTo(now()->setTime(13, 0));
+        $booking = $this->makeBooking(startsIn: '+5 hours'); // cours à 18h, le même jour
 
         $this->get(route('bookings.cancel', $booking->cancel_token))
             ->assertOk()
-            ->assertSee('moins de 24 h')
+            ->assertSee('jusqu\'à midi le jour du cours', false)
             ->assertDontSee('Confirmer l\'annulation', false);
     }
 
-    public function test_a_moins_de_24_h_le_post_est_refuse(): void
+    public function test_apres_midi_le_jour_du_cours_le_post_est_refuse(): void
     {
+        $this->travelTo(now()->setTime(13, 0));
         $booking = $this->makeBooking(startsIn: '+5 hours');
 
         // Même sans bouton, quelqu'un pourrait envoyer le POST à la main : le serveur refuse aussi

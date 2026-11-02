@@ -267,7 +267,7 @@
                     @endif
 
                     <p class="booking-notice">
-                        Annulation possible jusqu'à 24 h avant le début du cours.
+                        Annulation possible jusqu'à midi le jour du cours.
                         Vos données servent uniquement à gérer votre réservation
                         (<a href="{{ route('legal.privacy') }}">en savoir plus</a>).
                     </p>

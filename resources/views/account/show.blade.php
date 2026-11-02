@@ -73,12 +73,12 @@
                                 @endif
                             </td>
                             <td class="data-table-action">
-                                {{-- Même règle que la page d'annulation : en ligne jusqu'à 24 h avant le cours --}}
+                                {{-- Même règle que la page d'annulation : en ligne jusqu'à midi le jour du cours --}}
                                 @if ($course->cancellationIsOpen())
-                                    {{-- La page d'annulation existante (lien des mails) : confirmation, 24 h, promotion... --}}
+                                    {{-- La page d'annulation existante (lien des mails) : confirmation, heure limite, promotion... --}}
                                     <a href="{{ route('bookings.cancel', $booking->cancel_token) }}" class="btn btn-small btn-secondary">Annuler</a>
                                 @else
-                                    <span class="data-table-muted">Moins de 24 h : contactez le coach</span>
+                                    <span class="data-table-muted">Délai dépassé : contactez le coach</span>
                                 @endif
                             </td>
                         </tr>

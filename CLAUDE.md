@@ -6,7 +6,7 @@
 - 31/10/2026 : retours du coach après la présentation (2 cartes de services, texte de présentation à côté des photos)
 - 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon ; animations, cartes de services cliquables, liens Instagram / Facebook
 - 31/10 – 01/11/2026 : ville (Éghezée) pour le référencement local ; comptes clients (branche feat/comptes-clients)
-- 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées
+- 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées ; annulation jusqu'à midi le jour du cours (au lieu de 24 h avant)
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -23,8 +23,8 @@
 
 ## Règles métier (réservation de cours)
 - Réservation possible jusqu'au début du cours ; s'il reste de la place → confirmée, sinon → liste d'attente (illimitée)
-- Annulation possible jusqu'à 24 h avant le début du cours ; une place confirmée libérée → la 1re personne en attente est promue
-- Le coach peut retirer quelqu'un sans limite des 24 h (la personne est prévenue), inscrire quelqu'un à la main (mêmes règles qu'en ligne)
+- Annulation en ligne possible jusqu'à midi le jour du cours (`Course::cancellationDeadline()`, jamais après le début du cours ; le coach ne donne pas de cours le matin) ; une place confirmée libérée → la 1re personne en attente est promue
+- Le coach peut retirer quelqu'un sans limite d'heure (la personne est prévenue), inscrire quelqu'un à la main (mêmes règles qu'en ligne)
 - Modifier un cours : capacité jamais sous le nombre de confirmés ; capacité augmentée → promotions ; date / durée / lieu changés → mail à tous les inscrits
 - Supprimer un cours → mail à tous les inscrits, avec un message facultatif du coach
 - Compte client facultatif : on peut toujours réserver sans compte ; un compte = une place par cours
@@ -75,7 +75,7 @@
   - mails : VerifyAccountEmail, ResetPasswordEmail, EmailChanged, InactiveAccountWarning (méthodes `sendEmailVerificationNotification` / `sendPasswordResetNotification` de Client remplacées par nos Mailables)
   - inactivité : `last_active_at` mis à jour par `Client::markActive()` (événement Login dans AppServiceProvider, y compris « rester connecté », et réservation avec le compte) ; avertissement après 11 mois, suppression 30 jours après l'avertissement (`Client::INACTIVE_RETENTION_MONTHS`, `INACTIVE_WARNING_DAYS`)
   - affichage : icône compte dans le header, invitation sous l'agenda, modale de réservation selon visiteur / client confirmé / non confirmé, agenda « Inscrit ✓ / En liste d'attente » ; classes CSS `.account-*`, tableau `.data-table` (empilé sur téléphone via `data-label`), grille `.form-row`, `.visually-hidden`
-- À faire plus tard : historique des cours passés (« Mes réservations » ne montre que les cours à venir) ; prévenir les personnes restées en liste d'attente après la limite des 24 h (planificateur) ; éventuellement indiquer dans les inscrits du coach qui a un compte
+- À faire plus tard : historique des cours passés (« Mes réservations » ne montre que les cours à venir) ; prévenir les personnes restées en liste d'attente après la limite de midi (planificateur) ; éventuellement indiquer dans les inscrits du coach qui a un compte
 - Thème noir et blanc alterné : noir par défaut (`:root`), sections blanches avec la classe `.theme-light` qui redéfinit les mêmes variables (Services, Contact) ; pages légales, d'erreur et espace coach en noir ; mails en noir et blanc (couleurs écrites en dur, les messageries ignorent les variables CSS)
 - Présentation « Votre coach » sous l'accueil (section `.about`, grille 2 colonnes : texte à gauche, carrousel à droite ; empilés sur téléphone, texte d'abord) ; texte définitif fourni par le coach (Éducation Physique, coaching postural), à garder tel quel hormis la mention d'Éghezée
 - Carrousel photo (dans `.about`, `role="region"`) : liste `$photos` en haut de `home.blade.php`, images WebP dans `resources/images` servies par `Vite::asset()` (incluses au build via `import.meta.glob` dans app.js), noir et blanc par `filter: grayscale`, cadre 4:5, photo en largeur en `object-fit: contain` (`landscape`), défilement auto 5 s (resources/js/photo-carousel.js), arrêt au survol / focus, désactivé si « moins d'animations » ; pas de bouton pause (choix assumé)
