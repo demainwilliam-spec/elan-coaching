@@ -40,7 +40,7 @@
             Un accompagnement sportif construit autour de vous : bilan honnête,
             programme réaliste, suivi qui tient dans la durée.
         </p>
-        <a href="#contact" class="btn">Réserver un bilan gratuit</a>
+        <a href="#contact" class="btn">Prendre contact</a>
     </section>
 
     @php
@@ -289,8 +289,8 @@
     </section>
 
     <section id="contact" class="theme-light">
-        <h2 data-reveal>Un bilan gratuit, sans engagement</h2>
-        <p data-reveal>30 minutes pour faire le point sur vos objectifs et voir si JF Coaching est le bon accompagnement pour vous.</p>
+        <h2 data-reveal>Parlons de vos objectifs</h2>
+        <p data-reveal>Une question, une envie de commencer ? Écrivez-moi pour voir ensemble quel accompagnement vous convient.</p>
 
         {{-- session('success') n'existe que juste après la redirection du contrôleur --}}
         @if (session('success'))
