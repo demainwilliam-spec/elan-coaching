@@ -77,6 +77,16 @@ class BookingMailsTest extends TestCase
         $mail->assertSeeInHtml('jusqu\'au '.$booking->course->starts_at->translatedFormat('l j F').' à 12h00', false);
     }
 
+    public function test_seule_une_place_confirmee_rappelle_la_regle_de_la_carte(): void
+    {
+        $course = $this->makeCourse(capacity: 1);
+        $alice = $this->book($course, 'Alice');
+        $bob = $this->book($course, 'Bob');
+
+        (new BookingReceived($alice))->assertSeeInHtml('si vous avez une carte');
+        (new BookingReceived($bob))->assertDontSeeInHtml('si vous avez une carte');
+    }
+
     public function test_le_mail_de_liste_d_attente_donne_la_position(): void
     {
         $course = $this->makeCourse(capacity: 1);

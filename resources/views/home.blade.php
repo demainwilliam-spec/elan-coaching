@@ -278,7 +278,10 @@
                     @endif
 
                     <p class="booking-notice">
-                        Annulation possible jusqu'à midi le jour du cours.
+                        <strong>Toute réservation non annulée avant midi le jour même sera considérée comme due et comptabilisée, afin de garantir l'équité et la bonne organisation des cours.</strong>
+                    </p>
+
+                    <p class="booking-notice">
                         Vos données servent uniquement à gérer votre réservation
                         (<a href="{{ route('legal.privacy') }}">en savoir plus</a>).
                     </p>
