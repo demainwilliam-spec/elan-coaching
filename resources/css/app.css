@@ -1004,8 +1004,14 @@ mark.todo {
 @media (max-width: 768px) {
     .button-row {
         flex-direction: column; /* boutons empilés */
-        align-items: center;
+        align-items: stretch; /* tous de la même largeur : celle de la colonne */
         gap: 1rem;
+        text-align: center;
+    }
+
+    /* Un bouton dans un formulaire n'est pas étiré par la règle ci-dessus : le formulaire l'est, pas son contenu */
+    .button-row form .btn {
+        width: 100%;
     }
 }
 
