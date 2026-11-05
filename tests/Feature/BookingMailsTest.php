@@ -38,7 +38,7 @@ class BookingMailsTest extends TestCase
 
     private function book(Course $course, string $name): Booking
     {
-        return (new BookCourse)->handle($course, $name, strtolower($name).'@test.be');
+        return (new BookCourse)->handle($course, $name, 'Test', strtolower($name).'@test.be');
     }
 
     public function test_une_reservation_met_un_mail_en_queue_pour_la_personne(): void
@@ -69,6 +69,8 @@ class BookingMailsTest extends TestCase
         $mail = new BookingReceived($booking);
 
         $mail->assertHasSubject('Réservation confirmée : Cross-training du '.$booking->course->starts_at->translatedFormat('j F'));
+        $mail->assertSeeInHtml('Bonjour Alice,'); // le prénom seul
+        $mail->assertDontSeeInHtml('Alice Test');
         $mail->assertSeeInHtml('Votre place est confirmée');
         $mail->assertSeeInHtml(route('bookings.cancel', $booking->cancel_token));
         // Heure limite en toutes lettres : « jusqu'au mardi 3 novembre à 12h00 »

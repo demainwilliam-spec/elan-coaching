@@ -7,6 +7,7 @@
 - 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon ; animations, cartes de services cliquables, liens Instagram / Facebook
 - 31/10 – 01/11/2026 : ville (Éghezée) pour le référencement local ; comptes clients (branche feat/comptes-clients)
 - 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées ; annulation jusqu'à midi le jour du cours (au lieu de 24 h avant) ; planning type du coach et génération des cours (branche feat/planning-type)
+- 05/11/2026 : prénom et nom séparés, inscrits confirmés triés par nom de famille (branche feat/prenom-nom)
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -27,6 +28,7 @@
 - Le coach peut retirer quelqu'un sans limite d'heure (la personne est prévenue), inscrire quelqu'un à la main (mêmes règles qu'en ligne)
 - Modifier un cours : capacité jamais sous le nombre de confirmés ; capacité augmentée → promotions ; date / durée / lieu changés → mail à tous les inscrits
 - Supprimer un cours → mail à tous les inscrits, avec un message facultatif du coach
+- Prénom et nom de famille obligatoires (réservation, compte, ajout par le coach) ; inscrits du coach : confirmés triés par nom puis prénom, liste d'attente dans l'ordre d'arrivée (elle décide qui reçoit la prochaine place)
 - Compte client facultatif : on peut toujours réserver sans compte ; un compte = une place par cours
 - Réservation en un clic seulement avec une adresse confirmée ; sinon formulaire prérempli (réservation rattachée au compte à la confirmation)
 - Une réservation (avec ou sans compte) est rattachée au compte confirmé de même adresse
@@ -50,6 +52,7 @@
 - Anti-spam : throttle:5,10 sur la route ; débloquer en local avec `php artisan cache:clear`
 - Agenda des cours collectifs (#cours) : HomeController → Course::upcoming()->withBookingCounts() → carrousel de pages de 4 (scroll-snap + resources/js/carousel.js)
 - Modèles : Course hasMany Booking ; Booking.status = enum BookingStatus (confirmed / waiting) ; cancel_token généré à la création
+- Noms : colonnes `first_name` / `last_name` sur `clients` et `bookings` ; `$model->name` (nom complet, lecture seule) vient du trait `AppModelsConcernsHasFullName` ; mails et salutations par le prénom ; le formulaire de contact et le compte du coach gardent un seul champ `name`
 - Réservation : modale <dialog> (resources/js/booking-dialog.js) → POST /cours/{course}/reservations → BookingRequest → BookingController → action App\Actions\BookCourse (transaction + lockForUpdate)
 - Champs du formulaire de réservation préfixés `booking[...]` et flash `booking_success` / `booking_error` : ne pas mélanger avec le formulaire de contact
 - Annulation : lien à jeton reçu par mail → GET /annulation/{cancel_token} (page de confirmation, ne modifie rien) → POST → CancellationController → action App\Actions\CancelBooking (transaction + lockForUpdate, promotion du 1er en attente)
@@ -114,6 +117,7 @@
 - Les navigateurs gardent le favicon en cache : le vérifier en navigation privée
 - Vérifier les failles des dépendances avant une mise en ligne : `npm audit` et `composer audit`
 - MariaDB refuse un UPDATE d'une table avec une sous-requête sur cette même table (erreur 1093), alors que SQLite (tests) l'accepte : lire la liste à part d'abord (cf. VerifyClientEmail) et vérifier ce genre de requête sur la vraie base
+- Tri par nom : la collation de MariaDB range É avec E et ignore les majuscules, pas celle de SQLite (tests) : vérifier les accents sur la vraie base
 - `update()` / `create()` ignorent sans erreur les colonnes absentes de `$fillable` (ex. `email_verified_at`) : utiliser `forceFill()` quand c'est voulu
 - Changer de mot de passe invalide les cookies « rester connecté » des autres appareils (`remember_token` renouvelé), mais pas une session déjà ouverte ailleurs : elle expire après 2 h d'inactivité (`SESSION_LIFETIME`)
 - Se déconnecter (coach ou client) vide toute la session : un coach connecté dans le même navigateur qu'un client est déconnecté aussi (accepté)

@@ -29,7 +29,7 @@ class CancelBookingTest extends TestCase
     // On passe par BookCourse pour créer les réservations : mêmes règles qu'en vrai
     private function book(Course $course, string $name): Booking
     {
-        return (new BookCourse)->handle($course, $name, strtolower($name).'@test.be');
+        return (new BookCourse)->handle($course, $name, 'Test', strtolower($name).'@test.be');
     }
 
     public function test_annuler_une_place_confirmee_promeut_le_premier_en_attente(): void

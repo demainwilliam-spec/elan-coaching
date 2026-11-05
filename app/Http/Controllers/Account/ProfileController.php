@@ -26,7 +26,7 @@ class ProfileController extends Controller
         return view('account.profile', ['client' => $request->user('client')]);
     }
 
-    // Nom et email
+    // Prénom, nom et email
     public function update(Request $request): RedirectResponse
     {
         $client = $request->user('client');
@@ -34,15 +34,18 @@ class ProfileController extends Controller
         $emailChanged = $request->input('email') !== $client->email;
 
         $data = $request->validateWithBag('profile', [
-            'name' => 'required|string|max:100',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
             // ignore($client->id) : son propre compte ne compte pas comme un doublon
             'email' => ['required', 'email:rfc,filter', 'max:254', Rule::unique('clients', 'email')->ignore($client->id)],
             // Mot de passe actuel exigé seulement si l'email change (protège contre le vol du compte).
             // current_password:client : compare avec le mot de passe du client connecté (guard client)
             'current_password' => $emailChanged ? 'required|current_password:client' : 'nullable',
         ], [
-            'name.required' => 'Merci d\'indiquer votre nom.',
-            'name.max' => 'Votre nom ne peut pas dépasser :max caractères.',
+            'first_name.required' => 'Merci d\'indiquer votre prénom.',
+            'first_name.max' => 'Votre prénom ne peut pas dépasser :max caractères.',
+            'last_name.required' => 'Merci d\'indiquer votre nom de famille.',
+            'last_name.max' => 'Votre nom ne peut pas dépasser :max caractères.',
             'email.required' => 'Merci d\'indiquer votre adresse email.',
             'email.email' => 'Cette adresse email n\'est pas valide.',
             'email.unique' => 'Un autre compte utilise déjà cette adresse.',
@@ -53,7 +56,8 @@ class ProfileController extends Controller
         $oldEmail = $client->email;
 
         DB::transaction(function () use ($client, $data, $emailChanged) {
-            $client->name = $data['name'];
+            $client->first_name = $data['first_name'];
+            $client->last_name = $data['last_name'];
 
             if ($emailChanged) {
                 $client->email = $data['email'];
@@ -65,7 +69,7 @@ class ProfileController extends Controller
             // Le coach voit le nom des inscrits : on le met à jour sur les réservations à venir
             $client->bookings()
                 ->whereHas('course', fn (Builder $query) => $query->where('starts_at', '>', now()))
-                ->update(['name' => $client->name]);
+                ->update(['first_name' => $client->first_name, 'last_name' => $client->last_name]);
         });
 
         if (! $emailChanged) {
@@ -74,7 +78,7 @@ class ProfileController extends Controller
 
         // Confirmation de la nouvelle adresse (même mail qu'à l'inscription) + alerte à l'ancienne
         $client->sendEmailVerificationNotification();
-        Mail::to($oldEmail)->send(new EmailChanged($client->name, $client->email));
+        Mail::to($oldEmail)->send(new EmailChanged($client->first_name, $client->email));
 
         return back()->with('account_success', 'Votre profil est enregistré. Un lien de confirmation vient d\'être envoyé à votre nouvelle adresse.');
     }

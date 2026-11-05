@@ -26,7 +26,7 @@ class DeleteCourse
             foreach ($bookings as $booking) {
                 // Valeurs simples, pas de modèle : elles survivront à la suppression
                 Mail::to($booking->email)->send(new CourseCancelled(
-                    $booking->name, $course->title, $when, $course->location, $coachMessage,
+                    $booking->first_name, $course->title, $when, $course->location, $coachMessage,
                 ));
             }
 

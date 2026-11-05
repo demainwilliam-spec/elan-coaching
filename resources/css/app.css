@@ -1123,8 +1123,10 @@ mark.todo {
 /* Deux champs côte à côte (durée + places) */
 .form-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* minmax(0, 1fr) : un champ peut rétrécir sous sa largeur naturelle (avec 1fr seul, il déborde de sa colonne) */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
+    align-items: start; /* chaque champ reste en haut de sa case, même si l'autre affiche une erreur dessous */
 }
 
 @media (max-width: 768px) {
@@ -1439,19 +1441,6 @@ mark.todo {
     text-align: left;
 }
 
-/* Profil : 3 champs côte à côte (nom, email, mot de passe), de même largeur (1fr = une part de l'espace disponible).
-   Limité à .profile-page : ailleurs, .form-row garde ses 2 colonnes (formulaires du coach).
-   align-items: start : chaque champ reste en haut de sa case, même si un autre affiche une erreur dessous */
-.profile-page .form-row {
-    grid-template-columns: repeat(3, 1fr);
-    align-items: start;
-}
-
-@media (max-width: 768px) {
-    .profile-page .form-row {
-        grid-template-columns: 1fr; /* une seule colonne : les champs reviennent les uns sous les autres */
-    }
-}
 
 /* Précision sous un champ (« Seulement pour changer d'email ») */
 .form-hint {

@@ -9,7 +9,7 @@
     <section class="message-page account-page">
         @include('account.partials.alerts')
 
-        <h2>Bonjour {{ $client->name }}</h2>
+        <h2>Bonjour {{ $client->first_name }}</h2>
         <p class="message-text">
             Connecté avec l'adresse {{ $client->email }}.
             <a href="{{ route('account.profile') }}" class="account-back">Modifier mon profil</a>

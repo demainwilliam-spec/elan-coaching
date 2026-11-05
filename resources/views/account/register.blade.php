@@ -12,11 +12,17 @@
         <form class="account-form" method="POST" action="{{ route('account.register') }}">
             @csrf
 
-            <div class="form-field @error('name') has-error @enderror">
-                <label for="name">Nom</label>
+            <div class="form-field @error('first_name') has-error @enderror">
+                <label for="first_name">Prénom</label>
                 {{-- autocomplete : aide le navigateur / téléphone à préremplir le bon champ --}}
-                <input type="text" id="name" name="name" autocomplete="name" maxlength="100" value="{{ old('name') }}" required autofocus>
-                @error('name') <p class="form-error">{{ $message }}</p> @enderror
+                <input type="text" id="first_name" name="first_name" autocomplete="given-name" maxlength="100" value="{{ old('first_name') }}" required autofocus>
+                @error('first_name') <p class="form-error">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="form-field @error('last_name') has-error @enderror">
+                <label for="last_name">Nom</label>
+                <input type="text" id="last_name" name="last_name" autocomplete="family-name" maxlength="100" value="{{ old('last_name') }}" required>
+                @error('last_name') <p class="form-error">{{ $message }}</p> @enderror
             </div>
 
             <div class="form-field @error('email') has-error @enderror">

@@ -22,20 +22,21 @@ class BookingRequest extends FormRequest
     }
 
     /**
-     * Les champs s'appellent booking[name] / booking[email] dans le HTML (pour ne pas se mélanger
-     * avec ceux du formulaire de contact) : Laravel y accède avec un point, booking.name.
+     * Les champs s'appellent booking[first_name] / booking[email] dans le HTML (pour ne pas se mélanger
+     * avec ceux du formulaire de contact) : Laravel y accède avec un point, booking.first_name.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
-        // Client confirmé : le nom et l'email viennent du compte, le formulaire n'en contient pas
+        // Client confirmé : le prénom, le nom et l'email viennent du compte, le formulaire n'en contient pas
         if ($this->bookingClient()) {
             return [];
         }
 
         return [
-            'booking.name' => 'required|string|max:100',
+            'booking.first_name' => 'required|string|max:100',
+            'booking.last_name' => 'required|string|max:100',
             'booking.email' => 'required|email:rfc,filter|max:254', // filter : exige un domaine avec un point (refuse "a@b")
         ];
     }
@@ -58,8 +59,10 @@ class BookingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'booking.name.required' => 'Merci d\'indiquer votre nom.',
-            'booking.name.max' => 'Votre nom ne peut pas dépasser :max caractères.',
+            'booking.first_name.required' => 'Merci d\'indiquer votre prénom.',
+            'booking.first_name.max' => 'Votre prénom ne peut pas dépasser :max caractères.',
+            'booking.last_name.required' => 'Merci d\'indiquer votre nom de famille.',
+            'booking.last_name.max' => 'Votre nom ne peut pas dépasser :max caractères.',
             'booking.email.required' => 'Merci d\'indiquer votre adresse email.',
             'booking.email.email' => 'Cette adresse email n\'est pas valide.',
             'booking.email.max' => 'Votre adresse email ne peut pas dépasser :max caractères.',

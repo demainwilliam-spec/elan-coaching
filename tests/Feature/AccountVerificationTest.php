@@ -41,7 +41,7 @@ class AccountVerificationTest extends TestCase
         Mail::fake(); // intercepte les mails au lieu de les envoyer
 
         $this->post(route('account.register'), [
-            'name' => 'Alice',
+            'first_name' => 'Alice', 'last_name' => 'Test',
             'email' => 'alice@test.be',
             'password' => 'mot-de-passe',
             'password_confirmation' => 'mot-de-passe',
@@ -64,8 +64,8 @@ class AccountVerificationTest extends TestCase
     public function test_le_lien_confirme_l_adresse_et_rattache_les_reservations(): void
     {
         $course = $this->makeCourse();
-        $mine = $course->bookings()->create(['name' => 'Alice', 'email' => 'alice@test.be', 'status' => BookingStatus::Confirmed]);
-        $other = $course->bookings()->create(['name' => 'Bob', 'email' => 'bob@test.be', 'status' => BookingStatus::Confirmed]);
+        $mine = $course->bookings()->create(['first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'alice@test.be', 'status' => BookingStatus::Confirmed]);
+        $other = $course->bookings()->create(['first_name' => 'Bob', 'last_name' => 'Test', 'email' => 'bob@test.be', 'status' => BookingStatus::Confirmed]);
         $client = Client::factory()->unverified()->create(['email' => 'alice@test.be']);
 
         // Sans être connecté : retour vers la page de connexion, avec le message de succès

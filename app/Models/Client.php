@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Mail\ResetPasswordEmail;
 use App\Mail\VerifyAccountEmail;
+use App\Models\Concerns\HasFullName;
 use Database\Factories\ClientFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Mail;
 class Client extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<ClientFactory> */
-    use HasFactory, MassPrunable, Notifiable; // Notifiable : permet d'envoyer les mails de vérification et de mot de passe oublié
+    use HasFactory, HasFullName, MassPrunable, Notifiable; // Notifiable : permet d'envoyer les mails de vérification et de mot de passe oublié
 
     // Durée de validité du lien de confirmation reçu par mail
     public const VERIFICATION_LINK_MINUTES = 60;
@@ -35,7 +36,8 @@ class Client extends Authenticatable implements MustVerifyEmail
     public const INACTIVE_WARNING_DAYS = 30;
 
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
     ];

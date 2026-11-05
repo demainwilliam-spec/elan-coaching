@@ -31,7 +31,8 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:100',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
             // unique:clients,email : refuse une adresse qui a déjà un compte
             'email' => 'required|email:rfc,filter|max:254|unique:clients,email',
             // confirmed : exige un champ password_confirmation identique (faute de frappe impossible à voir)
@@ -42,8 +43,10 @@ class RegisterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Merci d\'indiquer votre nom.',
-            'name.max' => 'Votre nom ne peut pas dépasser :max caractères.',
+            'first_name.required' => 'Merci d\'indiquer votre prénom.',
+            'first_name.max' => 'Votre prénom ne peut pas dépasser :max caractères.',
+            'last_name.required' => 'Merci d\'indiquer votre nom de famille.',
+            'last_name.max' => 'Votre nom ne peut pas dépasser :max caractères.',
             'email.required' => 'Merci d\'indiquer votre adresse email.',
             'email.email' => 'Cette adresse email n\'est pas valide.',
             'email.max' => 'Votre adresse email ne peut pas dépasser :max caractères.',

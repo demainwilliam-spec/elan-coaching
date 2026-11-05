@@ -19,7 +19,7 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request): RedirectResponse
     {
-        // validated() : uniquement les champs validés (name, email, password), jamais un champ ajouté en douce
+        // validated() : uniquement les champs validés (first_name, last_name, email, password), jamais un champ ajouté en douce
         $client = Client::create($request->validated());
 
         // Événement "compte créé" : Laravel y répond en appelant $client->sendEmailVerificationNotification()

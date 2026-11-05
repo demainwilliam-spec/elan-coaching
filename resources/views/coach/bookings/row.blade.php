@@ -5,7 +5,7 @@
             @if ($position)
                 <span class="coach-booking-position">n°{{ $position }}</span>
             @endif
-            {{ $booking->name }}
+            {{ $booking->last_name }} {{ $booking->first_name }}
         </p>
         {{-- mailto: : un clic ouvre la messagerie du téléphone avec l'adresse déjà remplie --}}
         <p class="course-meta"><a href="mailto:{{ $booking->email }}">{{ $booking->email }}</a></p>

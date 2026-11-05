@@ -28,7 +28,7 @@ class AccountBookingTest extends TestCase
     public function test_un_client_confirme_reserve_sans_remplir_de_champ(): void
     {
         $course = $this->makeCourse();
-        $client = Client::factory()->create(['name' => 'Alice', 'email' => 'alice@test.be']);
+        $client = Client::factory()->create(['first_name' => 'Alice', 'email' => 'alice@test.be']);
 
         $this->actingAs($client, 'client')
             ->post(route('bookings.store', $course), ['booking' => ['course_id' => $course->id]])
@@ -37,7 +37,7 @@ class AccountBookingTest extends TestCase
 
         $booking = Booking::sole();
         $this->assertSame($client->id, $booking->client_id);
-        $this->assertSame('Alice', $booking->name);
+        $this->assertSame('Alice', $booking->first_name);
         $this->assertSame('alice@test.be', $booking->email);
     }
 
@@ -48,7 +48,7 @@ class AccountBookingTest extends TestCase
 
         // Champs ajoutés à la main dans la requête : ignorés, le compte fait foi
         $this->actingAs($client, 'client')
-            ->post(route('bookings.store', $course), ['booking' => ['name' => 'Bob', 'email' => 'bob@test.be']]);
+            ->post(route('bookings.store', $course), ['booking' => ['first_name' => 'Bob', 'last_name' => 'Test', 'email' => 'bob@test.be']]);
 
         $this->assertSame('alice@test.be', Booking::sole()->email);
     }
@@ -61,9 +61,9 @@ class AccountBookingTest extends TestCase
         // Sans champs : refusé, comme pour un visiteur
         $this->actingAs($client, 'client')
             ->post(route('bookings.store', $course), ['booking' => ['course_id' => $course->id]])
-            ->assertSessionHasErrors(['booking.name', 'booking.email']);
+            ->assertSessionHasErrors(['booking.first_name', 'booking.last_name', 'booking.email']);
 
-        $this->post(route('bookings.store', $course), ['booking' => ['name' => 'Alice', 'email' => 'alice@test.be']])
+        $this->post(route('bookings.store', $course), ['booking' => ['first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'alice@test.be']])
             ->assertSessionHas('booking_success');
 
         // Pas encore rattachée : elle le sera à la confirmation de l'adresse (VerifyClientEmail)
@@ -76,8 +76,8 @@ class AccountBookingTest extends TestCase
         $verified = Client::factory()->create(['email' => 'alice@test.be']);
         Client::factory()->unverified()->create(['email' => 'bob@test.be']);
 
-        $alice = (new BookCourse)->handle($course, 'Alice', 'Alice@Test.be');
-        $bob = (new BookCourse)->handle($course, 'Bob', 'bob@test.be');
+        $alice = (new BookCourse)->handle($course, 'Alice', 'Test', 'Alice@Test.be');
+        $bob = (new BookCourse)->handle($course, 'Bob', 'Test', 'bob@test.be');
 
         $this->assertSame($verified->id, $alice->client_id);
         $this->assertNull($bob->client_id); // compte non confirmé : pas de rattachement
@@ -89,7 +89,7 @@ class AccountBookingTest extends TestCase
         $client = Client::factory()->create(['email' => 'nouvelle@test.be']);
         // Réservation faite avec l'ancienne adresse du compte
         $course->bookings()->create([
-            'client_id' => $client->id, 'name' => 'Alice', 'email' => 'ancienne@test.be', 'status' => BookingStatus::Confirmed,
+            'client_id' => $client->id, 'first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'ancienne@test.be', 'status' => BookingStatus::Confirmed,
         ]);
 
         $this->actingAs($client, 'client')
@@ -106,9 +106,9 @@ class AccountBookingTest extends TestCase
         $this->makeCourse(title: 'Autre cours');
         $client = Client::factory()->create(['email' => 'alice@test.be']);
 
-        (new BookCourse)->handle($confirmed, 'Alice', 'alice@test.be', $client);
-        (new BookCourse)->handle($waiting, 'Bob', 'bob@test.be');
-        (new BookCourse)->handle($waiting, 'Alice', 'alice@test.be', $client);
+        (new BookCourse)->handle($confirmed, 'Alice', 'Test', 'alice@test.be', $client);
+        (new BookCourse)->handle($waiting, 'Bob', 'Test', 'bob@test.be');
+        (new BookCourse)->handle($waiting, 'Alice', 'Test', 'alice@test.be', $client);
 
         $response = $this->actingAs($client, 'client')->get('/');
 
@@ -125,14 +125,14 @@ class AccountBookingTest extends TestCase
 
         // Visiteur : champs vides + invitation à se connecter
         $this->get('/')
-            ->assertSee('id="booking-name"', false)
+            ->assertSee('id="booking-first-name"', false)
             ->assertSee('Vous avez un compte ?');
 
         // Client confirmé : plus de champs, « Au nom de »
-        $this->actingAs(Client::factory()->create(['name' => 'Alice']), 'client')
+        $this->actingAs(Client::factory()->create(['first_name' => 'Alice']), 'client')
             ->get('/')
             ->assertSee('Au nom de')
-            ->assertDontSee('id="booking-name"', false)
+            ->assertDontSee('id="booking-first-name"', false)
             ->assertDontSee('Vous avez un compte ?');
     }
 
@@ -140,9 +140,11 @@ class AccountBookingTest extends TestCase
     {
         $this->makeCourse();
 
-        $this->actingAs(Client::factory()->unverified()->create(['name' => 'Alice', 'email' => 'alice@test.be']), 'client')
+        $this->actingAs(Client::factory()->unverified()->create(['first_name' => 'Alice', 'last_name' => 'Dupont', 'email' => 'alice@test.be']), 'client')
             ->get('/')
             ->assertSee('Confirmez votre adresse email (lien reçu par mail) pour réserver en un clic.')
+            ->assertSee('value="Alice"', false)
+            ->assertSee('value="Dupont"', false)
             ->assertSee('value="alice@test.be"', false);
     }
 

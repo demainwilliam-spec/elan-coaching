@@ -32,8 +32,8 @@ class CoachDeleteCourseTest extends TestCase
             'duration_minutes' => 60,
             'capacity' => 1,
         ]);
-        (new BookCourse)->handle($course, 'Alice', 'alice@test.be');
-        (new BookCourse)->handle($course, 'Bob', 'bob@test.be'); // en attente
+        (new BookCourse)->handle($course, 'Alice', 'Test', 'alice@test.be');
+        (new BookCourse)->handle($course, 'Bob', 'Test', 'bob@test.be'); // en attente
 
         return $course;
     }

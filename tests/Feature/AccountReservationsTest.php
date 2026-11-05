@@ -32,10 +32,10 @@ class AccountReservationsTest extends TestCase
         $past = $this->makeCourse('Cours passé', '-2 days');
         $notMine = $this->makeCourse('Cours d\'un autre', '+3 days');
 
-        (new BookCourse)->handle($later, 'Alice', 'alice@test.be', $client);
-        (new BookCourse)->handle($soon, 'Alice', 'alice@test.be', $client);
-        $past->bookings()->create(['client_id' => $client->id, 'name' => 'Alice', 'email' => 'alice@test.be', 'status' => BookingStatus::Confirmed]);
-        (new BookCourse)->handle($notMine, 'Bob', 'bob@test.be');
+        (new BookCourse)->handle($later, 'Alice', 'Test', 'alice@test.be', $client);
+        (new BookCourse)->handle($soon, 'Alice', 'Test', 'alice@test.be', $client);
+        $past->bookings()->create(['client_id' => $client->id, 'first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'alice@test.be', 'status' => BookingStatus::Confirmed]);
+        (new BookCourse)->handle($notMine, 'Bob', 'Test', 'bob@test.be');
 
         $this->actingAs($client, 'client')
             ->get(route('account.show'))
@@ -50,9 +50,9 @@ class AccountReservationsTest extends TestCase
     {
         $client = Client::factory()->create(['email' => 'alice@test.be']);
         $full = $this->makeCourse('Cours complet', '+2 days', capacity: 1);
-        (new BookCourse)->handle($full, 'Bob', 'bob@test.be');
-        (new BookCourse)->handle($full, 'Chloé', 'chloe@test.be');
-        (new BookCourse)->handle($full, 'Alice', 'alice@test.be', $client);
+        (new BookCourse)->handle($full, 'Bob', 'Test', 'bob@test.be');
+        (new BookCourse)->handle($full, 'Chloé', 'Test', 'chloe@test.be');
+        (new BookCourse)->handle($full, 'Alice', 'Test', 'alice@test.be', $client);
 
         $this->actingAs($client, 'client')
             ->get(route('account.show'))
@@ -70,8 +70,8 @@ class AccountReservationsTest extends TestCase
     {
         $this->travelTo(now()->setTime(13, 0));
         $client = Client::factory()->create(['email' => 'alice@test.be']);
-        $open = (new BookCourse)->handle($this->makeCourse('Dans 3 jours', '+3 days'), 'Alice', 'alice@test.be', $client);
-        $closed = (new BookCourse)->handle($this->makeCourse('Ce soir', '+5 hours'), 'Alice', 'alice@test.be', $client);
+        $open = (new BookCourse)->handle($this->makeCourse('Dans 3 jours', '+3 days'), 'Alice', 'Test', 'alice@test.be', $client);
+        $closed = (new BookCourse)->handle($this->makeCourse('Ce soir', '+5 hours'), 'Alice', 'Test', 'alice@test.be', $client);
 
         $this->actingAs($client, 'client')
             ->get(route('account.show'))
@@ -83,7 +83,7 @@ class AccountReservationsTest extends TestCase
     public function test_annuler_depuis_mon_compte_ramene_au_compte(): void
     {
         $client = Client::factory()->create(['email' => 'alice@test.be']);
-        $booking = (new BookCourse)->handle($this->makeCourse('Cross-training', '+3 days'), 'Alice', 'alice@test.be', $client);
+        $booking = (new BookCourse)->handle($this->makeCourse('Cross-training', '+3 days'), 'Alice', 'Test', 'alice@test.be', $client);
 
         $this->actingAs($client, 'client')
             ->get(route('bookings.cancel', $booking->cancel_token))
@@ -98,7 +98,7 @@ class AccountReservationsTest extends TestCase
 
     public function test_un_autre_client_connecte_qui_annule_par_le_lien_revient_a_l_agenda(): void
     {
-        $booking = (new BookCourse)->handle($this->makeCourse('Cross-training', '+3 days'), 'Bob', 'bob@test.be');
+        $booking = (new BookCourse)->handle($this->makeCourse('Cross-training', '+3 days'), 'Bob', 'Test', 'bob@test.be');
 
         $this->actingAs(Client::factory()->create(), 'client')
             ->post(route('bookings.destroy', $booking->cancel_token))
