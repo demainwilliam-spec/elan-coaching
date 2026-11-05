@@ -14,7 +14,7 @@
 
     {{-- @js() : échappe le texte pour du JavaScript (un nom contenant une apostrophe ne casse rien) --}}
     <form method="POST" action="{{ route('coach.bookings.destroy', $booking) }}"
-        onsubmit="return confirm(@js('Retirer '.$booking->name.' du cours ? Un mail le lui signalera.'))">
+        onsubmit="return confirm(@js('Retirer '.$booking->name.' du cours ? '.($course->hasEnded() ? 'Son compteur de cours baissera, sans mail.' : 'Un mail le lui signalera.')))">
         @csrf
         @method('DELETE')
         <button type="submit" class="btn btn-danger btn-small">Retirer</button>

@@ -7,7 +7,7 @@
 - 30/10/2026 : style noir et blanc alterné, carrousel photo, logo et favicon ; animations, cartes de services cliquables, liens Instagram / Facebook
 - 31/10 – 01/11/2026 : ville (Éghezée) pour le référencement local ; comptes clients (branche feat/comptes-clients)
 - 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées ; annulation jusqu'à midi le jour du cours (au lieu de 24 h avant) ; planning type du coach et génération des cours (branche feat/planning-type)
-- 05/11/2026 : prénom et nom séparés, inscrits confirmés triés par nom de famille (branche feat/prenom-nom)
+- 05/11/2026 : prénom et nom séparés, inscrits confirmés triés par nom de famille (branche feat/prenom-nom) ; page Clients et compteur de cours faits (branche feat/liste-clients)
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -29,6 +29,7 @@
 - Modifier un cours : capacité jamais sous le nombre de confirmés ; capacité augmentée → promotions ; date / durée / lieu changés → mail à tous les inscrits
 - Supprimer un cours → mail à tous les inscrits, avec un message facultatif du coach
 - Prénom et nom de famille obligatoires (réservation, compte, ajout par le coach) ; inscrits du coach : confirmés triés par nom puis prénom, liste d'attente dans l'ordre d'arrivée (elle décide qui reçoit la prochaine place)
+- Compteur de cours faits (`clients.courses_done`) : +1 pour une place confirmée, rattachée à un compte, une fois le cours terminé ; compte les réservations et non les présences ; le coach qui retire un absent après le cours le fait redescendre (aucun mail, aucune promotion)
 - Compte client facultatif : on peut toujours réserver sans compte ; un compte = une place par cours
 - Réservation en un clic seulement avec une adresse confirmée ; sinon formulaire prérempli (réservation rattachée au compte à la confirmation)
 - Une réservation (avec ou sans compte) est rattachée au compte confirmé de même adresse
@@ -63,12 +64,15 @@
 - Interface coach (/coach, non liée depuis le site, `noindex`) : connexion (Coach\LoginController, throttle:5,1, « rester connecté ») ; tableau de bord ; créer / modifier / dupliquer / supprimer un cours (Coach\CourseController, actions UpdateCourse / DeleteCourse) ; inscrits d'un cours (Coach\BookingController, alias `CoachBookingController` dans routes/web.php)
 - Planning type (/coach/planning, bouton à côté de « Nouveau cours ») : créneaux habituels du coach (table `course_templates` : `weekday` ISO 1 = lundi … 7 = dimanche, `start_time` en `time`, secondes ajoutées par un mutateur) ; CRUD Coach\CourseTemplateController + CourseTemplateRequest (hérite de CourseRequest, un seul créneau par jour et par heure) ; vrais créneaux dans CourseTemplateSeeder (rejouable, `updateOrCreate`) : mardi 18h30 Cardio training, mercredi 18h00 et 19h10, jeudi 18h00 Circuit training, 26 places
 - Génération des cours : formulaire « du … au … » sur la page du planning → action App\Actions\GenerateCourses (transaction) ; « du » prérempli au lendemain du dernier cours de l'agenda (prolonge sans recréer les cours supprimés exprès) ; cours déjà existant à la même date et heure sauté ; créneau déjà passé ignoré ; 6 mois maximum (`CourseTemplateController::GENERATION_MAX_MONTHS`) ; les cours générés sont indépendants du modèle
+- Clients (/coach/clients, onglet du header, Coach\ClientController) : comptes triés par nom, adresse confirmée, réservations à venir, cours faits ; lecture seule
+- Compteur : commande `clients:count-courses` (chaque heure, `counted_at` évite un double comptage) ; total gardé sur le compte car les réservations sont supprimées après 6 mois
+- Cours terminés (/coach/cours/termines, bouton en haut du tableau de bord, `CourseController::finished`) : accès aux inscrits pour retirer un absent ; plus de formulaire d'inscription une fois le cours commencé
 - Pages légales (Route::view, sans contrôleur) : /mentions-legales (dont conditions de réservation) et /confidentialite (RGPD, Belgique) ; liens dans le footer et sous les formulaires ; infos manquantes signalées par `<mark class="todo">[À COMPLÉTER…]</mark>` (il ne reste que l'hébergeur)
 - Coordonnées du coach (nom, BCE / TVA, email, téléphone, adresse, lieux des séances) centralisées dans `config/coach.php`, lues avec `config('coach.…')` : mentions légales, confidentialité, contact, cartes de services (lieu sous la description, `.service-place`), données structurées, lieu prérempli d'un nouveau cours (salle des cours collectifs)
 - Pages d'erreur : `resources/views/errors/{404,419,429,500,503}.blade.php` sur un gabarit commun `errors/layout` (la 500 n'apparaît qu'avec APP_DEBUG=false)
 - SEO : meta description (par défaut dans `layouts/app`, surchargeable par `@section('description')`), Open Graph, canonical ; /sitemap.xml généré par une route ; robots.txt bloque /coach, /annulation/ et /compte ; `@section('noindex', true)` ajoute la balise noindex dans `layouts/app`
 - Polices hébergées sur le site via les paquets npm Fontsource (importées en haut de app.css) : aucun appel à Google Fonts (RGPD)
-- Tâches planifiées (routes/console.php), chaque jour : `model:prune` (Booking MassPrunable : réservations des cours passés depuis plus de 6 mois, `Booking::RETENTION_MONTHS` ; Client MassPrunable : comptes non confirmés après 7 jours, comptes inactifs), `queue:prune-failed --hours=168`, `auth:clear-resets clients` (jetons de mot de passe expirés) et `clients:warn-inactive` ; en local `php artisan schedule:work` si besoin
+- Tâches planifiées (routes/console.php), chaque jour : `model:prune` (Booking MassPrunable : réservations des cours passés depuis plus de 6 mois, `Booking::RETENTION_MONTHS` ; Client MassPrunable : comptes non confirmés après 7 jours, comptes inactifs), `queue:prune-failed --hours=168`, `auth:clear-resets clients` (jetons de mot de passe expirés) et `clients:warn-inactive`, plus `clients:count-courses` chaque heure ; en local `php artisan schedule:work` si besoin
 - Comptes clients (/compte, `noindex`, bloqué dans robots.txt) :
   - guard `client` + provider `clients` + broker `clients` (config/auth.php), table `clients` séparée de `users` (coach) ; modèle Client (MustVerifyEmail, MassPrunable) ; Booking.client_id nullable, `nullOnDelete`
   - guards toujours nommés : `auth:web` / `guest:web` côté coach, `auth:client` / `guest:client` côté client, `auth('client')->user()` / `$request->user('client')` dans le code ; sans nom, le guard par défaut peut basculer sur `client` pendant une requête

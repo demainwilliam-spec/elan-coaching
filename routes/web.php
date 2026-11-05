@@ -11,6 +11,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CancellationController;
 // "as" : alias, car il existe déjà un BookingController (côté public) importé plus haut
 use App\Http\Controllers\Coach\BookingController as CoachBookingController;
+use App\Http\Controllers\Coach\ClientController;
 use App\Http\Controllers\Coach\CourseController;
 use App\Http\Controllers\Coach\CourseTemplateController;
 use App\Http\Controllers\Coach\DashboardController;
@@ -128,6 +129,7 @@ Route::prefix('coach')->name('coach.')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::get('/cours/nouveau', [CourseController::class, 'create'])->name('courses.create');
+        Route::get('/cours/termines', [CourseController::class, 'finished'])->name('courses.finished');
         Route::post('/cours', [CourseController::class, 'store'])->name('courses.store');
         Route::get('/cours/{course}/dupliquer', [CourseController::class, 'duplicate'])->name('courses.duplicate');
         Route::get('/cours/{course}/modifier', [CourseController::class, 'edit'])->name('courses.edit');
@@ -148,6 +150,8 @@ Route::prefix('coach')->name('coach.')->group(function () {
         Route::get('/planning/{template}/modifier', [CourseTemplateController::class, 'edit'])->name('templates.edit');
         Route::put('/planning/{template}', [CourseTemplateController::class, 'update'])->name('templates.update');
         Route::delete('/planning/{template}', [CourseTemplateController::class, 'destroy'])->name('templates.destroy');
+
+        Route::get('/clients', ClientController::class)->name('clients');
 
         Route::post('/deconnexion', [LoginController::class, 'destroy'])->name('logout');
     });

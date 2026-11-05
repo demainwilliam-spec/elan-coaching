@@ -28,7 +28,8 @@ class VerifyClientEmail
             // Réservations faites sans compte avec la même adresse (les emails sont stockés en minuscules)
             Booking::whereNull('client_id')
                 ->where('email', $client->email)
-                ->update(['client_id' => $client->id]);
+                // counted_at remis à null : déjà comptée pour un ancien compte supprimé, elle compte pour celui-ci
+                ->update(['client_id' => $client->id, 'counted_at' => null]);
 
             // Adresse changée depuis le profil : les réservations à venir du compte passent sur la nouvelle
             // adresse, pour que leurs mails (promotion, cours modifié...) arrivent au bon endroit.

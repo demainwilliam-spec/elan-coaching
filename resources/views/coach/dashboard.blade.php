@@ -12,6 +12,7 @@
     <div class="button-row coach-new">
         <a href="{{ route('coach.courses.create') }}" class="btn">Nouveau cours</a>
         <a href="{{ route('coach.templates.index') }}" class="btn">Planning type</a>
+        <a href="{{ route('coach.courses.finished') }}" class="btn">Cours terminés</a>
     </div>
 
     {{-- Mêmes classes que l'agenda public : même rendu et même responsive --}}

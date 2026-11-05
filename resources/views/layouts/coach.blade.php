@@ -14,13 +14,15 @@
     </head>
     <body>
 
-        <header>
+        <header class="coach-header">
             <a href="{{ route('coach.dashboard') }}" class="logo"><img src="{{ Vite::asset('resources/images/logo.webp') }}" alt="JF Coaching — tableau de bord" width="139" height="160"></a>
             {{-- @auth('web') : affiché seulement si le coach est connecté (pas sur la page de connexion) --}}
             @auth('web')
                 <nav>
                     <ul>
-                        <li><a href="{{ route('coach.dashboard') }}">Cours</a></li>                        <li><a href="/" target="_blank">Voir le site</a></li>
+                        <li><a href="{{ route('coach.dashboard') }}">Cours</a></li>
+                        <li><a href="{{ route('coach.clients') }}">Clients</a></li>
+                        <li><a href="/" target="_blank">Voir le site</a></li>
                         <li>
                             {{-- Déconnexion en POST : un simple lien (GET) ne doit rien modifier --}}
                             <form method="POST" action="{{ route('coach.logout') }}">

@@ -70,6 +70,11 @@ class BookingController extends Controller
             return back()->with('status', $e->getMessage()); // déjà retiré (double clic)
         }
 
+        // Absent retiré après le cours : aucun mail n'est parti (cf. CancelBooking)
+        if ($booking->course->hasEnded()) {
+            return back()->with('status', "{$booking->name} est retiré(e) de ce cours terminé, sans mail. Son compteur de cours est à jour.");
+        }
+
         $message = "{$booking->name} est retiré(e) du cours et prévenu(e) par mail.";
         if ($promoted !== null) {
             $message .= " {$promoted->name} passe de la liste d'attente à une place confirmée.";

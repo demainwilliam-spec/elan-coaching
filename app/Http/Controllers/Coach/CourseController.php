@@ -6,6 +6,7 @@ use App\Actions\DeleteCourse;
 use App\Actions\UpdateCourse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CourseRequest;
+use App\Models\Booking;
 use App\Models\Course;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,19 @@ use Illuminate\View\View;
 
 class CourseController extends Controller
 {
+    // Cours commencés dont les réservations existent encore (elles sont supprimées après 6 mois), du plus récent au plus ancien
+    public function finished(): View
+    {
+        return view('coach.courses.finished', [
+            'courses' => Course::query()
+                ->where('starts_at', '<=', now())
+                ->where('starts_at', '>=', now()->subMonths(Booking::RETENTION_MONTHS))
+                ->withBookingCounts()
+                ->orderByDesc('starts_at')
+                ->get(),
+        ]);
+    }
+
     public function create(): View
     {
         // Cours vide (non enregistré), avec des valeurs par défaut pour préremplir le formulaire
