@@ -1037,6 +1037,24 @@ mark.todo {
     color: var(--color-accent);
 }
 
+/* Espace coach : logo + 4 liens à faire tenir sur une ligne de téléphone */
+@media (max-width: 768px) {
+    .coach-header {
+        gap: 1rem;
+        padding-inline: 1rem;
+    }
+
+    .coach-header nav ul {
+        gap: 0.75rem;
+    }
+
+    .coach-header nav a,
+    .coach-header .nav-button {
+        font-size: 0.8rem;
+        white-space: nowrap; /* « Voir le site » reste sur une seule ligne */
+    }
+}
+
 .coach-form,
 .account-form {
     display: flex;
@@ -1338,6 +1356,10 @@ mark.todo {
     vertical-align: middle;
 }
 
+.data-table a {
+    text-decoration: underline;
+}
+
 /* Sur téléphone, 5 colonnes ne tiennent pas : chaque ligne devient un bloc, une cellule par ligne.
    display: block retire la mise en page en tableau ; l'en-tête est masqué, chaque cellule affiche
    le nom de sa colonne avant son contenu (::before + attr(data-label) : lit l'attribut HTML) */
@@ -1361,6 +1383,7 @@ mark.todo {
         gap: 1rem;
         padding: 0.3rem 0;
         border-bottom: none;
+        overflow-wrap: anywhere; /* une longue adresse email passe à la ligne au lieu de déborder */
     }
 
     .data-table td[data-label]::before {
