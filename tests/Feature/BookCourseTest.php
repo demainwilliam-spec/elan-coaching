@@ -32,7 +32,7 @@ class BookCourseTest extends TestCase
         $course = $this->makeCourse(capacity: 2); // argument nommé : plus lisible qu'un "2" seul
 
         // Act
-        $booking = (new BookCourse)->handle($course, 'Alice', 'alice@test.be');
+        $booking = (new BookCourse)->handle($course, 'Alice', 'Test', 'alice@test.be');
 
         // Assert
         $this->assertSame(BookingStatus::Confirmed, $booking->status);
@@ -44,9 +44,9 @@ class BookCourseTest extends TestCase
         $course = $this->makeCourse(capacity: 1);
         $action = new BookCourse;
 
-        $action->handle($course, 'Alice', 'alice@test.be'); // prend la seule place
-        $bob = $action->handle($course, 'Bob', 'bob@test.be');
-        $chloe = $action->handle($course, 'Chloé', 'chloe@test.be');
+        $action->handle($course, 'Alice', 'Test', 'alice@test.be'); // prend la seule place
+        $bob = $action->handle($course, 'Bob', 'Test', 'bob@test.be');
+        $chloe = $action->handle($course, 'Chloé', 'Test', 'chloe@test.be');
 
         $this->assertSame(BookingStatus::Waiting, $bob->status);
         $this->assertSame(1, $bob->waitingPosition());
@@ -57,23 +57,23 @@ class BookCourseTest extends TestCase
     {
         $course = $this->makeCourse(capacity: 5);
         $action = new BookCourse;
-        $action->handle($course, 'Alice', 'alice@test.be');
+        $action->handle($course, 'Alice', 'Test', 'alice@test.be');
 
         // expectException : le test réussit seulement si cette exception est levée ensuite
         $this->expectException(BookingException::class);
         $this->expectExceptionMessage('déjà inscrite');
 
-        $action->handle($course, 'Alice', '  ALICE@test.be ');
+        $action->handle($course, 'Alice', 'Test', '  ALICE@test.be ');
     }
 
     public function test_un_doublon_refuse_ne_laisse_aucune_trace_en_base(): void
     {
         $course = $this->makeCourse(capacity: 5);
         $action = new BookCourse;
-        $action->handle($course, 'Alice', 'alice@test.be');
+        $action->handle($course, 'Alice', 'Test', 'alice@test.be');
 
         try {
-            $action->handle($course, 'Alice', 'alice@test.be');
+            $action->handle($course, 'Alice', 'Test', 'alice@test.be');
         } catch (BookingException) {
             // attendu : on vérifie juste ce qu'il reste en base
         }
@@ -85,8 +85,8 @@ class BookCourseTest extends TestCase
     {
         $action = new BookCourse;
 
-        $first = $action->handle($this->makeCourse(capacity: 5), 'Alice', 'alice@test.be');
-        $second = $action->handle($this->makeCourse(capacity: 5), 'Alice', 'alice@test.be');
+        $first = $action->handle($this->makeCourse(capacity: 5), 'Alice', 'Test', 'alice@test.be');
+        $second = $action->handle($this->makeCourse(capacity: 5), 'Alice', 'Test', 'alice@test.be');
 
         $this->assertSame(BookingStatus::Confirmed, $first->status);
         $this->assertSame(BookingStatus::Confirmed, $second->status);
@@ -99,12 +99,12 @@ class BookCourseTest extends TestCase
         $this->expectException(BookingException::class);
         $this->expectExceptionMessage('déjà commencé');
 
-        (new BookCourse)->handle($course, 'Alice', 'alice@test.be');
+        (new BookCourse)->handle($course, 'Alice', 'Test', 'alice@test.be');
     }
 
     public function test_l_email_est_enregistre_en_minuscules_sans_espaces(): void
     {
-        $booking = (new BookCourse)->handle($this->makeCourse(capacity: 5), 'Alice', '  Alice@Test.BE ');
+        $booking = (new BookCourse)->handle($this->makeCourse(capacity: 5), 'Alice', 'Test', '  Alice@Test.BE ');
 
         $this->assertSame('alice@test.be', $booking->email);
     }

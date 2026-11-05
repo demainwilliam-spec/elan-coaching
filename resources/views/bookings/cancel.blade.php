@@ -28,7 +28,7 @@
                     @if ($booking->status === \App\Enums\BookingStatus::Confirmed)
                         Place confirmée au nom de {{ $booking->name }}.
                     @else
-                        {{ $booking->name }}, vous êtes n°{{ $booking->waitingPosition() }} sur la liste d'attente.
+                        {{ $booking->first_name }}, vous êtes n°{{ $booking->waitingPosition() }} sur la liste d'attente.
                     @endif
                 </p>
             </div>

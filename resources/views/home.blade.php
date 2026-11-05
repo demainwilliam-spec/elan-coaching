@@ -195,7 +195,7 @@
         {{-- Modale de réservation : une seule pour tous les cours, remplie par booking-dialog.js --}}
         {{-- data-reopen-course : présent seulement après une erreur → le JS rouvre la modale sur ce cours --}}
         <dialog class="booking-dialog" aria-labelledby="booking-dialog-title" data-booking-dialog
-            @if ($errors->hasAny(['booking.name', 'booking.email']) || session('booking_error'))
+            @if ($errors->hasAny(['booking.first_name', 'booking.last_name', 'booking.email']) || session('booking_error'))
                 data-reopen-course="{{ old('booking.course_id') }}"
             @endif
         >
@@ -247,13 +247,22 @@
                             </p>
                         @endif
 
-                        <div class="form-field @error('booking.name') has-error @enderror">
-                            <label for="booking-name">Nom</label>
-                            {{-- name="booking[name]" : arrive côté serveur dans le tableau "booking" (booking.name) --}}
-                            {{-- old(champ, défaut) : la saisie précédente après une erreur, sinon le nom du compte --}}
-                            <input type="text" id="booking-name" name="booking[name]" autocomplete="name"
-                                value="{{ old('booking.name', $client?->name) }}" required maxlength="100">
-                            @error('booking.name')
+                        <div class="form-field @error('booking.first_name') has-error @enderror">
+                            <label for="booking-first-name">Prénom</label>
+                            {{-- name="booking[first_name]" : arrive côté serveur dans le tableau "booking" (booking.first_name) --}}
+                            {{-- old(champ, défaut) : la saisie précédente après une erreur, sinon le prénom du compte --}}
+                            <input type="text" id="booking-first-name" name="booking[first_name]" autocomplete="given-name"
+                                value="{{ old('booking.first_name', $client?->first_name) }}" required maxlength="100">
+                            @error('booking.first_name')
+                                <p class="form-error">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="form-field @error('booking.last_name') has-error @enderror">
+                            <label for="booking-last-name">Nom</label>
+                            <input type="text" id="booking-last-name" name="booking[last_name]" autocomplete="family-name"
+                                value="{{ old('booking.last_name', $client?->last_name) }}" required maxlength="100">
+                            @error('booking.last_name')
                                 <p class="form-error">{{ $message }}</p>
                             @enderror
                         </div>

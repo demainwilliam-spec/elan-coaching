@@ -97,7 +97,8 @@ class CourseSeeder extends Seeder
     {
         for ($i = 0; $i < $count; $i++) {
             $course->bookings()->create([
-                'name' => fake('fr_FR')->name(),
+                'first_name' => fake('fr_FR')->firstName(),
+                'last_name' => fake('fr_FR')->lastName(),
                 'email' => fake('fr_FR')->unique()->safeEmail(), // unique() : jamais deux fois la même adresse
                 'status' => $status,
             ]);

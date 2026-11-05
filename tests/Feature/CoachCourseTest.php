@@ -51,7 +51,7 @@ class CoachCourseTest extends TestCase
 
     private function book(Course $course, string $name): void
     {
-        (new BookCourse)->handle($course, $name, strtolower($name).'@test.be');
+        (new BookCourse)->handle($course, $name, 'Test', strtolower($name).'@test.be');
     }
 
     public function test_un_visiteur_ne_peut_pas_creer_de_cours(): void
@@ -144,7 +144,7 @@ class CoachCourseTest extends TestCase
             ->put(route('coach.courses.update', $course), $this->formData($course, ['capacity' => 3]));
 
         // Bob et Chloé (les 2 premiers en attente) sont promus, David reste en attente
-        $statuses = $course->bookings()->orderBy('id')->pluck('status', 'name');
+        $statuses = $course->bookings()->orderBy('id')->pluck('status', 'first_name');
         $this->assertSame(BookingStatus::Confirmed, $statuses['Chloe']);
         $this->assertSame(BookingStatus::Waiting, $statuses['David']);
         Mail::assertQueued(BookingPromoted::class, 2);

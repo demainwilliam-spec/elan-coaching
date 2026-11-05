@@ -1,7 +1,7 @@
 @extends('emails.layout')
 
 @section('content')
-    <p style="margin: 0 0 16px;">Bonjour {{ $client->name }},</p>
+    <p style="margin: 0 0 16px;">Bonjour {{ $client->first_name }},</p>
 
     <p style="margin: 0 0 24px;">
         Vous avez demandé à réinitialiser le mot de passe de votre compte.

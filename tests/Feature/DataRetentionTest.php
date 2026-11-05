@@ -24,7 +24,7 @@ class DataRetentionTest extends TestCase
 
         // Création directe : BookCourse refuse (à raison) les cours déjà passés
         return $course->bookings()->create([
-            'name' => 'Alice',
+            'first_name' => 'Alice', 'last_name' => 'Test',
             'email' => 'alice@test.be',
             'status' => BookingStatus::Confirmed,
         ]);

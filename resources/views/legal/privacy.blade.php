@@ -8,7 +8,7 @@
     <article class="legal-page">
         <h1>Politique de confidentialité</h1>
 
-        <p class="legal-updated">Dernière mise à jour : 2 novembre 2026</p>
+        <p class="legal-updated">Dernière mise à jour : 5 novembre 2026</p>
 
         <p>
             JF Coaching collecte le minimum de données nécessaires pour vous répondre et gérer vos réservations.
@@ -35,14 +35,14 @@
 
         <h3>Réservation d'un cours collectif</h3>
         <ul>
-            <li><strong>Données :</strong> nom, adresse email, cours choisi, place confirmée ou position sur la liste d'attente.</li>
+            <li><strong>Données :</strong> prénom, nom, adresse email, cours choisi, place confirmée ou position sur la liste d'attente.</li>
             <li><strong>Pourquoi :</strong> gérer votre réservation, vous prévenir si une place se libère ou si le cours change (base légale : l'exécution du service que vous demandez).</li>
             <li><strong>Durée :</strong> supprimées immédiatement si vous annulez, et automatiquement 6 mois après la date du cours.</li>
         </ul>
 
         <h3>Compte client (facultatif)</h3>
         <ul>
-            <li><strong>Données :</strong> nom, adresse email, mot de passe, date de confirmation de l'adresse, et la liste de vos réservations.</li>
+            <li><strong>Données :</strong> prénom, nom, adresse email, mot de passe, date de confirmation de l'adresse, et la liste de vos réservations.</li>
             <li><strong>Pourquoi :</strong> vous permettre de réserver sans ressaisir vos coordonnées et de suivre vos réservations (base légale : l'exécution du service que vous demandez en créant un compte).</li>
             <li><strong>Mot de passe :</strong> jamais enregistré tel quel, seulement sous une forme chiffrée irréversible : personne, pas même le coach, ne peut le lire.</li>
             <li><strong>Durée :</strong> tant que le compte existe. Vous pouvez le supprimer vous-même à tout moment depuis la page « Mon profil ». Un compte sans aucune activité (connexion ou réservation) pendant {{ \App\Models\Client::INACTIVE_RETENTION_MONTHS }} mois est supprimé automatiquement, après un email d'avertissement envoyé {{ \App\Models\Client::INACTIVE_WARNING_DAYS }} jours avant. Un compte dont l'adresse n'est jamais confirmée est supprimé automatiquement après {{ \App\Models\Client::UNVERIFIED_RETENTION_DAYS }} jours.</li>

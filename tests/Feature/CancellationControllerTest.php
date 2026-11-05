@@ -22,7 +22,7 @@ class CancellationControllerTest extends TestCase
             'capacity' => 5,
         ]);
 
-        return (new BookCourse)->handle($course, 'Alice', 'alice@test.be');
+        return (new BookCourse)->handle($course, 'Alice', 'Test', 'alice@test.be');
     }
 
     public function test_le_lien_affiche_la_confirmation_sans_rien_annuler(): void

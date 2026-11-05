@@ -36,24 +36,24 @@ class AccountProfileTest extends TestCase
     private function bookingFor(Client $client, Course $course): Booking
     {
         return $course->bookings()->create([
-            'client_id' => $client->id, 'name' => $client->name, 'email' => $client->email, 'status' => BookingStatus::Confirmed,
+            'client_id' => $client->id, 'first_name' => $client->first_name, 'last_name' => $client->last_name, 'email' => $client->email, 'status' => BookingStatus::Confirmed,
         ]);
     }
 
     public function test_changer_son_nom_ne_demande_pas_de_mot_de_passe_et_met_a_jour_les_reservations_a_venir(): void
     {
-        $client = Client::factory()->create(['name' => 'Alice', 'email' => 'alice@test.be']);
+        $client = Client::factory()->create(['first_name' => 'Alice', 'last_name' => 'Dupont', 'email' => 'alice@test.be']);
         $upcoming = $this->bookingFor($client, $this->makeCourse('+3 days'));
         $past = $this->bookingFor($client, $this->makeCourse('-3 days'));
 
         $this->actingAs($client, 'client')
-            ->put(route('account.profile.update'), ['name' => 'Alice Martin', 'email' => 'alice@test.be'])
+            ->put(route('account.profile.update'), ['first_name' => 'Alice', 'last_name' => 'Martin', 'email' => 'alice@test.be'])
             ->assertSessionHasNoErrors()
             ->assertSessionHas('account_success');
 
         $this->assertSame('Alice Martin', $client->fresh()->name);
         $this->assertSame('Alice Martin', $upcoming->fresh()->name);
-        $this->assertSame('Alice', $past->fresh()->name); // l'historique n'est pas réécrit
+        $this->assertSame('Alice Dupont', $past->fresh()->name); // l'historique n'est pas réécrit
     }
 
     public function test_changer_d_email_exige_le_mot_de_passe_actuel(): void
@@ -61,7 +61,7 @@ class AccountProfileTest extends TestCase
         $client = Client::factory()->create(['email' => 'alice@test.be']);
 
         $this->actingAs($client, 'client')
-            ->put(route('account.profile.update'), ['name' => 'Alice', 'email' => 'nouvelle@test.be', 'current_password' => 'faux'])
+            ->put(route('account.profile.update'), ['first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'nouvelle@test.be', 'current_password' => 'faux'])
             // assertSessionHasErrorsIn : erreur rangée dans le sac « profile »
             ->assertSessionHasErrorsIn('profile', 'current_password');
 
@@ -71,10 +71,10 @@ class AccountProfileTest extends TestCase
     public function test_changer_d_email_envoie_la_confirmation_et_previent_l_ancienne_adresse(): void
     {
         Mail::fake();
-        $client = Client::factory()->create(['name' => 'Alice', 'email' => 'alice@test.be']);
+        $client = Client::factory()->create(['first_name' => 'Alice', 'email' => 'alice@test.be']);
 
         $this->actingAs($client, 'client')
-            ->put(route('account.profile.update'), ['name' => 'Alice', 'email' => 'Nouvelle@Test.be', 'current_password' => 'password'])
+            ->put(route('account.profile.update'), ['first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'Nouvelle@Test.be', 'current_password' => 'password'])
             ->assertSessionHasNoErrors();
 
         $client->refresh();
@@ -91,7 +91,7 @@ class AccountProfileTest extends TestCase
         $client = Client::factory()->create(['email' => 'alice@test.be']);
 
         $this->actingAs($client, 'client')
-            ->put(route('account.profile.update'), ['name' => 'Alice', 'email' => 'bob@test.be', 'current_password' => 'password'])
+            ->put(route('account.profile.update'), ['first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'bob@test.be', 'current_password' => 'password'])
             ->assertSessionHasErrorsIn('profile', 'email');
     }
 
@@ -103,7 +103,7 @@ class AccountProfileTest extends TestCase
         // Cours où la nouvelle adresse est déjà inscrite : la réservation du compte garde l'ancienne
         $conflict = $this->makeCourse('+5 days');
         $kept = $this->bookingFor($client, $conflict);
-        (new BookCourse)->handle($conflict, 'Alice', 'nouvelle@test.be');
+        (new BookCourse)->handle($conflict, 'Alice', 'Test', 'nouvelle@test.be');
 
         // forceFill : email_verified_at n'est pas dans $fillable, update() l'ignorerait sans rien dire
         $client->forceFill(['email' => 'nouvelle@test.be', 'email_verified_at' => null])->save();
@@ -181,7 +181,7 @@ class AccountProfileTest extends TestCase
     {
         $this->get(route('account.profile'))->assertRedirect(route('account.login'));
 
-        $this->actingAs(Client::factory()->create(['name' => 'Alice']), 'client')
+        $this->actingAs(Client::factory()->create(['first_name' => 'Alice']), 'client')
             ->get(route('account.profile'))
             ->assertOk()
             ->assertSee('value="Alice"', false);

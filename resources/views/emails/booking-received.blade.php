@@ -1,7 +1,7 @@
 @extends('emails.layout')
 
 @section('content')
-    <p style="margin: 0 0 16px;">Bonjour {{ $booking->name }},</p>
+    <p style="margin: 0 0 16px;">Bonjour {{ $booking->first_name }},</p>
 
     @if ($booking->status === \App\Enums\BookingStatus::Confirmed)
         <p style="margin: 0;"><strong>Votre place est confirmée.</strong> À bientôt !</p>

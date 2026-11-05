@@ -18,34 +18,38 @@ class BookingController extends Controller
 {
     public function index(Course $course): View
     {
-        // partition() : coupe la collection en deux selon la condition → [ceux qui la respectent, les autres]
-        // Destructuration [$a, $b] = ... : chaque morceau dans sa variable
-        [$confirmed, $waiting] = $course->bookings()
-            ->orderBy('id')
-            ->get()
-            ->partition(fn (Booking $booking) => $booking->status === BookingStatus::Confirmed);
-
         return view('coach.bookings.index', [
             'course' => $course,
-            'confirmed' => $confirmed,
-            'waiting' => $waiting->values(), // values() : renumérote 0, 1, 2... → position = index + 1
+            // Par nom de famille : la collation de MariaDB ignore les majuscules et les accents (É rangé avec E)
+            'confirmed' => $course->bookings()
+                ->where('status', BookingStatus::Confirmed)
+                ->orderBy('last_name')
+                ->orderBy('first_name')
+                ->get(),
+            // Par ordre d'arrivée : c'est lui qui décide qui reçoit la prochaine place libre
+            'waiting' => $course->bookings()
+                ->where('status', BookingStatus::Waiting)
+                ->orderBy('id')
+                ->get(),
         ]);
     }
 
     public function store(Request $request, Course $course, BookCourse $bookCourse): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:100',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'required|string|max:100',
             'email' => 'required|email:rfc,filter|max:254',
         ], [
-            'name.required' => 'Indiquez le nom.',
+            'first_name.required' => 'Indiquez le prénom.',
+            'last_name.required' => 'Indiquez le nom de famille.',
             'email.required' => 'Indiquez l\'email : la personne y recevra son lien d\'annulation.',
             'email.email' => 'Cette adresse email n\'est pas valide.',
         ]);
 
         try {
             // Mêmes règles qu'une réservation en ligne (places, doublon, mail avec lien d'annulation)
-            $booking = $bookCourse->handle($course, $validated['name'], $validated['email']);
+            $booking = $bookCourse->handle($course, $validated['first_name'], $validated['last_name'], $validated['email']);
         } catch (BookingException $e) {
             return back()->withErrors(['email' => $e->getMessage()])->withInput();
         }

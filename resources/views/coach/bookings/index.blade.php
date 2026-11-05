@@ -35,10 +35,18 @@
     <form class="coach-form" method="POST" action="{{ route('coach.bookings.store', $course) }}">
         @csrf
 
-        <div class="form-field @error('name') has-error @enderror">
-            <label for="name">Nom</label>
-            <input type="text" id="name" name="name" value="{{ old('name') }}" required maxlength="100">
-            @error('name') <p class="form-error">{{ $message }}</p> @enderror
+        <div class="form-row">
+            <div class="form-field @error('first_name') has-error @enderror">
+                <label for="first_name">Prénom</label>
+                <input type="text" id="first_name" name="first_name" value="{{ old('first_name') }}" required maxlength="100">
+                @error('first_name') <p class="form-error">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="form-field @error('last_name') has-error @enderror">
+                <label for="last_name">Nom</label>
+                <input type="text" id="last_name" name="last_name" value="{{ old('last_name') }}" required maxlength="100">
+                @error('last_name') <p class="form-error">{{ $message }}</p> @enderror
+            </div>
         </div>
 
         <div class="form-field @error('email') has-error @enderror">

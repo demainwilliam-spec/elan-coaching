@@ -48,7 +48,7 @@ class AccountInactivityTest extends TestCase
             'duration_minutes' => 60, 'capacity' => 5,
         ]);
 
-        (new BookCourse)->handle($course, 'Alice', 'alice@test.be', $client);
+        (new BookCourse)->handle($course, 'Alice', 'Test', 'alice@test.be', $client);
 
         $this->assertTrue($client->fresh()->last_active_at->isToday());
     }

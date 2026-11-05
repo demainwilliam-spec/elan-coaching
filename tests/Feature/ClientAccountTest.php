@@ -24,7 +24,7 @@ class ClientAccountTest extends TestCase
 
     public function test_le_mot_de_passe_est_enregistre_hache(): void
     {
-        $client = Client::create(['name' => 'Alice', 'email' => 'alice@test.be', 'password' => 'un-long-mot-de-passe']);
+        $client = Client::create(['first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'alice@test.be', 'password' => 'un-long-mot-de-passe']);
 
         $this->assertNotSame('un-long-mot-de-passe', $client->getRawOriginal('password'));
     }
@@ -39,7 +39,7 @@ class ClientAccountTest extends TestCase
             'capacity' => 5,
         ]);
         $client = Client::factory()->create();
-        $booking = (new BookCourse)->handle($course, 'Alice', 'alice@test.be');
+        $booking = (new BookCourse)->handle($course, 'Alice', 'Test', 'alice@test.be');
         $booking->client()->associate($client)->save(); // associate : remplit client_id
 
         $client->delete();

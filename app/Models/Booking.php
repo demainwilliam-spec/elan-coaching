@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\BookingStatus;
+use App\Models\Concerns\HasFullName;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
@@ -13,14 +14,15 @@ class Booking extends Model
 {
     // MassPrunable : la commande "php artisan model:prune" supprime les lignes décrites par prunable()
     // (en une seule requête DELETE, sans charger chaque réservation)
-    use MassPrunable;
+    use HasFullName, MassPrunable;
 
     // Durée de conservation annoncée dans la politique de confidentialité
     public const RETENTION_MONTHS = 6;
     // course_id absent volontairement : on crée via $course->bookings()->create([...]), qui le remplit
     protected $fillable = [
         'client_id', // null pour une réservation sans compte
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'status',
     ];

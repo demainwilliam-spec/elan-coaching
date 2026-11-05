@@ -24,7 +24,7 @@ class BookCourse
      *
      * @throws BookingException si le cours a commencé ou si l'email (ou le compte) est déjà inscrit
      */
-    public function handle(Course $course, string $name, string $email, ?Client $client = null): Booking
+    public function handle(Course $course, string $firstName, string $lastName, string $email, ?Client $client = null): Booking
     {
         // Email normalisé : "  Alice@Mail.com " et "alice@mail.com" sont la même personne,
         // quelle que soit la base (la collation _ci de MariaDB n'existe pas en SQLite)
@@ -36,7 +36,7 @@ class BookCourse
 
         try {
             // Transaction : tout ce qui est dans la fonction est enregistré ensemble, ou pas du tout
-            $booking = DB::transaction(function () use ($course, $name, $email, $clientId) {
+            $booking = DB::transaction(function () use ($course, $firstName, $lastName, $email, $clientId) {
                 // On relit le cours AVEC un verrou (SELECT ... FOR UPDATE) : toute autre réservation
                 // sur ce même cours attend ici que notre transaction soit terminée
                 $course = Course::whereKey($course->id)->lockForUpdate()->firstOrFail();
@@ -60,7 +60,8 @@ class BookCourse
 
                 return $course->bookings()->create([
                     'client_id' => $clientId,
-                    'name' => $name,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
                     'email' => $email,
                     'status' => $status,
                 ]);

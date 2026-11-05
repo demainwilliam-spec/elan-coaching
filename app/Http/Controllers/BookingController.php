@@ -17,10 +17,11 @@ class BookingController extends Controller
         $client = $request->bookingClient();
 
         try {
-            // Avec un compte confirmé : nom et email du compte ; sinon : ceux tapés dans le formulaire
+            // Avec un compte confirmé : prénom, nom et email du compte ; sinon : ceux tapés dans le formulaire
             $booking = $bookCourse->handle(
                 $course,
-                $client ? $client->name : $request->validated('booking.name'),
+                $client ? $client->first_name : $request->validated('booking.first_name'),
+                $client ? $client->last_name : $request->validated('booking.last_name'),
                 $client ? $client->email : $request->validated('booking.email'),
                 $client,
             );

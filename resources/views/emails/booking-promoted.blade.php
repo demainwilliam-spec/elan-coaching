@@ -1,7 +1,7 @@
 @extends('emails.layout')
 
 @section('content')
-    <p style="margin: 0 0 16px;">Bonjour {{ $booking->name }},</p>
+    <p style="margin: 0 0 16px;">Bonjour {{ $booking->first_name }},</p>
 
     <p style="margin: 0;">
         Bonne nouvelle : une place s'est libérée. Vous quittez la liste d'attente,

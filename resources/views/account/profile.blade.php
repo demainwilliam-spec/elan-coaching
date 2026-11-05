@@ -20,12 +20,18 @@
                  _method=PUT, que Laravel lit pour appeler la route Route::put --}}
             @method('PUT')
 
-            {{-- form-row : les trois champs sur une ligne (empilés sur téléphone) --}}
+            {{-- form-row : les champs deux par deux (empilés sur téléphone) --}}
             <div class="form-row">
-                <div class="form-field @error('name', 'profile') has-error @enderror">
-                    <label for="name">Nom</label>
-                    <input type="text" id="name" name="name" autocomplete="name" maxlength="100" value="{{ old('name', $client->name) }}" required>
-                    @error('name', 'profile') <p class="form-error">{{ $message }}</p> @enderror
+                <div class="form-field @error('first_name', 'profile') has-error @enderror">
+                    <label for="first_name">Prénom</label>
+                    <input type="text" id="first_name" name="first_name" autocomplete="given-name" maxlength="100" value="{{ old('first_name', $client->first_name) }}" required>
+                    @error('first_name', 'profile') <p class="form-error">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="form-field @error('last_name', 'profile') has-error @enderror">
+                    <label for="last_name">Nom</label>
+                    <input type="text" id="last_name" name="last_name" autocomplete="family-name" maxlength="100" value="{{ old('last_name', $client->last_name) }}" required>
+                    @error('last_name', 'profile') <p class="form-error">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="form-field @error('email', 'profile') has-error @enderror">

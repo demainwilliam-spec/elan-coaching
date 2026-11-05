@@ -14,11 +14,19 @@ class AccountAuthTest extends TestCase
     private function registrationData(array $overrides = []): array
     {
         return array_merge([
-            'name' => 'Alice',
+            'first_name' => 'Alice', 'last_name' => 'Test',
             'email' => 'alice@test.be',
             'password' => 'mot-de-passe',
             'password_confirmation' => 'mot-de-passe',
         ], $overrides);
+    }
+
+    public function test_le_prenom_et_le_nom_sont_obligatoires_a_l_inscription(): void
+    {
+        $this->post(route('account.register'), $this->registrationData(['first_name' => '', 'last_name' => '']))
+            ->assertSessionHasErrors(['first_name', 'last_name']);
+
+        $this->assertSame(0, Client::count());
     }
 
     public function test_un_visiteur_peut_creer_un_compte_et_est_connecte(): void
@@ -99,7 +107,7 @@ class AccountAuthTest extends TestCase
     {
         $this->get('/')->assertSee('aria-label="Se connecter à mon compte"', false);
 
-        $this->actingAs(Client::factory()->create(['name' => 'Alice']), 'client')
+        $this->actingAs(Client::factory()->create(['first_name' => 'Alice']), 'client')
             ->get('/')
             ->assertSee('aria-label="Mon compte"', false);
     }
@@ -110,7 +118,7 @@ class AccountAuthTest extends TestCase
             ->assertSee('Réservez plus vite avec un compte')
             ->assertSee(route('account.register'));
 
-        $this->actingAs(Client::factory()->create(['name' => 'Alice']), 'client')
+        $this->actingAs(Client::factory()->create(['first_name' => 'Alice']), 'client')
             ->get('/')
             ->assertSee('Connecté en tant que Alice')
             ->assertDontSee('Réservez plus vite avec un compte');

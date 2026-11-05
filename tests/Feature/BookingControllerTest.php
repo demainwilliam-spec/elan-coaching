@@ -22,10 +22,10 @@ class BookingControllerTest extends TestCase
     }
 
     // Simule l'envoi du formulaire ; route() construit l'URL /cours/{id}/reservations
-    private function book(Course $course, string $name, string $email)
+    private function book(Course $course, string $name, string $email, string $lastName = 'Test')
     {
         return $this->post(route('bookings.store', $course), [
-            'booking' => ['name' => $name, 'email' => $email],
+            'booking' => ['first_name' => $name, 'last_name' => $lastName, 'email' => $email],
         ]);
     }
 
@@ -53,10 +53,10 @@ class BookingControllerTest extends TestCase
 
     public function test_les_erreurs_de_validation_ne_touchent_pas_le_formulaire_de_contact(): void
     {
-        $response = $this->book($this->makeCourse(capacity: 5), '', 'pas-un-email');
+        $response = $this->book($this->makeCourse(capacity: 5), '', 'pas-un-email', '');
 
         $response->assertRedirect('/#cours');
-        $response->assertSessionHasErrors(['booking.name', 'booking.email']);
+        $response->assertSessionHasErrors(['booking.first_name', 'booking.last_name', 'booking.email']);
         $response->assertSessionDoesntHaveErrors(['name', 'email']); // les champs du contact restent propres
     }
 
@@ -79,7 +79,7 @@ class BookingControllerTest extends TestCase
 
     public function test_un_cours_inexistant_renvoie_une_404(): void
     {
-        $this->post('/cours/999/reservations', ['booking' => ['name' => 'Alice', 'email' => 'alice@test.be']])
+        $this->post('/cours/999/reservations', ['booking' => ['first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'alice@test.be']])
             ->assertNotFound();
     }
 }

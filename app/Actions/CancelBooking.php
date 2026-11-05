@@ -47,7 +47,7 @@ class CancelBooking
             if ($byCoach) {
                 // Valeurs simples, comme CourseCancelled : la réservation n'existera plus quand le worker enverra le mail
                 Mail::to($booking->email)->send(new BookingRemoved(
-                    $booking->name,
+                    $booking->first_name,
                     $course->title,
                     ucfirst($course->starts_at->translatedFormat('l j F \à H\hi')),
                     $course->location,
