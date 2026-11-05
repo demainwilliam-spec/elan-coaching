@@ -129,6 +129,7 @@ Route::prefix('coach')->name('coach.')->group(function () {
         Route::get('/', DashboardController::class)->name('dashboard');
 
         Route::get('/cours/nouveau', [CourseController::class, 'create'])->name('courses.create');
+        Route::get('/cours/termines', [CourseController::class, 'finished'])->name('courses.finished');
         Route::post('/cours', [CourseController::class, 'store'])->name('courses.store');
         Route::get('/cours/{course}/dupliquer', [CourseController::class, 'duplicate'])->name('courses.duplicate');
         Route::get('/cours/{course}/modifier', [CourseController::class, 'edit'])->name('courses.edit');

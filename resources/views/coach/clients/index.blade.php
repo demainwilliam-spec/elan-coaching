@@ -16,6 +16,7 @@
                     <th scope="col">Adresse</th>
                     <th scope="col">Inscrit depuis</th>
                     <th scope="col">À venir</th>
+                    <th scope="col">Cours faits</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,6 +27,7 @@
                         <td data-label="Adresse">{{ $client->hasVerifiedEmail() ? 'Confirmée' : 'À confirmer' }}</td>
                         <td data-label="Depuis">{{ $client->created_at->translatedFormat('j F Y') }}</td>
                         <td data-label="À venir">{{ $client->upcoming_count }}</td>
+                        <td data-label="Cours faits">{{ $client->courses_done }}</td>
                     </tr>
                 @endforeach
             </tbody>

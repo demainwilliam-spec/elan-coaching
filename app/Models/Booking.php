@@ -31,6 +31,7 @@ class Booking extends Model
     {
         return [
             'status' => BookingStatus::class, // la colonne texte devient un BookingStatus
+            'counted_at' => 'datetime',
         ];
     }
 

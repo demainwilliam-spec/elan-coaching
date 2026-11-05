@@ -5,6 +5,7 @@ namespace App\Actions;
 use App\Exceptions\BookingException;
 use App\Mail\BookingRemoved;
 use App\Models\Booking;
+use App\Models\Client;
 use App\Models\Course;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -43,6 +44,16 @@ class CancelBooking
             }
 
             $booking->delete();
+
+            // Cours déjà compté (absent retiré par le coach après le cours) : le compteur redescend
+            if ($booking->counted_at !== null) {
+                Client::whereKey($booking->client_id)->where('courses_done', '>', 0)->decrement('courses_done');
+            }
+
+            // Cours terminé : pas de mail de retrait, et la place libérée ne sert plus à personne
+            if ($course->hasEnded()) {
+                return null;
+            }
 
             if ($byCoach) {
                 // Valeurs simples, comme CourseCancelled : la réservation n'existera plus quand le worker enverra le mail

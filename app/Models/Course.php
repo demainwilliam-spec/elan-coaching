@@ -82,6 +82,16 @@ class Course extends Model
         return now()->lessThanOrEqualTo($this->cancellationDeadline());
     }
 
+    public function endsAt(): Carbon
+    {
+        return $this->starts_at->copy()->addMinutes($this->duration_minutes);
+    }
+
+    public function hasEnded(): bool
+    {
+        return $this->endsAt()->isPast();
+    }
+
     // Taux de remplissage en %, pour la largeur de la barre (max(1, ...) évite une division par zéro)
     public function fillPercent(): int
     {

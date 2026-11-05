@@ -21,6 +21,9 @@ Schedule::command('queue:prune-failed --hours=168')->daily();
 // Supprime les jetons « mot de passe oublié » des clients expirés (plus de 60 min)
 Schedule::command('auth:clear-resets clients')->daily();
 
+// Ajoute les cours terminés au compteur des clients. withoutOverlapping : jamais deux exécutions en même temps
+Schedule::command('clients:count-courses')->hourly()->withoutOverlapping();
+
 // Prévient par mail les clients inactifs depuis 11 mois ; leur compte est supprimé 30 jours plus tard
 // par model:prune s'ils ne se sont pas reconnectés (cf. Client::prunable)
 Schedule::command('clients:warn-inactive')->daily();

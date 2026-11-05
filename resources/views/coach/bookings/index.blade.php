@@ -31,6 +31,12 @@
         </ul>
     @endif
 
+    {{-- Cours commencé : on ne peut plus inscrire personne (BookCourse le refuse) --}}
+    @if ($course->starts_at->isPast())
+        <div class="button-row">
+            <a href="{{ route('coach.courses.finished') }}" class="btn">Retour aux cours terminés</a>
+        </div>
+    @else
     <h3 class="coach-list-title">Inscrire quelqu'un</h3>
     <form class="coach-form" method="POST" action="{{ route('coach.bookings.store', $course) }}">
         @csrf
@@ -62,7 +68,8 @@
 
         <div class="button-row">
             <button type="submit" class="btn">Inscrire</button>
-            <a href="{{ route('coach.dashboard') }}" class="btn btn-secondary">Retour aux cours</a>
+            <a href="{{ route('coach.dashboard') }}" class="btn">Retour aux cours</a>
         </div>
     </form>
+    @endif
 @endsection
