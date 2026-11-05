@@ -22,3 +22,10 @@
    style="display: inline-block; padding: 12px 24px; background-color: #0A0A0A; color: #FFFFFF; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">
     Annuler ma réservation
 </a>
+
+{{-- Seulement pour une place confirmée : une personne en liste d'attente n'a pas encore de place --}}
+@if ($booking->status === \App\Enums\BookingStatus::Confirmed)
+    <p style="margin: 16px 0 0; font-size: 14px; color: #555;">
+        Passé ce délai, si vous avez une carte, ce cours y sera coché même en cas d'absence.
+    </p>
+@endif

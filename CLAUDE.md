@@ -25,6 +25,7 @@
 ## Règles métier (réservation de cours)
 - Réservation possible jusqu'au début du cours ; s'il reste de la place → confirmée, sinon → liste d'attente (illimitée)
 - Annulation en ligne possible jusqu'à midi le jour du cours (`Course::cancellationDeadline()`, jamais après le début du cours ; le coach ne donne pas de cours le matin) ; une place confirmée libérée → la 1re personne en attente est promue
+- Carte papier du coach (hors du site, il la coche à chaque venue) : pour un client qui a une carte, une place confirmée non annulée avant midi est due, le cours manqué est coché en plus du suivant ; sans carte, rien à craindre. Texte exact du coach dans la modale de réservation, précisé dans les conditions (mentions légales) et le mail de réservation
 - Le coach peut retirer quelqu'un sans limite d'heure (la personne est prévenue), inscrire quelqu'un à la main (mêmes règles qu'en ligne)
 - Modifier un cours : capacité jamais sous le nombre de confirmés ; capacité augmentée → promotions ; date / durée / lieu changés → mail à tous les inscrits
 - Supprimer un cours → mail à tous les inscrits, avec un message facultatif du coach
