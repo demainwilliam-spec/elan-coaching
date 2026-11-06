@@ -16,6 +16,7 @@ use App\Http\Controllers\Coach\CourseController;
 use App\Http\Controllers\Coach\CourseTemplateController;
 use App\Http\Controllers\Coach\DashboardController;
 use App\Http\Controllers\Coach\LoginController;
+use App\Http\Controllers\Coach\PasswordResetController as CoachPasswordResetController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -122,7 +123,17 @@ Route::prefix('coach')->name('coach.')->group(function () {
         Route::get('/connexion', [LoginController::class, 'show'])->name('login');
         // throttle:5,1 : 5 tentatives par minute et par IP, contre les essais de mots de passe à la chaîne
         Route::post('/connexion', [LoginController::class, 'store'])->middleware('throttle:5,1');
+
+        // Mot de passe oublié : demande du lien
+        Route::get('/mot-de-passe-oublie', [CoachPasswordResetController::class, 'request'])->name('password.request');
+        Route::post('/mot-de-passe-oublie', [CoachPasswordResetController::class, 'email'])->middleware('throttle:5,10');
     });
+
+    // Nouveau mot de passe (lien reçu par mail) : accessible connecté ou non, le jeton suffit comme preuve
+    Route::get('/reinitialisation/{token}', [CoachPasswordResetController::class, 'edit'])->name('password.reset');
+    Route::post('/reinitialisation', [CoachPasswordResetController::class, 'update'])
+        ->name('password.update')
+        ->middleware('throttle:5,10');
 
     // auth:web : pages réservées au coach connecté (sinon redirection vers coach.login, cf. bootstrap/app.php)
     Route::middleware('auth:web')->group(function () {

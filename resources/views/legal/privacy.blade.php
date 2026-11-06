@@ -8,7 +8,7 @@
     <article class="legal-page">
         <h1>Politique de confidentialité</h1>
 
-        <p class="legal-updated">Dernière mise à jour : 5 novembre 2026</p>
+        <p class="legal-updated">Dernière mise à jour : 6 novembre 2026</p>
 
         <p>
             JF Coaching collecte le minimum de données nécessaires pour vous répondre et gérer vos réservations.
@@ -58,7 +58,7 @@
 
         <h2>Qui a accès à vos données ?</h2>
         <p>
-            Uniquement le coach, et les prestataires techniques indispensables au fonctionnement du site :
+            Uniquement le coach, les coachs qu'il emploie, et les prestataires techniques indispensables au fonctionnement du site :
         </p>
         <ul>
             <li>l'hébergeur du site : <mark class="todo">[À COMPLÉTER au déploiement]</mark> ;</li>

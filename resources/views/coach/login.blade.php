@@ -29,4 +29,6 @@
 
         <button type="submit" class="btn">Se connecter</button>
     </form>
+
+    <p class="account-switch"><a href="{{ route('coach.password.request') }}">Mot de passe oublié ?</a></p>
 @endsection
