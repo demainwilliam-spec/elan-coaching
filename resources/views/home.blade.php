@@ -37,8 +37,8 @@
     <section class="hero">
         <h1>Coach sportif à Éghezée</h1>
         <p>
-            Un accompagnement sportif construit autour de vous : bilan honnête,
-            programme réaliste, suivi qui tient dans la durée.
+            Ici commence votre chemin vers un corps plus fort et un esprit plus souple.
+            La véritable Éducation Physique.
         </p>
         <a href="#contact" class="btn">Prendre contact</a>
     </section>
