@@ -8,6 +8,7 @@
 - 31/10 – 01/11/2026 : ville (Éghezée) pour le référencement local ; comptes clients (branche feat/comptes-clients)
 - 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées ; annulation jusqu'à midi le jour du cours (au lieu de 24 h avant) ; planning type du coach et génération des cours (branche feat/planning-type)
 - 05/11/2026 : prénom et nom séparés, inscrits confirmés triés par nom de famille (branche feat/prenom-nom) ; page Clients et compteur de cours faits (branche feat/liste-clients)
+- 06/11/2026 : comptes pour les coachs employés, mêmes droits (branche feat/comptes-coachs) ; avertissement du coach sur les réservations non annulées (carte)
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -20,7 +21,7 @@
 2. Copier `.env.example` en `.env`, puis `php artisan key:generate`, et renseigner les identifiants SMTP
 3. Démarrer MySQL dans XAMPP, créer la base : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root -e "CREATE DATABASE jf_coaching CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"`
 4. `php artisan migrate --seed` (le bloc `DB_*` de `.env.example` est déjà configuré pour XAMPP)
-5. Créer le compte du coach : `php artisan coach:create` (à lancer soi-même : le mot de passe est saisi dans le terminal)
+5. Créer le compte du coach : `php artisan coach:create` (lien par mail pour choisir le mot de passe : worker de la queue nécessaire)
 
 ## Règles métier (réservation de cours)
 - Réservation possible jusqu'au début du cours ; s'il reste de la place → confirmée, sinon → liste d'attente (illimitée)
@@ -46,6 +47,7 @@
 - Repartir d'une base propre (supprime tout, recrée, remplit) : `php artisan migrate:fresh --seed`
 - Client MySQL en ligne de commande : `C:\xampp\mysql\bin\mysql.exe -h 127.0.0.1 -u root jf_coaching`
 - Prévenir les clients inactifs (lancée chaque jour par le planificateur) : `php artisan clients:warn-inactive`
+- Comptes coach (tous les mêmes droits) : `php artisan coach:create` (crée le compte, envoie un lien pour choisir le mot de passe), `php artisan coach:remove` (coupe l'accès, refuse de supprimer le dernier compte)
 - Exécuter du code Laravel ponctuel : `php artisan tinker --execute="..."` (sans --execute, tinker attend une saisie et bloque)
 
 ## Fonctionnalités en place
@@ -63,6 +65,7 @@
 - Layout commun des mails `emails/layout` en styles en ligne + tables ; liens construits avec APP_URL (doit valoir http://127.0.0.1:8000 en local)
 - Tester les mails avec ses propres adresses (alias Gmail `+1`, `+2`) : les emails du seeder sont fictifs
 - Interface coach (/coach, non liée depuis le site, `noindex`) : connexion (Coach\LoginController, throttle:5,1, « rester connecté ») ; tableau de bord ; créer / modifier / dupliquer / supprimer un cours (Coach\CourseController, actions UpdateCourse / DeleteCourse) ; inscrits d'un cours (Coach\BookingController, alias `CoachBookingController` dans routes/web.php)
+- Mot de passe oublié du coach (/coach/mot-de-passe-oublie, Coach\PasswordResetController, broker `users`, mail CoachResetPasswordEmail, 12 caractères minimum)
 - Planning type (/coach/planning, bouton à côté de « Nouveau cours ») : créneaux habituels du coach (table `course_templates` : `weekday` ISO 1 = lundi … 7 = dimanche, `start_time` en `time`, secondes ajoutées par un mutateur) ; CRUD Coach\CourseTemplateController + CourseTemplateRequest (hérite de CourseRequest, un seul créneau par jour et par heure) ; vrais créneaux dans CourseTemplateSeeder (rejouable, `updateOrCreate`) : mardi 18h30 Cardio training, mercredi 18h00 et 19h10, jeudi 18h00 Circuit training, 26 places
 - Génération des cours : formulaire « du … au … » sur la page du planning → action App\Actions\GenerateCourses (transaction) ; « du » prérempli au lendemain du dernier cours de l'agenda (prolonge sans recréer les cours supprimés exprès) ; cours déjà existant à la même date et heure sauté ; créneau déjà passé ignoré ; 6 mois maximum (`CourseTemplateController::GENERATION_MAX_MONTHS`) ; les cours générés sont indépendants du modèle
 - Clients (/coach/clients, onglet du header, Coach\ClientController) : comptes triés par nom, adresse confirmée, réservations à venir, cours faits ; lecture seule
@@ -106,7 +109,7 @@
 - Worker de la queue permanent (supervisor ou équivalent), sinon aucun mail ne part
 - `MAIL_CONTACT_ADDRESS` = adresse du coach (jftheys@hotmail.com) dans le `.env` de production
 - Cron chaque minute : `php artisan schedule:run`, sinon les tâches planifiées ne tournent jamais
-- `npm run build` sur le serveur (ou envoyer `public/build`), compte du coach via `php artisan coach:create`, planning type via `php artisan db:seed --class=CourseTemplateSeeder` (surtout pas `--seed` seul : il ajouterait les cours de démonstration)
+- `npm run build` sur le serveur (ou envoyer `public/build`), comptes coach via `php artisan coach:create` (après avoir vérifié l'envoi des mails), planning type via `php artisan db:seed --class=CourseTemplateSeeder` (surtout pas `--seed` seul : il ajouterait les cours de démonstration)
 - Ajouter `Sitemap: https://<domaine>/sitemap.xml` dans robots.txt ; déclarer le site dans Google Search Console
 - Sauvegarde régulière de la base
 - Vérifier la carte de partage (WhatsApp, Facebook) une fois en ligne
