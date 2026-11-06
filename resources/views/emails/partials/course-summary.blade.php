@@ -1,0 +1,31 @@
+{{-- Rappel du cours + bouton d'annulation, commun aux mails de réservation. Attend $booking --}}
+@php($course = $booking->course)
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin: 24px 0;">
+    <tr>
+        <td style="padding: 4px 0 4px 16px; border-left: 3px solid #0A0A0A;">
+            <p style="margin: 0; font-size: 18px; font-weight: bold;">{{ $course->title }}</p>
+            <p style="margin: 4px 0 0; color: #555;">
+                {{ ucfirst($course->starts_at->translatedFormat('l j F \à H\hi')) }} · {{ $course->duration_minutes }} min
+            </p>
+            <p style="margin: 0; color: #555;">{{ $course->location }}</p>
+        </td>
+    </tr>
+</table>
+
+<p style="margin: 24px 0 8px; font-size: 14px; color: #555;">
+    {{-- Date limite en toutes lettres : « jusqu'au mardi 3 novembre à 12h00 » --}}
+    Un empêchement ? Annulation possible jusqu'au {{ $course->cancellationDeadline()->translatedFormat('l j F \à H\hi') }} :
+</p>
+{{-- route() donne une URL absolue, construite avec APP_URL (le worker n'a pas de requête HTTP pour deviner l'adresse) --}}
+<a href="{{ route('bookings.cancel', $booking->cancel_token) }}"
+   style="display: inline-block; padding: 12px 24px; background-color: #0A0A0A; color: #FFFFFF; text-decoration: none; font-weight: bold; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em;">
+    Annuler ma réservation
+</a>
+
+{{-- Seulement pour une place confirmée : une personne en liste d'attente n'a pas encore de place --}}
+@if ($booking->status === \App\Enums\BookingStatus::Confirmed)
+    <p style="margin: 16px 0 0; font-size: 14px; color: #555;">
+        Passé ce délai, si vous avez une carte, ce cours y sera coché même en cas d'absence.
+    </p>
+@endif

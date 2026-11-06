@@ -1,0 +1,1478 @@
+/* On n'importe que le reset de Tailwind (Preflight), pas ses classes utilitaires.
+   layer(base) le range dans une couche CSS de faible priorité :
+   tout le CSS écrit ci-dessous (hors couche) passe toujours avant lui. */
+@import 'tailwindcss/preflight.css' layer(base);
+
+/* Polices hébergées sur le site (paquets npm Fontsource) au lieu de Google Fonts :
+   le navigateur ne contacte plus Google, qui ne reçoit donc plus l'adresse IP des visiteurs (RGPD).
+   Chaque fichier déclare une graisse avec @font-face ; Vite copie les fichiers de police dans le build.
+   Mêmes graisses qu'avant, pour que l'affichage ne change pas. */
+@import '@fontsource/oswald/400.css';
+@import '@fontsource/oswald/500.css';
+@import '@fontsource/oswald/600.css';
+@import '@fontsource/oswald/700.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+
+:root {
+    /* Couleurs (thème noir, par défaut) */
+    --color-bg: #0A0A0A;
+    --color-bg-alt: #1A1A1A;
+    --color-accent: #FFFFFF;
+    --color-text: #F2F2F2;
+    --color-text-muted: #9A9A9A;
+    --color-error: #E5735A;
+
+    /* Typographie */
+    --font-heading: 'Oswald', sans-serif;
+    --font-body: 'Inter', sans-serif;
+}
+
+/* Thème blanc, pour une section : on redéfinit les mêmes variables sur l'élément.
+   Ses descendants héritent des nouvelles valeurs, donc toutes les règles qui utilisent
+   var(--color-...) (cartes, boutons, champs...) s'inversent sans être modifiées. */
+.theme-light {
+    --color-bg: #FFFFFF;
+    --color-bg-alt: #F0F0F0;
+    --color-accent: #0A0A0A;
+    --color-text: #0A0A0A;
+    --color-text-muted: #5E5E5E;
+    --color-error: #C0392B; /* plus foncé que sur fond noir, pour rester lisible sur blanc */
+
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* ---------- Apparition au défilement (resources/js/reveal.js) ---------- */
+
+/* En attente : sous l'écran, pas encore atteint */
+[data-reveal].is-pending {
+    opacity: 0;
+}
+
+/* @keyframes : décrit une animation étape par étape (ici seulement le départ ; l'arrivée = l'état normal) */
+@keyframes reveal {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+}
+
+/* backwards : l'état de départ s'applique aussi pendant le délai, et rien n'est figé à la fin
+   (les transitions de survol des cartes restent libres) */
+[data-reveal].is-revealed {
+    animation: reveal 0.6s ease-out var(--reveal-delay, 0ms) backwards;
+}
+
+/* Cartes de services : apparition en cascade, l'une après l'autre */
+.services-grid > :nth-child(2) {
+    --reveal-delay: 120ms;
+}
+
+@media (max-width: 768px) {
+    /* Cartes empilées : chacune entre dans l'écran à son tour, un délai en plus la ferait arriver en retard */
+    .services-grid > * {
+        --reveal-delay: 0ms;
+    }
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 768px) {
+    h1, h2, h3 {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem; /* espace minimum entre le logo et le menu quand la place manque (téléphone) */
+    padding: 0.75rem 3rem;
+    border-bottom: 1px solid var(--color-bg-alt);
+    background-color: var(--color-bg);
+}
+
+/* Logo (image blanche sur fond transparent) : on fixe la hauteur, width: auto garde les proportions */
+.logo img {
+    display: block; /* une image est "inline" par défaut : sans ça, un petit espace apparaît dessous */
+    height: 64px;
+    width: auto;
+}
+
+header nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+header nav a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+header nav a:hover {
+    color: var(--color-accent);
+}
+
+.header-end {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+/* Icônes des réseaux (header et footer) */
+.social-links {
+    display: flex;
+    gap: 0.5rem;
+    list-style: none;
+}
+
+/* Zone cliquable de 28 px autour d'une icône de 20 px (au moins 24 px pour un doigt).
+   .account-link : l'icône du compte client, habillée comme les réseaux */
+.social-links a,
+.account-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 28px;
+    height: 28px;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+}
+
+.social-links a:hover,
+.account-link:hover {
+    color: var(--color-accent);
+}
+
+.social-links svg,
+.account-link svg {
+    width: 20px;
+    height: 20px;
+}
+
+@media (max-width: 768px) {
+    header {
+        padding: 0.6rem 1.5rem;
+    }
+
+    .logo img {
+        height: 48px;
+    }
+
+    header nav ul {
+        gap: 1rem;
+    }
+
+    /* Sur téléphone, le header doit faire tenir logo + 3 liens + 2 icônes : on resserre */
+    .header-end {
+        gap: 0.75rem;
+    }
+
+    header .social-links {
+        gap: 0;
+    }
+}
+.hero {
+    padding: 6rem 3rem;
+    text-align: center;
+}
+.hero a {
+    margin-top: 3rem;
+}
+
+/* ---------- Présentation du coach + carrousel photo (sous l'accueil) ---------- */
+
+/* Deux colonnes de même largeur : le texte à gauche, les photos à droite */
+.about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center; /* texte centré verticalement par rapport aux photos */
+    gap: 4rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 3rem 6rem;
+}
+
+@media (max-width: 768px) {
+    .about {
+        grid-template-columns: 1fr; /* une colonne : le texte (1er dans le HTML) passe au-dessus */
+        gap: 2.5rem;
+        padding: 0 1.5rem 4rem;
+        text-align: center;
+    }
+}
+
+.about-text h2 {
+    margin-bottom: 1.5rem;
+}
+
+.about-text p + p {
+    margin-top: 1rem; /* p + p : tout paragraphe qui suit un autre paragraphe */
+}
+
+/* Même principe que le rail de l'agenda : les photos côte à côte, aimantées une par une */
+.photo-track {
+    display: flex;
+    max-width: 480px;
+    margin: 0 auto;
+    aspect-ratio: 4 / 5;           /* cadre portrait : la hauteur se calcule à partir de la largeur */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+.photo-track::-webkit-scrollbar {
+    display: none;
+}
+
+.photo-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    background-color: var(--color-bg); /* bandes autour d'une photo en largeur */
+}
+
+.photo-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;          /* remplit le cadre en recadrant, sans déformer */
+    filter: grayscale(100%);    /* noir et blanc, sans toucher au fichier d'origine */
+}
+
+/* Photo en largeur : affichée entière (contain) plutôt que recadrée et agrandie, donc floue */
+.photo-slide.is-landscape img {
+    object-fit: contain;
+}
+
+.photo-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 1rem;
+}
+
+/* Zone cliquable de 24 × 24 px (minimum recommandé pour un doigt), invisible ;
+   le rond visible de 10 px est dessiné au centre par ::before */
+.photo-dot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+/* ::before : pseudo-élément, un « élément virtuel » créé par le CSS, sans balise HTML.
+   content: '' est obligatoire pour qu'il existe, même vide */
+.photo-dot::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--color-accent);
+    border-radius: 50%;
+}
+
+/* [aria-current="true"] : le point de la photo affichée (attribut mis à jour par le JS) */
+.photo-dot[aria-current="true"]::before {
+    background-color: var(--color-accent);
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 3rem 2rem;
+    border-top: 1px solid var(--color-bg-alt);
+}
+
+footer p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.logo-footer {
+    height: 80px;
+    width: auto;
+    margin-bottom: 0.5rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-links a {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: var(--color-accent);
+}
+
+/* Lien "en savoir plus" sous les formulaires de contact et de réservation */
+.form-privacy {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+.form-privacy a,
+.booking-notice a {
+    color: inherit; /* même gris que le texte, souligné pour qu'on le reconnaisse comme un lien */
+    text-decoration: underline;
+}
+
+/* ---------- Pages légales (mentions légales, confidentialité) ---------- */
+
+.legal-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 5rem 3rem;
+    line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+    .legal-page {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Les titres du site sont grands (2.5rem) : ici on a besoin d'une hiérarchie plus serrée */
+.legal-page h1 {
+    margin-bottom: 1rem;
+}
+
+.legal-page h2 {
+    font-size: 1.5rem;
+    margin: 3rem 0 1rem;
+    color: var(--color-accent);
+}
+
+.legal-page h3 {
+    font-size: 1.15rem;
+    margin: 2rem 0 0.75rem;
+}
+
+.legal-page p,
+.legal-page ul {
+    margin-bottom: 1rem;
+}
+
+.legal-page ul {
+    padding-left: 1.5rem;
+    list-style: disc; /* le reset de Tailwind (Preflight) retire les puces */
+}
+
+.legal-page a {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
+
+.legal-updated {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+/* Information à compléter avant la mise en ligne : volontairement très visible */
+mark.todo {
+    background-color: var(--color-error);
+    color: var(--color-bg);
+    padding: 0 0.3rem;
+}
+
+
+#services {
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    max-width: 800px; /* deux cartes seulement : sans limite, elles s'étireraient sur tout l'écran */
+    margin: 0 auto 3rem; /* auto à gauche et à droite : la grille est centrée */
+}
+
+/* Media query : ces règles ne s'appliquent que si l'écran fait 768px de large ou moins.
+   Elles écrasent celles du dessus, car elles viennent après dans le fichier. */
+@media (max-width: 768px) {
+    .services-grid {
+        grid-template-columns: 1fr; /* une seule colonne : les cartes s'empilent */
+    }
+}
+
+/* La carte est un lien (<a>) : le reset de Tailwind lui a déjà retiré couleur et soulignement */
+.service-card {
+    display: block;
+    border: 1px solid var(--color-accent);
+    padding: 2.5rem 1.5rem;
+    background-color: var(--color-bg);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+}
+
+/* (hover: hover) : seulement les appareils qui peuvent survoler (souris) ;
+   sur téléphone, un toucher laisserait la carte inversée */
+@media (hover: hover) {
+    /* Couleurs inversées, comme .btn:hover ; transform déplace la carte à l'affichage
+       sans recalculer la mise en page : fluide */
+    .service-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgb(0 0 0 / 0.18);
+        background-color: var(--color-accent);
+        color: var(--color-bg);
+    }
+
+    /* L'icône et la description ont leur propre couleur : on les inverse aussi */
+    .service-card:hover .service-icon,
+    .service-card:hover p {
+        color: var(--color-bg);
+    }
+}
+
+/* Navigation au clavier (touche Tab) : même inversion qu'au survol, pour voir où l'on est.
+   :focus-visible = focus venant du clavier (pas d'un clic de souris) */
+.service-card:focus-visible {
+    outline: none; /* l'inversion des couleurs remplace le contour par défaut */
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+}
+
+.service-card:focus-visible .service-icon,
+.service-card:focus-visible p {
+    color: var(--color-bg);
+}
+
+/* « Moins d'animations » demandé : l'inversion et l'ombre restent, le déplacement disparaît */
+@media (prefers-reduced-motion: reduce) {
+    .service-card:hover {
+        transform: none;
+    }
+}
+
+.service-card h3 {
+    margin-bottom: 1rem;
+}
+
+.service-card p {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    transition: color 0.25s ease; /* au même rythme que le fond de la carte au survol */
+}
+
+/* Lieu des séances, sous la description : séparé par un filet, plus discret */
+.service-card .service-place {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid currentColor;
+    font-size: 0.85rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.9rem 2rem;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    cursor: pointer; /* le reset de Tailwind laisse le curseur par défaut sur les <button> */
+}
+
+.btn:hover {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+}
+
+#cours {
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+#contact {
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+/* Placée après les quatre sections pour passer après leurs règles de base */
+@media (max-width: 768px) {
+    .hero, #services, #cours, #contact {
+        padding: 4rem 1.5rem;
+    }
+}
+
+#contact h2 {
+    margin-bottom: 1rem;
+}
+
+#contact > p {
+    color: var(--color-text-muted);
+    max-width: 500px;
+    margin: 0 auto 3rem;
+}
+
+.form-alert {
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    padding: 1rem;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+}
+
+/* Variante d'erreur : même encadré que .form-alert, seules les couleurs changent */
+.form-alert-error {
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 500px;
+    margin: 0 auto 4rem;
+    text-align: left; /* la section est centrée, mais des champs se lisent mieux alignés à gauche */
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-field label {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    padding: 0.8rem 1rem;
+    background-color: var(--color-bg-alt);
+    border: 1px solid var(--color-text-muted);
+    color: var(--color-text);
+}
+
+/* Les options de la liste déroulante : mêmes couleurs que le champ (sinon texte clair sur fond clair) */
+.form-field select option {
+    background-color: var(--color-bg-alt);
+    color: var(--color-text);
+}
+
+.form-field textarea {
+    resize: vertical; /* le visiteur peut agrandir la zone en hauteur, mais pas en largeur */
+}
+
+/* :focus = le champ dans lequel le curseur se trouve */
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    outline: 1px solid var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.form-error {
+    font-size: 0.85rem;
+    color: var(--color-error);
+}
+
+/* Bordure rouge sur le champ en erreur (has-error est ajoutée par @error dans la vue) */
+.has-error input,
+.has-error textarea {
+    border-color: var(--color-error);
+}
+
+.contact-form .btn {
+    align-self: center; /* centre le bouton seul, sans l'étirer sur toute la largeur */
+}
+
+.contact-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.contact-actions p {
+    color: var(--color-text-muted);
+}
+
+@media (max-width: 768px) {
+    .contact-actions {
+        flex-direction: column; /* l'axe principal devient vertical : les boutons s'empilent */
+        align-items: center;    /* sur un axe vertical, align-items centre horizontalement */
+        gap: 1rem;
+    }
+}
+
+.btn-secondary {
+    border-color: var(--color-text-muted);
+    color: var(--color-text-muted);
+}
+
+/* Gris au repos (moins mis en avant que le bouton principal), mais même survol que .btn partout */
+.btn-secondary:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-bg);
+}
+
+.service-icon {
+    width: 40px;
+    height: 40px;
+    color: var(--color-accent);
+    margin: 0 auto 0.5rem;
+    transition: color 0.25s ease;
+}
+
+/* ---------- Section cours collectifs (agenda) ---------- */
+
+#cours h2 {
+    margin-bottom: 1rem;
+}
+
+#cours > p {
+    color: var(--color-text-muted);
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+.course-carousel {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Le rail : les pages sont côte à côte et débordent à droite ; seule la zone visible s'affiche */
+.course-track {
+    display: flex;
+    align-items: stretch;          /* toutes les pages prennent la hauteur de la plus haute : le cadre ne bouge pas */
+    overflow-x: auto;              /* défilement horizontal : doigt, trackpad, ou JS */
+    scroll-snap-type: x mandatory; /* le défilement s'aimante toujours sur une page entière */
+    scrollbar-width: none;         /* masque la barre de défilement (Firefox) */
+}
+
+/* Même chose pour Chrome / Safari / Edge, qui utilisent un pseudo-élément */
+.course-track::-webkit-scrollbar {
+    display: none;
+}
+
+/* Une <ul> = une page du carrousel */
+.course-list {
+    flex: 0 0 100%;                /* ni grandir, ni rétrécir : exactement la largeur visible */
+    scroll-snap-align: start;      /* point d'aimantation : le bord gauche de la page */
+    list-style: none;
+    border: 1px solid var(--color-accent);
+    text-align: left;
+}
+
+/* Chaque cours est une grille de 3 colonnes : date | infos | réservation */
+.course-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 220px; /* 1fr = tout l'espace restant */
+    gap: 2rem;
+    align-items: center;
+    padding: 1.75rem 2rem;
+}
+
+@media (max-width: 768px) {
+    .course-row {
+        grid-template-columns: 60px 1fr; /* la colonne réservation disparaît... */
+        gap: 1rem 1.25rem;               /* gap : écart vertical puis horizontal */
+        padding: 1.5rem 1.25rem;
+    }
+}
+
+/* + : sélectionne une ligne précédée d'une autre ligne → séparateur entre les cours, pas avant le premier */
+.course-row + .course-row {
+    border-top: 1px solid var(--color-bg-alt);
+}
+
+.course-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.course-weekday,
+.course-month {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+}
+
+.course-day {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--color-accent);
+}
+
+.course-info h3 {
+    font-size: 1.4rem;   /* écrase le 2.5rem global des titres */
+    margin-bottom: 0.25rem;
+}
+
+.course-meta {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+}
+
+.course-description {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.course-booking {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+@media (max-width: 768px) {
+    .course-booking {
+        grid-column: 1 / -1; /* ...et passe dessous, de la 1re à la dernière ligne de grille */
+    }
+}
+
+.course-places {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+/* Dernière place : mise en avant (couleur d'accent, en gras) pour créer l'urgence */
+.is-last .course-places {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.is-full .course-places {
+    color: var(--color-text);
+    text-transform: uppercase;
+    font-family: var(--font-heading);
+    letter-spacing: 0.05em;
+}
+
+/* Barre de remplissage : le fond = capacité totale, le <span> = places prises */
+.course-bar {
+    height: 4px;
+    background-color: var(--color-bg-alt);
+}
+
+.course-bar span {
+    display: block; /* un <span> est "inline" par défaut : sans ça, width et height sont ignorés */
+    height: 100%;
+    background-color: var(--color-accent);
+    transform-origin: left; /* l'animation part du bord gauche, pas du centre */
+}
+
+/* La barre part écrasée à 0 (scaleX) et revient à sa vraie largeur (écrite dans le HTML) */
+@keyframes fill-bar {
+    from {
+        transform: scaleX(0);
+    }
+}
+
+/* Quand l'agenda apparaît (classe ajoutée par reveal.js), les barres se remplissent
+   juste après son glissement (délai 0.4 s) ; backwards : vides pendant ce délai */
+.course-carousel.is-revealed .course-bar span {
+    animation: fill-bar 0.8s ease-out 0.4s backwards;
+}
+
+.is-full .course-bar span {
+    background-color: var(--color-text-muted);
+}
+
+.course-booking .btn {
+    text-align: center;
+}
+
+.course-empty {
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--color-text-muted);
+}
+
+.course-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.pagination-link {
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+/* :not(:disabled) : pas d'effet de survol sur une flèche désactivée */
+.pagination-link:not(:disabled):hover {
+    color: var(--color-text);
+}
+
+/* :disabled : bouton avec l'attribut disabled (pas de page derrière) → grisé, non cliquable */
+.pagination-link:disabled {
+    color: var(--color-text-muted);
+    opacity: 0.4;
+    cursor: default;
+}
+
+.pagination-status {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+/* ---------- Modale de réservation ---------- */
+
+.booking-dialog {
+    margin: auto;                     /* centre la modale (le reset Tailwind avait mis margin: 0 partout) */
+    width: calc(100% - 2rem);         /* calc : 100% de l'écran moins une marge de 1rem de chaque côté */
+    max-width: 520px;
+    max-height: calc(100% - 2rem);    /* au-delà, la modale défile à l'intérieur */
+    padding: 0;
+    border: 1px solid var(--color-accent);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    text-align: left;
+}
+
+/* ::backdrop : le fond affiché derrière une <dialog> ouverte avec showModal() */
+.booking-dialog::backdrop {
+    background-color: rgb(0 0 0 / 0.75); /* noir à 75 % d'opacité */
+}
+
+/* Le padding est sur ce bloc intérieur : un clic sur la <dialog> elle-même = un clic sur le fond */
+.booking-dialog-inner {
+    position: relative; /* repère pour positionner le bouton × en absolu */
+    padding: 2.5rem;
+}
+
+@media (max-width: 768px) {
+    .booking-dialog-inner {
+        padding: 2rem 1.25rem;
+    }
+}
+
+.booking-dialog-close {
+    position: absolute; /* sorti du flux, placé par rapport à .booking-dialog-inner */
+    top: 0.75rem;
+    right: 0.75rem;
+}
+
+.booking-dialog-close button {
+    padding: 0.25rem 0.6rem;
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.booking-dialog-close button:hover {
+    color: var(--color-accent);
+}
+
+.booking-dialog h3 {
+    font-size: 1.6rem;   /* écrase le 2.5rem global des titres */
+    margin-bottom: 1.5rem;
+}
+
+/* Rappel du cours choisi, avec un filet de couleur d'accent à gauche */
+.booking-summary {
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-accent);
+}
+
+.booking-summary-title {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+}
+
+.booking-notice {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--color-text-muted);
+}
+
+/* Avertissement "cours complet" : mis en avant avec la couleur d'accent */
+.booking-notice[data-booking-full-notice] {
+    margin-bottom: 1.5rem;
+    font-style: normal;
+    color: var(--color-accent);
+}
+
+.booking-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.booking-form .btn {
+    align-self: center;
+}
+/* ---------- Pages simples centrées : annulation (lien reçu par mail), pages d'erreur ---------- */
+
+.message-page {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 6rem 3rem;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .message-page {
+        padding: 4rem 1.5rem;
+    }
+}
+
+.message-page .booking-summary {
+    margin-bottom: 2rem;
+    text-align: left; /* le rappel du cours se lit mieux aligné à gauche, comme dans la modale */
+}
+
+.message-text {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+}
+
+/* Le gros code (404, 500...) au-dessus du titre des pages d'erreur */
+.error-code {
+    font-family: var(--font-heading);
+    font-size: 6rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .error-code {
+        font-size: 4.5rem;
+    }
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .button-row {
+        flex-direction: column; /* boutons empilés */
+        align-items: stretch; /* tous de la même largeur : celle de la colonne */
+        gap: 1rem;
+        text-align: center;
+    }
+
+    /* Un bouton dans un formulaire n'est pas étiré par la règle ci-dessus : le formulaire l'est, pas son contenu */
+    .button-row form .btn {
+        width: 100%;
+    }
+}
+
+/* ---------- Espace coach ---------- */
+
+.coach-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 4rem 3rem;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .coach-page {
+        padding: 3rem 1.5rem;
+    }
+}
+
+/* Bouton de déconnexion habillé comme les liens du menu */
+.nav-button {
+    color: var(--color-text-muted);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.nav-button:hover {
+    color: var(--color-accent);
+}
+
+/* Espace coach : logo + 4 liens à faire tenir sur une ligne de téléphone */
+@media (max-width: 768px) {
+    .coach-header {
+        gap: 1rem;
+        padding-inline: 1rem;
+    }
+
+    .coach-header nav ul {
+        gap: 0.75rem;
+    }
+
+    .coach-header nav a,
+    .coach-header .nav-button {
+        font-size: 0.8rem;
+        white-space: nowrap; /* « Voir le site » reste sur une seule ligne */
+    }
+}
+
+.coach-form,
+.account-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.coach-form .btn,
+.account-form .btn {
+    align-self: center;
+}
+
+/* Case à cocher + son texte sur une ligne */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    cursor: pointer;
+}
+
+.form-check input {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--color-accent); /* couleur de la coche */
+}
+
+.coach-page h2 {
+    margin-bottom: 0.5rem;
+}
+
+/* Planning type : bloc « Créer les cours » encadré, séparé de la liste des créneaux */
+.coach-generate {
+    margin-bottom: 3rem;
+    padding: 2rem;
+    border: 1px solid var(--color-text-muted);
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .coach-generate {
+        padding: 1.5rem 1rem;
+    }
+}
+
+.coach-page h3 {
+    margin-bottom: 0.5rem;
+}
+
+.coach-generate .coach-summary {
+    margin-bottom: 1.5rem;
+}
+
+.coach-summary {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+}
+
+.coach-new {
+    margin-bottom: 2rem;
+}
+
+/* Liens d'action sous la barre de remplissage (Modifier, Dupliquer...) */
+.course-actions {
+    display: flex;
+    flex-wrap: wrap; /* passent à la ligne s'ils ne tiennent pas */
+    gap: 0.5rem 1.25rem;
+    font-size: 0.9rem;
+}
+
+.course-actions a {
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.course-actions a:hover {
+    text-decoration: underline;
+}
+
+/* Deux champs côte à côte (durée + places) */
+.form-row {
+    display: grid;
+    /* minmax(0, 1fr) : un champ peut rétrécir sous sa largeur naturelle (avec 1fr seul, il déborde de sa colonne) */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: start; /* chaque champ reste en haut de sa case, même si l'autre affiche une erreur dessous */
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.coach-form .button-row {
+    margin-top: 0.5rem;
+}
+
+/* L'icône calendrier (ou horloge) du champ date reste sombre sur fond sombre : on l'inverse en clair */
+.form-field input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+.form-field input[type="date"]::-webkit-calendar-picker-indicator,
+.form-field input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+.coach-form .form-field input,
+.coach-form .form-field select,
+.coach-form .form-field textarea,
+.account-form .form-field input {
+    font-size: 1rem; /* 16px minimum : sinon Safari iPhone zoome automatiquement sur le champ */
+}
+
+/* Action destructrice (suppression) : couleur d'erreur au lieu de la couleur d'accent */
+.course-actions a.is-danger,
+.course-actions .link-button.is-danger {
+    color: var(--color-error);
+}
+
+/* Bouton d'un formulaire (ex. suppression en DELETE) habillé comme les liens d'action voisins */
+.link-button {
+    color: var(--color-accent);
+    font: inherit;
+    cursor: pointer;
+}
+
+.link-button:hover {
+    text-decoration: underline;
+}
+
+.btn-danger {
+    border-color: var(--color-error);
+    color: var(--color-error);
+}
+
+.btn-danger:hover {
+    background-color: var(--color-error);
+    color: var(--color-bg);
+}
+
+/* ---------- Espace coach : inscrits d'un cours ---------- */
+
+.coach-course-summary {
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    text-align: left;
+}
+
+.coach-list-title {
+    font-size: 1.3rem;   /* écrase le 2.5rem global des titres */
+    margin: 0 0 1rem;
+}
+
+.coach-booking-list {
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    list-style: none;
+    border: 1px solid var(--color-accent);
+    text-align: left;
+}
+
+/* Infos à gauche, bouton "Retirer" à droite */
+.coach-booking {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+}
+
+.coach-booking + .coach-booking {
+    border-top: 1px solid var(--color-bg-alt);
+}
+
+.coach-booking-name {
+    font-weight: 600;
+}
+
+.coach-booking-position {
+    margin-right: 0.4rem;
+    color: var(--color-accent);
+}
+
+.coach-booking .course-meta a {
+    color: inherit;
+    overflow-wrap: anywhere; /* une longue adresse email peut se couper au lieu de déborder sur téléphone */
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+
+/* ---------- Compte client (inscription, connexion, mon compte) ---------- */
+/* Formulaire : mêmes règles que .coach-form (voir plus haut), dans une page .message-page */
+
+/* Liens vers le compte : sous les formulaires (« Déjà un compte ? ») et sous l'agenda des cours */
+.account-switch {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.account-switch a {
+    color: var(--color-accent);
+}
+
+/* Rappel « Confirmez votre adresse » : filet de couleur d'accent à gauche, comme .booking-summary */
+.account-notice {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-accent);
+    text-align: left;
+    color: var(--color-text-muted);
+}
+
+.account-notice strong {
+    color: var(--color-text);
+}
+
+/* Petit lien sous un champ (« Mot de passe oublié ? »), aligné à droite */
+.form-link {
+    align-self: flex-end;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.form-link:hover {
+    color: var(--color-accent);
+}
+
+/* Agenda, client connecté déjà inscrit : un lien vers son compte à la place du bouton « Réserver » */
+.course-booked {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+    text-decoration: none;
+}
+
+.course-booked:hover {
+    text-decoration: underline;
+}
+
+/* Modale, client confirmé : « Au nom de ... » à la place des champs nom et email */
+.booking-account {
+    color: var(--color-text-muted);
+}
+
+.booking-account strong {
+    color: var(--color-text);
+}
+
+/* « Mes réservations » (page Mon compte) */
+
+/* La page Mon compte est plus large que les autres pages simples (600px), pour le tableau */
+.account-page {
+    max-width: 900px;
+}
+
+.account-heading {
+    margin-bottom: 1.5rem;
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+}
+
+/* ---------- Tableau de données (réservations du client) ---------- */
+
+.data-table {
+    width: 100%;
+    margin-bottom: 3rem;
+    border-collapse: collapse; /* une seule bordure entre deux cellules, au lieu de deux collées */
+    text-align: left;
+}
+
+.data-table th {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-accent);
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+/* Même séparateur discret que les lignes de l'agenda */
+.data-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-bg-alt);
+    vertical-align: middle;
+}
+
+.data-table a {
+    text-decoration: underline;
+}
+
+/* Sur téléphone, 5 colonnes ne tiennent pas : chaque ligne devient un bloc, une cellule par ligne.
+   display: block retire la mise en page en tableau ; l'en-tête est masqué, chaque cellule affiche
+   le nom de sa colonne avant son contenu (::before + attr(data-label) : lit l'attribut HTML) */
+@media (max-width: 768px) {
+    .data-table thead {
+        display: none;
+    }
+
+    .data-table tr,
+    .data-table td {
+        display: block;
+    }
+
+    .data-table tr {
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--color-bg-alt);
+    }
+
+    .data-table td {
+        display: flex;
+        gap: 1rem;
+        padding: 0.3rem 0;
+        border-bottom: none;
+        overflow-wrap: anywhere; /* une longue adresse email passe à la ligne au lieu de déborder */
+    }
+
+    .data-table td[data-label]::before {
+        content: attr(data-label);
+        flex: 0 0 5rem; /* colonne fixe de 5rem pour les noms : les valeurs sont alignées */
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+    }
+}
+
+/* Info secondaire dans une cellule (durée du cours, « délai dépassé ») */
+.data-table-muted {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.data-table-action {
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .data-table-action {
+        padding-top: 0.75rem;
+    }
+}
+
+/* Texte lu par les lecteurs d'écran mais invisible à l'écran (ex. titre de la colonne Action).
+   Pas display: none, qui le cacherait aussi aux lecteurs d'écran */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%); /* rogne tout l'élément */
+    white-space: nowrap;
+}
+
+/* ---------- Page « Mon profil » ---------- */
+
+/* Liens discrets « Modifier mon profil » / « Retour à mon compte » */
+.account-back {
+    color: var(--color-accent);
+    white-space: nowrap; /* le lien ne se coupe pas en deux lignes */
+}
+
+/* Espace entre les trois formulaires de la page */
+.account-section {
+    margin-bottom: 4rem;
+}
+
+.account-warning {
+    margin-bottom: 0;
+    text-align: left;
+}
+
+.account-warning a {
+    color: var(--color-accent);
+}
+
+/* La page profil est large (comme Mon compte) et alignée à gauche : ses formulaires prennent toute
+   la largeur au lieu des 400px des autres formulaires du compte */
+.profile-page {
+    text-align: left;
+}
+
+.profile-page .account-form {
+    max-width: none;
+}
+
+.profile-page .account-form .btn {
+    align-self: flex-start; /* bouton à gauche, aligné avec les champs */
+}
+
+.profile-page .form-privacy {
+    text-align: left;
+}
+
+
+/* Précision sous un champ (« Seulement pour changer d'email ») */
+.form-hint {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
