@@ -282,6 +282,12 @@
                     </p>
 
                     <p class="booking-notice">
+                        Annulation en ligne possible jusqu'à midi le jour du cours.
+                        En cas d'urgence passé ce délai, contactez le coach au
+                        <a href="tel:{{ config('coach.phone.link') }}">{{ config('coach.phone.display') }}</a>.
+                    </p>
+
+                    <p class="booking-notice">
                         Vos données servent uniquement à gérer votre réservation
                         (<a href="{{ route('legal.privacy') }}">en savoir plus</a>).
                     </p>
