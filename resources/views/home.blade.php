@@ -278,7 +278,13 @@
                     @endif
 
                     <p class="booking-notice">
-                        <strong>Toute réservation non annulée avant midi le jour même sera considérée comme due et comptabilisée, afin de garantir l'équité et la bonne organisation des cours.</strong>
+                        <strong>Par respect pour les participants en liste d'attente et pour la bonne organisation des cours, les séances réservées et non honorées seront automatiquement déduites. En vous inscrivant, vous marquez votre accord.</strong>
+                    </p>
+
+                    <p class="booking-notice">
+                        Annulation en ligne possible jusqu'à midi le jour du cours.
+                        En cas d'urgence passé ce délai, contactez le coach au
+                        <a href="tel:{{ config('coach.phone.link') }}">{{ config('coach.phone.display') }}</a>.
                     </p>
 
                     <p class="booking-notice">

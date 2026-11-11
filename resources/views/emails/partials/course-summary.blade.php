@@ -29,3 +29,8 @@
         Passé ce délai, si vous avez une carte, ce cours y sera coché même en cas d'absence.
     </p>
 @endif
+
+<p style="margin: 16px 0 0; font-size: 14px; color: #555;">
+    En cas d'urgence passé ce délai, contactez le coach au
+    <a href="tel:{{ config('coach.phone.link') }}" style="color: #555;">{{ config('coach.phone.display') }}</a>.
+</p>

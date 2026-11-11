@@ -39,7 +39,8 @@
             @elseif (! $course->cancellationIsOpen())
                 <div class="form-alert form-alert-error">
                     L'annulation en ligne n'est possible que jusqu'à midi le jour du cours.
-                    Contactez directement le coach.
+                    En cas d'urgence, contactez le coach au
+                    <a href="tel:{{ config('coach.phone.link') }}">{{ config('coach.phone.display') }}</a>.
                 </div>
             @endif
 
