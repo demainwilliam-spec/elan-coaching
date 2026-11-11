@@ -9,7 +9,7 @@
 - 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées ; annulation jusqu'à midi le jour du cours (au lieu de 24 h avant) ; planning type du coach et génération des cours (branche feat/planning-type)
 - 05/11/2026 : prénom et nom séparés, inscrits confirmés triés par nom de famille (branche feat/prenom-nom) ; page Clients et compteur de cours faits (branche feat/liste-clients)
 - 06/11/2026 : comptes pour les coachs employés, mêmes droits (branche feat/comptes-coachs) ; avertissement du coach sur les réservations non annulées (carte)
-- 11/11/2026 : nouvel avertissement du coach dans la modale de réservation ; numéro du coach en cas d'urgence passé midi (modale, mail, page d'annulation, conditions) ; annulation 2 h avant envisagée puis abandonnée (risque pour la liste d'attente)
+- 11/11/2026 : nouvel avertissement du coach dans la modale de réservation ; numéro du coach en cas d'urgence passé midi (modale, mail, page d'annulation, conditions) ; annulation 2 h avant envisagée puis abandonnée (risque pour la liste d'attente) ; mise en ligne sur Hostinger, site déclaré dans Google Search Console
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -118,9 +118,10 @@
 - Copie hors du serveur : `scripts/telecharger-sauvegarde.bat` (double-clic, une fois par mois) → `Documents\Sauvegardes JF Coaching` sur le PC de William (données personnelles : dossier privé)
 - Comptes coach (11/11/2026) : JF (jftheys@hotmail.com), Charles, Elena ; créés par tinker (même code que `coach:create`), la commande interactive n'ayant pas été essayée sur le serveur (lecture du clavier sans doute bloquée par Hostinger)
 - Mettre à jour le site : pousser sur `main`, puis sur le serveur `git pull`, `composer install --no-dev --optimize-autoloader --no-scripts`, `php artisan package:discover`, `php artisan migrate --force`, `php artisan optimize` ; si le CSS / JS change : `npm run build` sur le PC puis `scp -r public/build jfcoaching:domains/jfcoaching.be/laravel/public/`
+- Google Search Console (11/11/2026) : propriété de domaine `jfcoaching.be` validée par un enregistrement TXT `google-site-verification=…` dans le DNS de Hostinger (à ne jamais supprimer), sitemap envoyé, indexation de l'accueil demandée
+- Le CDN de Hostinger (`Server: hcdn`) répond 403 à un faux Googlebot (curl avec l'user-agent de Google) : protection anti-usurpation, le vrai Googlebot passe (« Tester l'URL active » OK) ; pour vérifier l'accès de Google, utiliser l'inspection d'URL de Search Console, pas curl
 
 ## Lot Déploiement (reste à faire)
-- Déclarer le site dans Google Search Console
 - Vérifier la carte de partage (WhatsApp, Facebook)
 
 ## Bon à savoir
