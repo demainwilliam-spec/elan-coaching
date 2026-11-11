@@ -53,7 +53,7 @@
 
 ## Fonctionnalités en place
 - Formulaire de contact (#contact) : ContactRequest (validation) → ContactController → Mailable ContactMessage
-- Envoi via SMTP Gmail (mot de passe d'application dans .env), destinataire : MAIL_CONTACT_ADDRESS
+- Envoi via SMTP : Gmail en local (mot de passe d'application dans .env), boîte Hostinger contact@jfcoaching.be en production ; destinataire : MAIL_CONTACT_ADDRESS
 - Anti-spam : throttle:5,10 sur la route ; débloquer en local avec `php artisan cache:clear`
 - Agenda des cours collectifs (#cours) : HomeController → Course::upcoming()->withBookingCounts() → carrousel de pages de 4 (scroll-snap + resources/js/carousel.js)
 - Modèles : Course hasMany Booking ; Booking.status = enum BookingStatus (confirmed / waiting) ; cancel_token généré à la création
@@ -72,7 +72,7 @@
 - Clients (/coach/clients, onglet du header, Coach\ClientController) : comptes triés par nom, adresse confirmée, réservations à venir, cours faits ; lecture seule
 - Compteur : commande `clients:count-courses` (chaque heure, `counted_at` évite un double comptage) ; total gardé sur le compte car les réservations sont supprimées après 6 mois
 - Cours terminés (/coach/cours/termines, bouton en haut du tableau de bord, `CourseController::finished`) : accès aux inscrits pour retirer un absent ; plus de formulaire d'inscription une fois le cours commencé
-- Pages légales (Route::view, sans contrôleur) : /mentions-legales (dont conditions de réservation) et /confidentialite (RGPD, Belgique) ; liens dans le footer et sous les formulaires ; infos manquantes signalées par `<mark class="todo">[À COMPLÉTER…]</mark>` (il ne reste que l'hébergeur)
+- Pages légales (Route::view, sans contrôleur) : /mentions-legales (dont conditions de réservation) et /confidentialite (RGPD, Belgique) ; liens dans le footer et sous les formulaires ; infos manquantes signalées par `<mark class="todo">[À COMPLÉTER…]</mark>` (plus aucune depuis la mise en ligne)
 - Coordonnées du coach (nom, BCE / TVA, email, téléphone, adresse, lieux des séances) centralisées dans `config/coach.php`, lues avec `config('coach.…')` : mentions légales, confidentialité, contact, cartes de services (lieu sous la description, `.service-place`), données structurées, lieu prérempli d'un nouveau cours (salle des cours collectifs)
 - Pages d'erreur : `resources/views/errors/{404,419,429,500,503}.blade.php` sur un gabarit commun `errors/layout` (la 500 n'apparaît qu'avec APP_DEBUG=false)
 - SEO : meta description (par défaut dans `layouts/app`, surchargeable par `@section('description')`), Open Graph, canonical ; /sitemap.xml généré par une route ; robots.txt bloque /coach, /annulation/ et /compte ; `@section('noindex', true)` ajoute la balise noindex dans `layouts/app`
@@ -118,11 +118,8 @@
 - Mettre à jour le site : pousser sur `main`, puis sur le serveur `git pull`, `composer install --no-dev --optimize-autoloader --no-scripts`, `php artisan package:discover`, `php artisan migrate --force`, `php artisan optimize` ; si le CSS / JS change : `npm run build` sur le PC puis `scp -r public/build jfcoaching:domains/jfcoaching.be/laravel/public/`
 
 ## Lot Déploiement (reste à faire)
-- Tâches cron dans hPanel (Avancé → Tâches Cron), puis vérifier l'envoi d'un mail
-- En-têtes de sécurité (HSTS, X-Frame-Options, CSP...) et durées de cache des fichiers statiques
 - Comptes coach via `php artisan coach:create` (après avoir vérifié l'envoi des mails)
-- Hébergeur (Hostinger) à compléter dans les mentions légales et la page de confidentialité ; expéditeur des mails : la boîte Hostinger et non plus Gmail
-- Ajouter `Sitemap: https://jfcoaching.be/sitemap.xml` dans robots.txt ; déclarer le site dans Google Search Console
+- Déclarer le site dans Google Search Console
 - Copie des sauvegardes hors du serveur
 - Vérifier la carte de partage (WhatsApp, Facebook) une fois en ligne
 
