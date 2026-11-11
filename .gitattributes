@@ -9,3 +9,6 @@
 /.github export-ignore
 CHANGELOG.md export-ignore
 .styleci.yml export-ignore
+
+# Les scripts Windows (.bat) ont besoin de fins de ligne Windows
+*.bat text eol=crlf

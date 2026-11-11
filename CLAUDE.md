@@ -115,13 +115,13 @@
   - `php artisan schedule:run` ne peut pas lancer ses tâches → 3 tâches cron dans hPanel : `queue:work --stop-when-empty --max-time=50` chaque minute, `clients:count-courses` chaque heure, `scripts/cron-quotidien.sh` chaque nuit (tâches quotidiennes + sauvegarde) ; changer une tâche dans `routes/console.php` = changer aussi le cron ou le script
   - pas de `php artisan storage:link` (créer le lien avec `ln -s` en shell si besoin)
 - Sauvegarde : `scripts/cron-quotidien.sh` → `~/sauvegardes/jfcoaching-AAAA-MM-JJ-HHMM.sql.gz` (14 jours), identifiants lus dans le `.env`
+- Copie hors du serveur : `scripts/telecharger-sauvegarde.bat` (double-clic, une fois par mois) → `Documents\Sauvegardes JF Coaching` sur le PC de William (données personnelles : dossier privé)
+- Comptes coach (11/11/2026) : JF (jftheys@hotmail.com), Charles, Elena ; créés par tinker (même code que `coach:create`), la commande interactive n'ayant pas été essayée sur le serveur (lecture du clavier sans doute bloquée par Hostinger)
 - Mettre à jour le site : pousser sur `main`, puis sur le serveur `git pull`, `composer install --no-dev --optimize-autoloader --no-scripts`, `php artisan package:discover`, `php artisan migrate --force`, `php artisan optimize` ; si le CSS / JS change : `npm run build` sur le PC puis `scp -r public/build jfcoaching:domains/jfcoaching.be/laravel/public/`
 
 ## Lot Déploiement (reste à faire)
-- Comptes coach via `php artisan coach:create` (après avoir vérifié l'envoi des mails)
 - Déclarer le site dans Google Search Console
-- Copie des sauvegardes hors du serveur
-- Vérifier la carte de partage (WhatsApp, Facebook) une fois en ligne
+- Vérifier la carte de partage (WhatsApp, Facebook)
 
 ## Bon à savoir
 - `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
