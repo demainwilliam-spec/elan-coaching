@@ -9,6 +9,7 @@
 - 02/11/2026 : h1 « Coach sportif à Éghezée » (« Reprenez votre élan » n'était qu'un brouillon) ; texte de présentation du coach ; coordonnées du coach (config/coach.php), lieux des séances, données structurées ; annulation jusqu'à midi le jour du cours (au lieu de 24 h avant) ; planning type du coach et génération des cours (branche feat/planning-type)
 - 05/11/2026 : prénom et nom séparés, inscrits confirmés triés par nom de famille (branche feat/prenom-nom) ; page Clients et compteur de cours faits (branche feat/liste-clients)
 - 06/11/2026 : comptes pour les coachs employés, mêmes droits (branche feat/comptes-coachs) ; avertissement du coach sur les réservations non annulées (carte)
+- 11/11/2026 : nouvel avertissement du coach dans la modale de réservation ; numéro du coach en cas d'urgence passé midi (modale, mail, page d'annulation, conditions) ; annulation 2 h avant envisagée puis abandonnée (risque pour la liste d'attente)
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite

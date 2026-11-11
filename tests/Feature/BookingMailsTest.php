@@ -30,7 +30,7 @@ class BookingMailsTest extends TestCase
         return Course::create([
             'title' => 'Cross-training',
             'location' => 'Salle de test',
-            'starts_at' => now()->addDays(3),
+            'starts_at' => now()->addDays(3)->setTime(18, 0), // heure fixe : un cours avant midi fermerait l'annulation à son début
             'duration_minutes' => 60,
             'capacity' => $capacity,
         ]);
@@ -73,6 +73,7 @@ class BookingMailsTest extends TestCase
         $mail->assertDontSeeInHtml('Alice Test');
         $mail->assertSeeInHtml('Votre place est confirmée');
         $mail->assertSeeInHtml(route('bookings.cancel', $booking->cancel_token));
+        $mail->assertSeeInHtml(config('coach.phone.display')); // numéro du coach en cas d'urgence
         // Heure limite en toutes lettres : « jusqu'au mardi 3 novembre à 12h00 »
         $mail->assertSeeInHtml('jusqu\'au '.$booking->course->starts_at->translatedFormat('l j F').' à 12h00', false);
     }
