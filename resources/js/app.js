@@ -1,5 +1,6 @@
 import './carousel';
 import './booking-dialog';
+import './confirm-forms';
 import './photo-carousel';
 import './reveal';
 import './service-links';
