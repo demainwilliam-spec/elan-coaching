@@ -7,3 +7,6 @@ Disallow: /coach
 Disallow: /annulation/
 # Espace client (connexion, inscription, réservations : pages personnelles)
 Disallow: /compte
+
+# Plan du site : la liste des pages publiques, générée par l'application
+Sitemap: https://jfcoaching.be/sitemap.xml

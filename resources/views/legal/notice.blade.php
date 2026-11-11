@@ -30,7 +30,8 @@
 
         <h2>Hébergement</h2>
         <p>
-            Le site est hébergé par <mark class="todo">[À COMPLÉTER au déploiement : nom, adresse et site web de l'hébergeur]</mark>.
+            Le site est hébergé par Hostinger International Ltd, 61 Lordou Vironos Street, 6023 Larnaca, Chypre
+            (<a href="https://www.hostinger.com">www.hostinger.com</a>). Les serveurs du site sont situés en France.
         </p>
 
         <h2>Conditions de réservation des cours collectifs</h2>

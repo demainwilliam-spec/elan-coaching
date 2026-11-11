@@ -8,7 +8,7 @@
     <article class="legal-page">
         <h1>Politique de confidentialité</h1>
 
-        <p class="legal-updated">Dernière mise à jour : 6 novembre 2026</p>
+        <p class="legal-updated">Dernière mise à jour : 11 novembre 2026</p>
 
         <p>
             JF Coaching collecte le minimum de données nécessaires pour vous répondre et gérer vos réservations.
@@ -61,8 +61,8 @@
             Uniquement le coach, les coachs qu'il emploie, et les prestataires techniques indispensables au fonctionnement du site :
         </p>
         <ul>
-            <li>l'hébergeur du site : <mark class="todo">[À COMPLÉTER au déploiement]</mark> ;</li>
-            <li>Google (service Gmail), pour l'envoi des emails. Google peut traiter certaines données en dehors de l'Union européenne, avec les garanties prévues par le RGPD.</li>
+            <li>Hostinger International Ltd (Chypre), l'hébergeur du site : le site et sa base de données sont hébergés en France, les copies de sauvegarde en Lituanie, dans l'Union européenne. Hostinger envoie aussi les emails du site (adresse contact@jfcoaching.be) ;</li>
+            <li>Microsoft (Outlook), la messagerie sur laquelle le coach reçoit les messages du formulaire de contact et les réponses à ses emails. Microsoft peut traiter certaines données en dehors de l'Union européenne, avec les garanties prévues par le RGPD.</li>
         </ul>
 
         <h2>Cookies</h2>

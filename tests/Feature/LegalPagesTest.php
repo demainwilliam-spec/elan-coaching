@@ -29,7 +29,7 @@ class LegalPagesTest extends TestCase
 
     public function test_le_site_ne_charge_rien_depuis_google_fonts(): void
     {
-        // La page de confidentialité affirme qu'aucune donnée n'est envoyée à des tiers en dehors de Gmail
+        // La page de confidentialité ne cite comme tiers que l'hébergeur et la messagerie du coach
         $this->get('/')->assertDontSee('fonts.googleapis.com')->assertDontSee('fonts.gstatic.com');
         $this->get(route('coach.login'))->assertDontSee('fonts.googleapis.com');
     }
