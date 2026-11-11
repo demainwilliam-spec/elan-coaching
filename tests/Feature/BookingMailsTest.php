@@ -30,7 +30,7 @@ class BookingMailsTest extends TestCase
         return Course::create([
             'title' => 'Cross-training',
             'location' => 'Salle de test',
-            'starts_at' => now()->addDays(3),
+            'starts_at' => now()->addDays(3)->setTime(18, 0), // heure fixe : un cours avant midi fermerait l'annulation à son début
             'duration_minutes' => 60,
             'capacity' => $capacity,
         ]);
