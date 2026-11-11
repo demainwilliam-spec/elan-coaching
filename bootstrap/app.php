@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,6 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // append : middleware global, donc aussi sur les pages d'erreur (une 404 ne passe par aucune route)
+        $middleware->append(SecurityHeaders::class);
+
         // Deux espaces connectés : on choisit la destination selon l'adresse demandée.
         // $request->is('coach', 'coach/*') : vrai pour /coach et tout ce qui commence par /coach/
 
