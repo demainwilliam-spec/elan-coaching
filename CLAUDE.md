@@ -103,16 +103,27 @@
 - Référencement local : le coach est basé à Éghezée (province de Namur) ; la ville figure dans le `<title>` et le h1 de l'accueil (« Coach sportif à Éghezée »), la description par défaut et le texte de présentation (vérifié par SeoTest) ; « coaching postural » dans la description (mot-clé plus précis que « coach sportif ») ; données structurées `LocalBusiness` (JSON-LD) sur l'accueil seulement, poussées dans le `<head>` par `@push('head')` / `@stack('head')`, construites avec `json_encode` (+ `JSON_HEX_TAG`) ; à vérifier une fois en ligne avec le test des résultats enrichis de Google
 - En attente d'infos du coach : slogan éventuel (à placer sous le h1), photos HD, image de partage og:image (1200×630), accord des personnes reconnaissables sur les photos `stretch`, `posture`, `etirements` et `groupe` (droit à l'image ; enfants sur la photo de groupe : accord des parents), fichier vectoriel d'origine du logo (.svg / .ai / .eps) s'il existe
 
-## Lot Déploiement (à faire)
-- Hébergeur à choisir ; le compléter dans les mentions légales et la page de confidentialité
-- `.env` de production : `APP_ENV=production`, `APP_DEBUG=false` (sinon les erreurs affichent le code et les variables), `APP_URL=https://...`
-- HTTPS (Let's Encrypt), puis en-têtes de sécurité (HSTS, X-Frame-Options, CSP...) et durées de cache des fichiers statiques
-- Worker de la queue permanent (supervisor ou équivalent), sinon aucun mail ne part
-- `MAIL_CONTACT_ADDRESS` = adresse du coach (jftheys@hotmail.com) dans le `.env` de production
-- Cron chaque minute : `php artisan schedule:run`, sinon les tâches planifiées ne tournent jamais
-- `npm run build` sur le serveur (ou envoyer `public/build`), comptes coach via `php artisan coach:create` (après avoir vérifié l'envoi des mails), planning type via `php artisan db:seed --class=CourseTemplateSeeder` (surtout pas `--seed` seul : il ajouterait les cours de démonstration)
-- Ajouter `Sitemap: https://<domaine>/sitemap.xml` dans robots.txt ; déclarer le site dans Google Search Console
-- Sauvegarde régulière de la base
+## Production (Hostinger Premium, en ligne depuis le 11/11/2026)
+- https://jfcoaching.be ; compte Hostinger du coach (jftheys@hotmail.com), accès collaborateur pour William (hébergement + domaine, pas les mails) ; serveur en France, sauvegardes Hostinger hebdomadaires stockées en Lituanie
+- SSH par clé : `ssh jfcoaching` (alias dans `~/.ssh/config` du PC de William, clé `~/.ssh/jfcoaching_hostinger`)
+- Dossiers : projet dans `~/domains/jfcoaching.be/laravel` (clone de `main`), `~/domains/jfcoaching.be/public_html` = lien vers `laravel/public` (l'original de Hostinger gardé en `public_html.hostinger`)
+- PHP 8.3, MariaDB 11.8 (`DB_HOST=localhost`), base et utilisateur `u640905476_jfcoaching` ; pas de Node.js sur le serveur
+- Mails : boîte `contact@jfcoaching.be` (expéditeur du site, SMTP `smtp.hostinger.com` 465 SSL), redirigée vers jftheys@hotmail.com ; MX, SPF, DKIM et DMARC configurés par Hostinger
+- `.env` de production (droits 600) rempli par William : mots de passe jamais dans la conversation
+- Hostinger désactive `proc_open`, `exec`, `shell_exec`, `popen`, `symlink` :
+  - `composer install` échoue sur ses scripts : lancer ensuite `php artisan package:discover`
+  - `php artisan schedule:run` ne peut pas lancer ses tâches → 3 tâches cron dans hPanel : `queue:work --stop-when-empty --max-time=50` chaque minute, `clients:count-courses` chaque heure, `scripts/cron-quotidien.sh` chaque nuit (tâches quotidiennes + sauvegarde) ; changer une tâche dans `routes/console.php` = changer aussi le cron ou le script
+  - pas de `php artisan storage:link` (créer le lien avec `ln -s` en shell si besoin)
+- Sauvegarde : `scripts/cron-quotidien.sh` → `~/sauvegardes/jfcoaching-AAAA-MM-JJ-HHMM.sql.gz` (14 jours), identifiants lus dans le `.env`
+- Mettre à jour le site : pousser sur `main`, puis sur le serveur `git pull`, `composer install --no-dev --optimize-autoloader --no-scripts`, `php artisan package:discover`, `php artisan migrate --force`, `php artisan optimize` ; si le CSS / JS change : `npm run build` sur le PC puis `scp -r public/build jfcoaching:domains/jfcoaching.be/laravel/public/`
+
+## Lot Déploiement (reste à faire)
+- Tâches cron dans hPanel (Avancé → Tâches Cron), puis vérifier l'envoi d'un mail
+- En-têtes de sécurité (HSTS, X-Frame-Options, CSP...) et durées de cache des fichiers statiques
+- Comptes coach via `php artisan coach:create` (après avoir vérifié l'envoi des mails)
+- Hébergeur (Hostinger) à compléter dans les mentions légales et la page de confidentialité ; expéditeur des mails : la boîte Hostinger et non plus Gmail
+- Ajouter `Sitemap: https://jfcoaching.be/sitemap.xml` dans robots.txt ; déclarer le site dans Google Search Console
+- Copie des sauvegardes hors du serveur
 - Vérifier la carte de partage (WhatsApp, Facebook) une fois en ligne
 
 ## Bon à savoir
