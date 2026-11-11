@@ -12,9 +12,9 @@
         <p class="course-meta">Inscrit(e) le {{ $booking->created_at->translatedFormat('j F à H\hi') }}</p>
     </div>
 
-    {{-- @js() : échappe le texte pour du JavaScript (un nom contenant une apostrophe ne casse rien) --}}
+    {{-- data-confirm : question posée avant l'envoi par resources/js/confirm-forms.js ; {{ }} échappe le texte (nom avec apostrophe compris) --}}
     <form method="POST" action="{{ route('coach.bookings.destroy', $booking) }}"
-        onsubmit="return confirm(@js('Retirer '.$booking->name.' du cours ? '.($course->hasEnded() ? 'Son compteur de cours baissera, sans mail.' : 'Un mail le lui signalera.')))">
+        data-confirm="{{ 'Retirer '.$booking->name.' du cours ? '.($course->hasEnded() ? 'Son compteur de cours baissera, sans mail.' : 'Un mail le lui signalera.') }}">
         @csrf
         @method('DELETE')
         <button type="submit" class="btn btn-danger btn-small">Retirer</button>
