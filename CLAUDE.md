@@ -121,8 +121,7 @@
 - Google Search Console (11/11/2026) : propriété de domaine `jfcoaching.be` validée par un enregistrement TXT `google-site-verification=…` dans le DNS de Hostinger (à ne jamais supprimer), sitemap envoyé, indexation de l'accueil demandée
 - Le CDN de Hostinger (`Server: hcdn`) répond 403 à un faux Googlebot (curl avec l'user-agent de Google) : protection anti-usurpation, le vrai Googlebot passe (« Tester l'URL active » OK) ; pour vérifier l'accès de Google, utiliser l'inspection d'URL de Search Console, pas curl
 
-## Lot Déploiement (reste à faire)
-- Vérifier la carte de partage (WhatsApp, Facebook)
+- Carte de partage vérifiée sur Messenger (11/11/2026) : sans `og:image`, la plateforme prend le logo sur fond noir, jugé suffisant ; une vraie image 1200×630 reste possible si le coach en fournit une
 
 ## Bon à savoir
 - `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
