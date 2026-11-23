@@ -18,7 +18,7 @@ class LegalPagesTest extends TestCase
     public function test_la_confidentialite_decrit_le_compte_client(): void
     {
         $this->get(route('legal.privacy'))
-            ->assertSee('Compte client (facultatif)')
+            ->assertSee('Compte client (nécessaire pour réserver en ligne)')
             // Durée tirée de la constante du modèle : la page suit si la règle change
             ->assertSee('supprimé automatiquement après '.\App\Models\Client::UNVERIFIED_RETENTION_DAYS.' jours')
             ->assertSee('remember_client_');
@@ -39,7 +39,11 @@ class LegalPagesTest extends TestCase
         $this->get('/')
             ->assertSee('href="'.route('legal.notice').'"', false)
             ->assertSee('href="'.route('legal.privacy').'"', false)
-            ->assertSee('Vos données servent uniquement à vous répondre')
+            ->assertSee('Vos données servent uniquement à vous répondre');
+
+        // Le formulaire de réservation n'apparaît qu'avec un compte confirmé
+        $this->actingAs(\App\Models\Client::factory()->create(), 'client')
+            ->get('/')
             ->assertSee('Vos données servent uniquement à gérer votre réservation');
     }
 }

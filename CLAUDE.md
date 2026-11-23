@@ -10,6 +10,7 @@
 - 05/11/2026 : prénom et nom séparés, inscrits confirmés triés par nom de famille (branche feat/prenom-nom) ; page Clients et compteur de cours faits (branche feat/liste-clients)
 - 06/11/2026 : comptes pour les coachs employés, mêmes droits (branche feat/comptes-coachs) ; avertissement du coach sur les réservations non annulées (carte)
 - 11/11/2026 : nouvel avertissement du coach dans la modale de réservation ; numéro du coach en cas d'urgence passé midi (modale, mail, page d'annulation, conditions) ; annulation 2 h avant envisagée puis abandonnée (risque pour la liste d'attente) ; mise en ligne sur Hostinger, site déclaré dans Google Search Console
+- 23/11/2026 : réservation en ligne seulement avec un compte confirmé (branche feat/reservation-avec-compte)
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -33,9 +34,8 @@
 - Supprimer un cours → mail à tous les inscrits, avec un message facultatif du coach
 - Prénom et nom de famille obligatoires (réservation, compte, ajout par le coach) ; inscrits du coach : confirmés triés par nom puis prénom, liste d'attente dans l'ordre d'arrivée (elle décide qui reçoit la prochaine place)
 - Compteur de cours faits (`clients.courses_done`) : +1 pour une place confirmée, rattachée à un compte, une fois le cours terminé ; compte les réservations et non les présences ; le coach qui retire un absent après le cours le fait redescendre (aucun mail, aucune promotion)
-- Compte client facultatif : on peut toujours réserver sans compte ; un compte = une place par cours
-- Réservation en un clic seulement avec une adresse confirmée ; sinon formulaire prérempli (réservation rattachée au compte à la confirmation)
-- Une réservation (avec ou sans compte) est rattachée au compte confirmé de même adresse
+- Réservation en ligne réservée aux comptes à l'adresse confirmée (depuis le 23/11/2026, demande du coach) : `BookingRequest::authorize()`, sinon retour à l'agenda avec un message ; réservation en un clic au nom du compte ; un compte = une place par cours
+- Le coach peut toujours inscrire à la main une personne sans compte ; une réservation sans compte est rattachée au compte confirmé de même adresse
 - Compte supprimé (par le client ou pour inactivité) → ses réservations restent, détachées du compte (client_id null)
 
 ## Commandes
@@ -88,7 +88,7 @@
   - profil : nom / email (mot de passe actuel exigé pour changer d'email, alerte EmailChanged à l'ancienne adresse), suppression du compte ; formulaires séparés par error bags (`validateWithBag`)
   - mails : VerifyAccountEmail, ResetPasswordEmail, EmailChanged, InactiveAccountWarning (méthodes `sendEmailVerificationNotification` / `sendPasswordResetNotification` de Client remplacées par nos Mailables)
   - inactivité : `last_active_at` mis à jour par `Client::markActive()` (événement Login dans AppServiceProvider, y compris « rester connecté », et réservation avec le compte) ; avertissement après 11 mois, suppression 30 jours après l'avertissement (`Client::INACTIVE_RETENTION_MONTHS`, `INACTIVE_WARNING_DAYS`)
-  - affichage : icône compte dans le header, invitation sous l'agenda, modale de réservation selon visiteur / client confirmé / non confirmé, agenda « Inscrit ✓ / En liste d'attente » ; classes CSS `.account-*`, tableau `.data-table` (empilé sur téléphone via `data-label`), grille `.form-row`, `.visually-hidden`
+  - affichage : icône compte dans le header, invitation sous l'agenda, modale de réservation selon visiteur (boutons « Se connecter » / « Créer un compte ») / client non confirmé (lien vers « Mon compte » pour renvoyer le mail) / client confirmé (formulaire en un clic), agenda « Inscrit ✓ / En liste d'attente » ; classes CSS `.account-*`, tableau `.data-table` (empilé sur téléphone via `data-label`), grille `.form-row`, `.visually-hidden`
 - À faire plus tard : historique des cours passés (« Mes réservations » ne montre que les cours à venir) ; prévenir les personnes restées en liste d'attente après la limite de midi (planificateur) ; éventuellement indiquer dans les inscrits du coach qui a un compte
 - Thème noir et blanc alterné : noir par défaut (`:root`), sections blanches avec la classe `.theme-light` qui redéfinit les mêmes variables (Services, Contact) ; pages légales, d'erreur et espace coach en noir ; mails en noir et blanc (couleurs écrites en dur, les messageries ignorent les variables CSS)
 - Présentation « Votre coach » sous l'accueil (section `.about`, grille 2 colonnes : texte à gauche, carrousel à droite ; empilés sur téléphone, texte d'abord) ; texte définitif fourni par le coach (Éducation Physique, coaching postural), à garder tel quel hormis la mention d'Éghezée
