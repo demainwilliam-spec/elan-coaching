@@ -136,6 +136,8 @@ mpp\mysql\backup\mysql`, après une copie du dossier `data\mysql`)
 - Sous PowerShell, git écrit ses messages normaux sur stderr : un « exit code » d'erreur ne veut pas forcément dire que la commande a échoué
 - `$deleteWhenMissingModels` ne marche pas sur un Mailable (seulement sur une classe Job) : un mail dont la réservation a été supprimée avant l'envoi part directement dans failed_jobs, sans nouvel essai ; c'est accepté, le planificateur vide failed_jobs
 - Lighthouse : le lancer avec Vite arrêté et après `npm run build` (en dev, les fichiers non compressés faussent la note de performance), en navigation privée ; dernier résultat 98/100/100/100 (30/10/2026, avec photos et animations) ; si « Minify JavaScript ~200 Ko » ou « 3rd parties » apparaissent, c'est que Vite tournait encore
+- `npm run build` : le lancer depuis `C:
+mpp\...` (C majuscule) ; si VS Code a ouvert le projet en `c:\` minuscule, Vite n'inclut pas les polices de node_modules et écrit un chemin du PC dans le CSS (site en Arial une fois en ligne, 23/11/2026) ; vérifier après le build : `public/build/assets` contient des `.woff2`
 - Conversion d'images : PHP de XAMPP sans WebP → utiliser sharp (Node) depuis un dossier temporaire, hors des dépendances du projet ; seules les images converties sont commitées
 - Les navigateurs gardent le favicon en cache : le vérifier en navigation privée
 - Vérifier les failles des dépendances avant une mise en ligne : `npm audit` et `composer audit`
