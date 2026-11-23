@@ -115,13 +115,13 @@ class AccountAuthTest extends TestCase
     public function test_l_agenda_propose_de_creer_un_compte_ou_rappelle_qui_est_connecte(): void
     {
         $this->get('/')
-            ->assertSee('Réservez plus vite avec un compte')
+            ->assertSee('Un compte est nécessaire pour réserver :')
             ->assertSee(route('account.register'));
 
         $this->actingAs(Client::factory()->create(['first_name' => 'Alice']), 'client')
             ->get('/')
             ->assertSee('Connecté en tant que Alice')
-            ->assertDontSee('Réservez plus vite avec un compte');
+            ->assertDontSee('Un compte est nécessaire pour réserver :');
     }
 
     public function test_les_pages_du_compte_ne_sont_pas_indexees(): void

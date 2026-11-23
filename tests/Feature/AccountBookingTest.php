@@ -53,23 +53,7 @@ class AccountBookingTest extends TestCase
         $this->assertSame('alice@test.be', Booking::sole()->email);
     }
 
-    public function test_un_client_non_confirme_remplit_le_formulaire_et_n_est_pas_rattache(): void
-    {
-        $course = $this->makeCourse();
-        $client = Client::factory()->unverified()->create(['email' => 'alice@test.be']);
-
-        // Sans champs : refusé, comme pour un visiteur
-        $this->actingAs($client, 'client')
-            ->post(route('bookings.store', $course), ['booking' => ['course_id' => $course->id]])
-            ->assertSessionHasErrors(['booking.first_name', 'booking.last_name', 'booking.email']);
-
-        $this->post(route('bookings.store', $course), ['booking' => ['first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'alice@test.be']])
-            ->assertSessionHas('booking_success');
-
-        // Pas encore rattachée : elle le sera à la confirmation de l'adresse (VerifyClientEmail)
-        $this->assertNull(Booking::sole()->client_id);
-    }
-
+    // Inscription à la main par le coach (sans compte) : rattachée au compte confirmé de même adresse
     public function test_une_reservation_sans_compte_est_rattachee_au_compte_confirme_de_meme_adresse(): void
     {
         $course = $this->makeCourse();
@@ -123,29 +107,29 @@ class AccountBookingTest extends TestCase
     {
         $this->makeCourse();
 
-        // Visiteur : champs vides + invitation à se connecter
+        // Visiteur : pas de formulaire, boutons de connexion et de création de compte
         $this->get('/')
-            ->assertSee('id="booking-first-name"', false)
-            ->assertSee('Vous avez un compte ?');
+            ->assertDontSee('data-booking-form', false)
+            ->assertSee('Un compte est nécessaire pour réserver')
+            ->assertSee(route('account.register'));
 
-        // Client confirmé : plus de champs, « Au nom de »
+        // Client confirmé : formulaire sans champ, « Au nom de »
         $this->actingAs(Client::factory()->create(['first_name' => 'Alice']), 'client')
             ->get('/')
+            ->assertSee('data-booking-form', false)
             ->assertSee('Au nom de')
-            ->assertDontSee('id="booking-first-name"', false)
-            ->assertDontSee('Vous avez un compte ?');
+            ->assertDontSee('id="booking-first-name"', false);
     }
 
-    public function test_un_client_non_confirme_voit_le_formulaire_prerempli(): void
+    public function test_un_client_non_confirme_est_invite_a_confirmer_son_adresse(): void
     {
         $this->makeCourse();
 
-        $this->actingAs(Client::factory()->unverified()->create(['first_name' => 'Alice', 'last_name' => 'Dupont', 'email' => 'alice@test.be']), 'client')
+        $this->actingAs(Client::factory()->unverified()->create(), 'client')
             ->get('/')
-            ->assertSee('Confirmez votre adresse email (lien reçu par mail) pour réserver en un clic.')
-            ->assertSee('value="Alice"', false)
-            ->assertSee('value="Dupont"', false)
-            ->assertSee('value="alice@test.be"', false);
+            ->assertDontSee('data-booking-form', false)
+            ->assertSee("confirmez d'abord votre adresse email", false) // texte écrit en dur dans la vue : apostrophe non échappée
+            ->assertSee(route('account.show'));
     }
 
     public function test_la_connexion_depuis_l_agenda_ramene_aux_cours(): void

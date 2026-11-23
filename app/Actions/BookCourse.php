@@ -75,8 +75,12 @@ class BookCourse
         // Réserver avec son compte = activité (repousse la suppression pour inactivité)
         $client?->markActive();
 
-        // Mailable "ShouldQueue" : send() le place en queue, le worker (php artisan queue:work) l'enverra
-        Mail::to($booking->email)->send(new BookingReceived($booking));
+        // Pas de mail si le compte rattaché a décoché « Recevoir un mail de confirmation » (Mon profil) ;
+        // sans compte (inscription par le coach), le mail part toujours. ?? true : pas de compte → on envoie
+        if ($booking->client?->booking_emails ?? true) {
+            // Mailable "ShouldQueue" : send() le place en queue, le worker (php artisan queue:work) l'enverra
+            Mail::to($booking->email)->send(new BookingReceived($booking));
+        }
 
         return $booking;
     }
