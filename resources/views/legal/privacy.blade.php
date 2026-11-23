@@ -42,7 +42,7 @@
 
         <h3>Compte client (nécessaire pour réserver en ligne)</h3>
         <ul>
-            <li><strong>Données :</strong> prénom, nom, adresse email, mot de passe, date de confirmation de l'adresse, la liste de vos réservations et le nombre de cours suivis.</li>
+            <li><strong>Données :</strong> prénom, nom, adresse email, mot de passe, date de confirmation de l'adresse, votre choix de recevoir ou non un mail de confirmation à chaque réservation, la liste de vos réservations et le nombre de cours suivis.</li>
             <li><strong>Pourquoi :</strong> vous permettre de réserver vos cours et de suivre vos réservations (base légale : l'exécution du service que vous demandez en créant un compte).</li>
             <li><strong>Mot de passe :</strong> jamais enregistré tel quel, seulement sous une forme chiffrée irréversible : personne, pas même le coach, ne peut le lire.</li>
             <li><strong>Durée :</strong> tant que le compte existe. Vous pouvez le supprimer vous-même à tout moment depuis la page « Mon profil ». Un compte sans aucune activité (connexion ou réservation) pendant {{ \App\Models\Client::INACTIVE_RETENTION_MONTHS }} mois est supprimé automatiquement, après un email d'avertissement envoyé {{ \App\Models\Client::INACTIVE_WARNING_DAYS }} jours avant. Un compte dont l'adresse n'est jamais confirmée est supprimé automatiquement après {{ \App\Models\Client::UNVERIFIED_RETENTION_DAYS }} jours.</li>

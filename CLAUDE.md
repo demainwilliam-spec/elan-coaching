@@ -10,7 +10,8 @@
 - 05/11/2026 : prénom et nom séparés, inscrits confirmés triés par nom de famille (branche feat/prenom-nom) ; page Clients et compteur de cours faits (branche feat/liste-clients)
 - 06/11/2026 : comptes pour les coachs employés, mêmes droits (branche feat/comptes-coachs) ; avertissement du coach sur les réservations non annulées (carte)
 - 11/11/2026 : nouvel avertissement du coach dans la modale de réservation ; numéro du coach en cas d'urgence passé midi (modale, mail, page d'annulation, conditions) ; annulation 2 h avant envisagée puis abandonnée (risque pour la liste d'attente) ; mise en ligne sur Hostinger, site déclaré dans Google Search Console
-- 23/11/2026 : réservation en ligne seulement avec un compte confirmé (branche feat/reservation-avec-compte)
+- 23/11/2026 : réservation en ligne seulement avec un compte confirmé (branche feat/reservation-avec-compte) ; mail de confirmation de réservation facultatif (branche feat/mails-confirmation-facultatifs) ; MySQL local figé puis table système `mysql.global_priv` abîmée, remplacée par la copie de `C:
+mpp\mysql\backup\mysql`
 
 ## Stack
 - Laravel 12 (PHP 8.2) + Blade + Vite
@@ -35,6 +36,7 @@
 - Prénom et nom de famille obligatoires (réservation, compte, ajout par le coach) ; inscrits du coach : confirmés triés par nom puis prénom, liste d'attente dans l'ordre d'arrivée (elle décide qui reçoit la prochaine place)
 - Compteur de cours faits (`clients.courses_done`) : +1 pour une place confirmée, rattachée à un compte, une fois le cours terminé ; compte les réservations et non les présences ; le coach qui retire un absent après le cours le fait redescendre (aucun mail, aucune promotion)
 - Réservation en ligne réservée aux comptes à l'adresse confirmée (depuis le 23/11/2026, demande du coach) : `BookingRequest::authorize()`, sinon retour à l'agenda avec un message ; réservation en un clic au nom du compte ; un compte = une place par cours
+- Mail de confirmation de réservation (BookingReceived) facultatif : case « Mails » dans Mon profil (`clients.booking_emails`, oui par défaut, route `account.profile.emails`), respectée aussi quand le coach inscrit l'adresse d'un compte ; les autres mails partent toujours (place libérée : due passé midi ; cours modifié / supprimé ; retrait par le coach ; mails du compte)
 - Le coach peut toujours inscrire à la main une personne sans compte ; une réservation sans compte est rattachée au compte confirmé de même adresse
 - Compte supprimé (par le client ou pour inactivité) → ses réservations restent, détachées du compte (client_id null)
 
@@ -125,6 +127,10 @@
 
 ## Bon à savoir
 - `php artisan serve` redémarre tout seul quand `.env` change : attendre 1-2 s avant de tester
+- MySQL de XAMPP : cliquer sur Stop avant d'éteindre le PC ; s'il refuse de démarrer, lancer `C:
+mpp\mysql\bin\mysqld.exe --console` pour lire l'erreur (table système abîmée → remplacer ses fichiers par ceux de `C:
+mpp\mysql\backup\mysql`, après une copie du dossier `data\mysql`)
+- Blade ignore une directive collée à un mot (`mail@endif` est lu comme une adresse email) : laisser un espace ou utiliser `{{ condition ? '…' : '' }}`
 - Client `mysql` : utiliser `-h 127.0.0.1`, avec `localhost` la connexion est refusée (erreur 2002)
 - Ne jamais nommer une table `sessions` : elle existe déjà (sessions Laravel, `SESSION_DRIVER=database`) → les cours s'appellent `courses`
 - Sous PowerShell, git écrit ses messages normaux sur stderr : un « exit code » d'erreur ne veut pas forcément dire que la commande a échoué

@@ -103,6 +103,7 @@ Route::prefix('compte')->name('account.')->group(function () {
         // (throttle : essais de mot de passe et envois de mails limités)
         Route::get('/profil', [ProfileController::class, 'edit'])->name('profile');
         Route::put('/profil', [ProfileController::class, 'update'])->name('profile.update')->middleware('throttle:10,10');
+        Route::put('/profil/mails', [ProfileController::class, 'updateEmails'])->name('profile.emails')->middleware('throttle:10,10');
         Route::post('/profil/mot-de-passe', [ProfileController::class, 'sendPasswordLink'])
             ->name('profile.password')
             ->middleware('throttle:3,10');

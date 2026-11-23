@@ -57,7 +57,29 @@
             <button type="submit" class="btn">Enregistrer</button>
         </form>
 
-        {{-- 2. Mot de passe --}}
+        {{-- 2. Mails de confirmation (les mails importants partent toujours : place libérée, cours modifié...) --}}
+        <h3 class="account-heading">Mails</h3>
+        <form class="account-form account-section" method="POST" action="{{ route('account.profile.emails') }}">
+            @csrf
+            @method('PUT')
+
+            {{-- Une case décochée n'envoie rien : ce champ caché envoie alors 0 (coché, la case le remplace par 1) --}}
+            <input type="hidden" name="booking_emails" value="0">
+            <label class="form-check">
+                {{-- @checked(...) : ajoute l'attribut checked si la condition est vraie --}}
+                <input type="checkbox" name="booking_emails" value="1" @checked($client->booking_emails)>
+                Recevoir un mail de confirmation à chaque réservation
+            </label>
+
+            <p class="form-privacy">
+                Vos réservations restent toujours visibles dans <a href="{{ route('account.show') }}#reservations">Mes réservations</a>.
+                Vous êtes toujours prévenu(e) par mail si une place se libère pour vous, si un cours est modifié ou supprimé.
+            </p>
+
+            <button type="submit" class="btn">Enregistrer</button>
+        </form>
+
+        {{-- 3. Mot de passe --}}
         <h3 class="account-heading">Mot de passe</h3>
         {{-- Pas de formulaire de changement ici : un lien est envoyé par mail, comme pour « mot de passe oublié » --}}
         <form class="account-form account-section" method="POST" action="{{ route('account.profile.password') }}">
@@ -71,7 +93,7 @@
             <button type="submit" class="btn">Recevoir le lien</button>
         </form>
 
-        {{-- 3. Suppression du compte (droit à l'effacement, RGPD) --}}
+        {{-- 4. Suppression du compte (droit à l'effacement, RGPD) --}}
         <h3 class="account-heading">Supprimer mon compte</h3>
         <form class="account-form" method="POST" action="{{ route('account.destroy') }}">
             @csrf
@@ -80,8 +102,7 @@
             <p class="message-text account-warning">
                 La suppression est définitive : votre nom, votre email et votre mot de passe sont effacés.
                 <strong>Vos réservations à venir sont maintenues</strong> : pour les annuler, faites-le avant
-                depuis <a href="{{ route('account.show') }}#reservations">Mes réservations</a>, ou plus tard
-                avec le lien reçu par mail.
+                depuis <a href="{{ route('account.show') }}#reservations">Mes réservations</a>{{ $client->booking_emails ? ', ou plus tard avec le lien reçu par mail' : '' }}.
             </p>
 
             {{-- Même grille que plus haut : le champ a la largeur d'une colonne --}}

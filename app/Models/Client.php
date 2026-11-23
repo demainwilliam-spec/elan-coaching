@@ -35,6 +35,11 @@ class Client extends Authenticatable implements MustVerifyEmail
     // ... après un mail d'avertissement envoyé ce nombre de jours avant (cf. commande clients:warn-inactive)
     public const INACTIVE_WARNING_DAYS = 30;
 
+    // Valeurs par défaut d'un nouveau modèle en PHP (les mêmes que dans la migration, connues avant tout rechargement)
+    protected $attributes = [
+        'booking_emails' => true,
+    ];
+
     protected $fillable = [
         'first_name',
         'last_name',
@@ -55,6 +60,7 @@ class Client extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed', // le mot de passe est haché automatiquement à l'enregistrement
             'last_active_at' => 'datetime',
             'inactivity_warned_at' => 'datetime',
+            'booking_emails' => 'boolean', // 0 / 1 en base → false / true en PHP
         ];
     }
 

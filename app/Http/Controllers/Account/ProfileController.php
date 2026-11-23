@@ -26,6 +26,20 @@ class ProfileController extends Controller
         return view('account.profile', ['client' => $request->user('client')]);
     }
 
+    // Mail de confirmation à chaque réservation : oui / non (les autres mails partent toujours)
+    public function updateEmails(Request $request): RedirectResponse
+    {
+        // boolean : accepte 1 / 0 (case cochée / champ caché), refuse toute autre valeur
+        $data = $request->validate(['booking_emails' => 'required|boolean']);
+
+        // boolean() : lit la valeur reçue comme un vrai true / false
+        $request->user('client')->forceFill(['booking_emails' => $request->boolean('booking_emails')])->save();
+
+        return back()->with('account_success', $data['booking_emails']
+            ? 'Vous recevrez un mail de confirmation à chaque réservation.'
+            : 'Vous ne recevrez plus de mail de confirmation : vos réservations restent visibles dans « Mes réservations ».');
+    }
+
     // Prénom, nom et email
     public function update(Request $request): RedirectResponse
     {
