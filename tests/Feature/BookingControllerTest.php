@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Models\Booking;
+use App\Models\Client;
 use App\Models\Course;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
+// Réservation depuis l'agenda : réservée aux comptes à l'adresse confirmée
 class BookingControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -21,19 +24,20 @@ class BookingControllerTest extends TestCase
         ]);
     }
 
-    // Simule l'envoi du formulaire ; route() construit l'URL /cours/{id}/reservations
-    private function book(Course $course, string $name, string $email, string $lastName = 'Test')
+    // Réserve avec un compte confirmé ; route() construit l'URL /cours/{id}/reservations
+    private function book(Course $course, string $email)
     {
-        return $this->post(route('bookings.store', $course), [
-            'booking' => ['first_name' => $name, 'last_name' => $lastName, 'email' => $email],
-        ]);
+        $client = Client::firstWhere('email', $email) ?? Client::factory()->create(['email' => $email]);
+
+        return $this->actingAs($client, 'client')
+            ->post(route('bookings.store', $course), ['booking' => ['course_id' => $course->id]]);
     }
 
     public function test_une_reservation_valide_est_enregistree_et_confirmee(): void
     {
         $course = $this->makeCourse(capacity: 5);
 
-        $response = $this->book($course, 'Alice', 'alice@test.be');
+        $response = $this->book($course, 'alice@test.be');
 
         $response->assertRedirect('/#cours');
         $response->assertSessionHas('booking_success', fn (string $message) => str_contains($message, 'confirmée'));
@@ -44,42 +48,55 @@ class BookingControllerTest extends TestCase
     public function test_le_message_indique_la_position_quand_le_cours_est_complet(): void
     {
         $course = $this->makeCourse(capacity: 1);
-        $this->book($course, 'Alice', 'alice@test.be');
+        $this->book($course, 'alice@test.be');
 
-        $response = $this->book($course, 'Bob', 'bob@test.be');
+        $response = $this->book($course, 'bob@test.be');
 
         $response->assertSessionHas('booking_success', fn (string $message) => str_contains($message, 'n°1'));
     }
 
-    public function test_les_erreurs_de_validation_ne_touchent_pas_le_formulaire_de_contact(): void
-    {
-        $response = $this->book($this->makeCourse(capacity: 5), '', 'pas-un-email', '');
-
-        $response->assertRedirect('/#cours');
-        $response->assertSessionHasErrors(['booking.first_name', 'booking.last_name', 'booking.email']);
-        $response->assertSessionDoesntHaveErrors(['name', 'email']); // les champs du contact restent propres
-    }
-
-    public function test_un_email_sans_domaine_complet_est_refuse(): void
-    {
-        $this->book($this->makeCourse(capacity: 5), 'Alice', 'a@b')
-            ->assertSessionHasErrors('booking.email');
-    }
-
-    public function test_un_doublon_renvoie_un_message_d_erreur_et_garde_la_saisie(): void
+    public function test_un_visiteur_sans_compte_ne_peut_pas_reserver(): void
     {
         $course = $this->makeCourse(capacity: 5);
-        $this->book($course, 'Alice', 'alice@test.be');
 
-        $response = $this->book($course, 'Alice', 'alice@test.be');
+        // Même en envoyant les anciens champs à la main
+        $this->post(route('bookings.store', $course), [
+            'booking' => ['course_id' => $course->id, 'first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'alice@test.be'],
+        ])
+            ->assertRedirect('/#cours')
+            ->assertSessionHas('booking_error', 'Connectez-vous ou créez un compte pour réserver un cours.')
+            ->assertSessionHasInput('booking.course_id', $course->id); // pour rouvrir la modale sur ce cours
+
+        $this->assertSame(0, Booking::count());
+    }
+
+    public function test_un_compte_non_confirme_ne_peut_pas_reserver(): void
+    {
+        $course = $this->makeCourse(capacity: 5);
+
+        $this->actingAs(Client::factory()->unverified()->create(), 'client')
+            ->post(route('bookings.store', $course), ['booking' => ['course_id' => $course->id]])
+            ->assertRedirect('/#cours')
+            ->assertSessionHas('booking_error', fn (string $message) => str_contains($message, 'Confirmez d\'abord votre adresse'));
+
+        $this->assertSame(0, Booking::count());
+    }
+
+    public function test_un_doublon_renvoie_un_message_d_erreur_et_l_id_du_cours(): void
+    {
+        $course = $this->makeCourse(capacity: 5);
+        $this->book($course, 'alice@test.be');
+
+        $response = $this->book($course, 'alice@test.be');
 
         $response->assertSessionHas('booking_error');
-        $response->assertSessionHasInput('booking.email', 'alice@test.be'); // withInput() : pour old()
+        $response->assertSessionHasInput('booking.course_id', $course->id); // withInput() : pour old()
     }
 
     public function test_un_cours_inexistant_renvoie_une_404(): void
     {
-        $this->post('/cours/999/reservations', ['booking' => ['first_name' => 'Alice', 'last_name' => 'Test', 'email' => 'alice@test.be']])
+        $this->actingAs(Client::factory()->create(), 'client')
+            ->post('/cours/999/reservations')
             ->assertNotFound();
     }
 }

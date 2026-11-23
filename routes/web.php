@@ -42,7 +42,7 @@ Route::get('/sitemap.xml', fn () => response()->view('sitemap')->header('Content
     ->name('sitemap');
 
 // POST : réservation d'une place pour un cours. {course} est remplacé par l'id du cours (ex. /cours/3/reservations)
-// throttle:10,10 : un peu plus large que le contact (quelqu'un peut inscrire plusieurs proches à la suite)
+// throttle:10,10 : 10 tentatives par 10 minutes (réservation réservée aux comptes confirmés, cf. BookingRequest)
 Route::post('/cours/{course}/reservations', [BookingController::class, 'store'])
     ->name('bookings.store')
     ->middleware('throttle:10,10');
@@ -103,6 +103,7 @@ Route::prefix('compte')->name('account.')->group(function () {
         // (throttle : essais de mot de passe et envois de mails limités)
         Route::get('/profil', [ProfileController::class, 'edit'])->name('profile');
         Route::put('/profil', [ProfileController::class, 'update'])->name('profile.update')->middleware('throttle:10,10');
+        Route::put('/profil/mails', [ProfileController::class, 'updateEmails'])->name('profile.emails')->middleware('throttle:10,10');
         Route::post('/profil/mot-de-passe', [ProfileController::class, 'sendPasswordLink'])
             ->name('profile.password')
             ->middleware('throttle:3,10');

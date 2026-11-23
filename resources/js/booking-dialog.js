@@ -13,8 +13,12 @@ if (dialog) {
         const { courseId, action, title, when, location, description, full } = button.dataset;
         const isFull = full === '1';
 
-        form.action = action; // le formulaire sera envoyé à /cours/{id}/reservations
-        part('course-id').value = courseId;
+        // Le formulaire n'existe que pour un compte confirmé (visiteur : boutons de connexion à la place)
+        if (form) {
+            form.action = action; // le formulaire sera envoyé à /cours/{id}/reservations
+            part('course-id').value = courseId;
+            part('submit').textContent = isFull ? "Rejoindre la liste d'attente" : 'Confirmer la réservation';
+        }
 
         // textContent : insère du texte brut, jamais interprété comme du HTML (protection XSS)
         part('title').textContent = title;
@@ -24,7 +28,6 @@ if (dialog) {
         part('description').hidden = !description; // pas de description → paragraphe masqué
 
         part('heading').textContent = isFull ? "Liste d'attente" : 'Réserver';
-        part('submit').textContent = isFull ? "Rejoindre la liste d'attente" : 'Confirmer la réservation';
         part('full-notice').hidden = !isFull;
     };
 

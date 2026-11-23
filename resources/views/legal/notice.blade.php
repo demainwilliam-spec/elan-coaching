@@ -36,7 +36,7 @@
 
         <h2>Conditions de réservation des cours collectifs</h2>
         <ul>
-            <li>La réservation est gratuite et possible en ligne jusqu'au début du cours, avec ou sans compte client. Le compte est facultatif : il évite de ressaisir ses coordonnées et permet de retrouver ses réservations.</li>
+            <li>La réservation est gratuite et possible en ligne jusqu'au début du cours, avec un compte client dont l'adresse email est confirmée. Le compte permet de réserver en un clic et de retrouver ses réservations. Le coach peut aussi inscrire lui-même une personne qui n'a pas de compte.</li>
             <li>S'il reste de la place, votre réservation est confirmée immédiatement. Sinon, vous êtes inscrit sur la liste d'attente.</li>
             <li>Vous pouvez annuler jusqu'à midi le jour du cours, grâce au lien reçu par email ou depuis « Mes réservations » si vous avez un compte. En cas d'urgence passé ce délai, contactez le coach au <a href="tel:{{ config('coach.phone.link') }}">{{ config('coach.phone.display') }}</a>.</li>
             <li>Pour les clients qui ont une carte, une place confirmée non annulée avant midi le jour du cours est due : en cas d'absence, le cours manqué est coché sur la carte en plus du cours suivant. Une personne sans carte n'est pas concernée.</li>
